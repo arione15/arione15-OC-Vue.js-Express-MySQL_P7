@@ -1,8 +1,21 @@
 const http = require('http');
-const app = require('./app.js');
+const app = require('./app');
 
-//port d'écoute de l'appli express
-const port = (process.env.PORT || '3000');
+const normalizePort = val => {
+    const port = parseInt(val, 10);
+    if (isNaN(port)) {
+        return val;
+    }
+    if (port >= 0) {
+        return port;
+    }
+    return false;
+};
+//création du serveur http et de la fonction (ici app) qui sera appelée à chaque requête faite à ce serveur
+const server = http.createServer(app);
+
+//dire à server.js quel est le port d'écoute de l'appli express
+const port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 const errorHandler = error => {
@@ -25,13 +38,11 @@ const errorHandler = error => {
     }
 };
 
-//création du serveur http et de la fonction (ici app) qui sera appelée à chaque requête faite à ce serveur
-const server = http.createServer(app);
-server.listen(port);
-
 server.on('error', errorHandler);
 server.on('listening', () => {
     const address = server.address();
     const bind = typeof address === 'string' ? 'pipe ' + address : 'port ' + port;
     console.log('Listening on ' + bind);
 });
+
+server.listen(port);
