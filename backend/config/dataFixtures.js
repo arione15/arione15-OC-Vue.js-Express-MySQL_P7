@@ -55,6 +55,39 @@ const users = [
   password: "8i",
   imageUrl: "url8"
  }
-]
+];
 
-module.exports = users;
+const medias = [
+ {
+  description: "media1",
+  mediaUrl: "url1",
+  userId: 1,
+  likes: 1,
+  dislikes: 1,
+  usersLiked: 1,
+  usersDisliked: 1
+ },
+ {
+  description: "media2",
+  mediaUrl: "url2",
+  userId: 2,
+  likes: 2,
+  dislikes: 2,
+  usersLiked: 2,
+  usersDisliked: 2
+ },
+ {
+  description: "media3",
+  mediaUrl: "url3",
+  userId: 3,
+  likes: 3,
+  dislikes: 3,
+  usersLiked: 3,
+  usersDisliked: 3
+ },
+ 
+];
+
+//module.exports = users;
+exports.users = users;
+exports.medias = medias;

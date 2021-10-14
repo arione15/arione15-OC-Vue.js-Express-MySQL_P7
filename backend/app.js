@@ -3,9 +3,10 @@ const cors = require("cors");
 const path = require('path');
 const sequelize = require('./config/db.config')
 const { Sequelize, DataTypes } = require('sequelize'); // importer aussi l'objet DataTypes
-const users = require('./config/dataFixtures');
+const { users, medias } = require('./config/dataFixtures');
 
 const UserModel = require('./models/User'); 
+const MediaModel = require('./models/Media'); 
 
 const app = express();
 
@@ -17,9 +18,12 @@ app.use(cors());
 
 // instanciation de la classe User
 const User = UserModel(sequelize, DataTypes);
-console.log(User);
 
-// synchronisation des models avec la BDD
+// instanciation de la classe Media
+const Media = MediaModel(sequelize, DataTypes);
+
+
+// synchronisation du modèle User avec la BDD
 sequelize.sync({force: true}) // à utliser uniquement en dev : supprime la table avant de faire la synchronisation
     .then(() => {
         console.log('La base de donnée "groupomania" a bien été synchronisée !');
@@ -30,6 +34,23 @@ sequelize.sync({force: true}) // à utliser uniquement en dev : supprime la tabl
             password: user.password,
             imageUrl: user.imageUrl
         }).then(toto => console.log(toto.toJSON()))
+        })
+        });
+
+
+// synchronisation du modèle Media avec la BDD
+sequelize.sync({force: true})
+    .then(() => {
+        console.log('La base de donnée "groupomania" a bien été synchronisée !');
+        medias.map(media => {Media.create({
+            description: media.description,
+            mediaUrl: media.mediaUrl,
+            userId: media.userId,
+            likes: media.likes,
+            dislikes: media.dislikes,
+            usersLiked: media.usersLiked,
+            usersDisliked: media.usersDisliked,
+        }).then(titi => console.log(titi.toJSON()))
         })
         });
 
