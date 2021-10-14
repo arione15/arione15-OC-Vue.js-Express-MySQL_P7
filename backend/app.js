@@ -1,6 +1,7 @@
 const express = require('express');
 const cors = require("cors");
 const path = require('path');
+const db = require('./config/db.config')
 
 const app = express();
 
@@ -16,5 +17,13 @@ app.use(express.json());
 // // utilisation des ressources "static", içi les images 
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
+
+
+// Tester le serveur backend et l'app avec get et post
+app.get('/test', (req, res) => {
+    res.send({
+        message: 'Hello P7-OC'
+    })
+})
 
 module.exports = app;
