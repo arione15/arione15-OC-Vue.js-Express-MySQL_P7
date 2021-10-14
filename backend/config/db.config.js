@@ -6,8 +6,8 @@ const sequelize = new Sequelize(
     'root',
     '',
     {
-        host: 'localhost',
         dialect: 'mariadb',
+        host: 'localhost',
         dialectOptions: {
             timezone: 'Etc/GMT-2'
         },
