@@ -2,9 +2,6 @@ const express = require('express');
 const cors = require("cors");
 const path = require('path');
 
-const userRoutes = require('./routes/userRoutes');
-const postRoutes = require('./routes/postRoutes');
-
 const { initDb } = require('./config/dbConfig');
 initDb();
 
@@ -23,7 +20,7 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
 // base des routes de l'api
-// app.use('/api/auth', userRoutes);
+require('./routes/findAllPosts')(app);
 // app.use('/api/post', postRoutes);
 //app.use('/api/comment', commentRoutes);
 

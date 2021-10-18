@@ -25,7 +25,7 @@ sequelize.authenticate()
 .then(() => console.log('Connexion réussie !'))
 .catch(error => console.error(`Echec de la connexion : ${error}`));
 
-// instanciation des classes User et Post : elles donnent lieu aux tables users et posts
+// instanciation des classes UserModel et PostModel : elles donnent lieu aux tables users et posts
 const User = UserModel(sequelize, DataTypes);
 const Post = PostModel(sequelize, DataTypes);
 
