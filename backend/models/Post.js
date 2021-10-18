@@ -1,10 +1,15 @@
 module.exports = (sequelize, DataTypes) => {
-  return sequelize.define('Media', {
+  const Post =  sequelize.define('Post', {
+    id: {
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true
+    },
     description: {
       type: DataTypes.TEXT,
       allowNull: false
     },
-    mediaUrl: {
+    postUrl: {
       type: DataTypes.STRING,
       allowNull: true
     },
@@ -31,5 +36,6 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
         default: []
     }
-  })
+  });
+    return Post;
 }

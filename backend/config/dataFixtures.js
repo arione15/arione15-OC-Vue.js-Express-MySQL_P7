@@ -57,7 +57,7 @@ const users = [
  }
 ];
 
-const medias = [
+const posts = [
  {
   description: "media1",
   mediaUrl: "url1",
@@ -84,10 +84,8 @@ const medias = [
   dislikes: 3,
   usersLiked: 3,
   usersDisliked: 3
- },
+ }
  
 ];
 
-//module.exports = users;
-exports.users = users;
-exports.medias = medias;
+module.exports = { users, posts }; //ou bien  exports.users = users; exports.posts = posts;
