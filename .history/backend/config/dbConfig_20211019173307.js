@@ -37,19 +37,18 @@ const initDb = () =>
 .then(_ => 
 {users.map(user => 
 {
-    bcrypt.hash(user.password, 10)
-    .then(xhash => User.create({
-        name: user.name,
-        firstname: user.firstname,
-        email: user.email,
-        password: xhash,
-        imageUrl: user.imageUrl
-}).then(xUser => console.log(xUser.toJSON())))
-
+User.create({
+            name: user.name,
+            firstname: user.firstname,
+            email: user.email,
+            password: user.password,
+            imageUrl: user.imageUrl
+}).then(xUser => console.log(xUser.toJSON()))
 }
 );
 posts.map(post => 
 {
+    
 Post.create({
             title: post.title,
             description: post.description,

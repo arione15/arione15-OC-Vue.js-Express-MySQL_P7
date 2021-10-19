@@ -1,7 +1,7 @@
-const auth = require('../middlewares/authorize');
-const multer = require('../middlewares/multer-config');
+const auth = require('../../middlewares/authorize');
+const multer = require('../../middlewares/multer-config');
 
-const { Post } = require('../config/dbConfig');
+const { Post } = require('../../config/dbConfig');
 
 module.exports = (app) => {
     app.post('/api/posts', (req, res) => {

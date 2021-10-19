@@ -2,7 +2,7 @@ const { Sequelize, DataTypes } = require('sequelize'); // importer aussi l'objet
 const UserModel = require('../models/User'); 
 const PostModel = require('../models/Post');
 const { users, posts } = require('./dataFixtures');
-const bcrypt = require('bcrypt');
+const bcrypt = require('');
 
 // instanciation de l'objet sequelize
 const sequelize = new Sequelize('groupomania', 'root', '', {
@@ -37,15 +37,13 @@ const initDb = () =>
 .then(_ => 
 {users.map(user => 
 {
-    bcrypt.hash(user.password, 10)
-    .then(xhash => User.create({
-        name: user.name,
-        firstname: user.firstname,
-        email: user.email,
-        password: xhash,
-        imageUrl: user.imageUrl
-}).then(xUser => console.log(xUser.toJSON())))
-
+User.create({
+            name: user.name,
+            firstname: user.firstname,
+            email: user.email,
+            password: user.password,
+            imageUrl: user.imageUrl
+}).then(xUser => console.log(xUser.toJSON()))
 }
 );
 posts.map(post => 

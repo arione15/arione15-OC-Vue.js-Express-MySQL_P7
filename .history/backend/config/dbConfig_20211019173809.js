@@ -38,13 +38,7 @@ const initDb = () =>
 {users.map(user => 
 {
     bcrypt.hash(user.password, 10)
-    .then(xhash => User.create({
-        name: user.name,
-        firstname: user.firstname,
-        email: user.email,
-        password: xhash,
-        imageUrl: user.imageUrl
-}).then(xUser => console.log(xUser.toJSON())))
+    .then(xhash => )
 
 }
 );

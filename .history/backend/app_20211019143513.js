@@ -20,11 +20,11 @@ app.use(express.json());
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
 // base des routes de l'api
-require('./routes/posts/findAllPosts')(app);
-require('./routes/posts/findByPkPost')(app);
+require('./routesposts/findAllPosts')(app);
+require('./routesposts/findByPkPost')(app);
 require('./routes/posts/createPost')(app);
-require('./routes/posts/updatePost')(app);
-require('./routes/posts/deletePost')(app);
+require('./routesposts/updatePost')(app);
+require('./routesposts/deletePost')(app);
 // app.use('/api/post', postRoutes);
 //app.use('/api/comment', commentRoutes);
 

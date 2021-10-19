@@ -42,7 +42,7 @@ const initDb = () =>
         name: user.name,
         firstname: user.firstname,
         email: user.email,
-        password: xhash,
+        password: user.password,
         imageUrl: user.imageUrl
 }).then(xUser => console.log(xUser.toJSON())))
 
