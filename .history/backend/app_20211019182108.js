@@ -26,7 +26,7 @@ require('./routes/posts/createPost')(app);
 require('./routes/posts/updatePost')(app);
 require('./routes/posts/deletePost')(app);
 
-require('./routes/users/login')(app);
+require('./routes/usersposts/deletePost')(app);
 // app.use('/api/post', postRoutes);
 //app.use('/api/comment', commentRoutes);
 
