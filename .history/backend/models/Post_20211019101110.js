@@ -7,7 +7,8 @@ module.exports = (sequelize, DataTypes) => {
     },
     title: {
       type: DataTypes.STRING,
-      allowNull: false
+      primaryKey: true,
+      autoIncrement: true
     },
     description: {
       type: DataTypes.TEXT,
