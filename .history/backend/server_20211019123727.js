@@ -45,4 +45,4 @@ server.on('listening', () => {
     console.log('Listening on ' + bind);
 });
 
-server.listen(port, () => console.log(`Notre application Node.js est démarré sur : http://localhost:${port}`));
+server.listen(port, () => );
