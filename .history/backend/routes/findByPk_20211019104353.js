@@ -4,12 +4,12 @@ const multer = require('../middlewares/multer-config');
 const { Post } = require('../config/dbConfig');
 
 module.exports = (app) => {
-    app.post('/api/posts', (req, res) => {
-        Post.create(req.body)
+    app.get('/api/posts/:id', (req, res) => {
+        Post.findByPk(req.params.id)
         .then(post => {
-            const message = `Le post ${req.body.title} a bien été créé !`;
+            const message = 'Un post a bien été récupérée !';
             res.json({ message, data: post })
-        }).catch(error => console.log(error))
+        })
     })
 }
 

@@ -9,7 +9,7 @@ module.exports = (app) => {
         .then(post => {
             const message = `Le post ${req.body.title} a bien été créé !`;
             res.json({ message, data: post })
-        }).catch(error => console.log(error))
+        })
     })
 }
 

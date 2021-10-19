@@ -9,7 +9,7 @@ module.exports = (app) => {
         .then(posts => {
             const message = 'La liste des postes a bien été récupérée !';
             res.json({ message, data: posts })
-        }).catch(error => console.log(error))
+        }).catch(error => console.log)
     })
 }
 
