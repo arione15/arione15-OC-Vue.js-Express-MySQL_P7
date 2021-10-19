@@ -88,6 +88,7 @@ const posts = [
   usersLiked: 3,
   usersDisliked: 3
  }
+ 
 ];
 
 module.exports = { users, posts }; //ou bien  exports.users = users; exports.posts = posts;

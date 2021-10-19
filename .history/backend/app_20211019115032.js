@@ -23,8 +23,7 @@ app.use('/images', express.static(path.join(__dirname, '/images')));
 require('./routes/findAllPosts')(app);
 require('./routes/findByPkPost')(app);
 require('./routes/createPost')(app);
-require('./routes/updatePost')(app);
-require('./routes/deletePost')(app);
+require('./routes/createPost')(app);
 // app.use('/api/post', postRoutes);
 //app.use('/api/comment', commentRoutes);
 

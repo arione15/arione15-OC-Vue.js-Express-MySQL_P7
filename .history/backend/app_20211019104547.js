@@ -16,15 +16,13 @@ app.use(cors());
 // définir la fonction json de express comme middleware global pour l'application
 app.use(express.json());
 
-// utilisation des ressources "static", içi les images 
+// // utilisation des ressources "static", içi les images 
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
 // base des routes de l'api
 require('./routes/findAllPosts')(app);
 require('./routes/findByPkPost')(app);
 require('./routes/createPost')(app);
-require('./routes/updatePost')(app);
-require('./routes/deletePost')(app);
 // app.use('/api/post', postRoutes);
 //app.use('/api/comment', commentRoutes);
 

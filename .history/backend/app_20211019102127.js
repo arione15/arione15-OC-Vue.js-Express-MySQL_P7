@@ -10,21 +10,19 @@ const app = express();
 // les variables d'environnement
 require('dotenv').config();
 
-// middleware pour gérer le CORS Cross Origin Resource Sharing (ajoute des headers à l'objet response qui permet à des requetes de différentes rigines de communiquer entre elles)
+// // middleware pour gérer le CORS Cross Origin Resource Sharing (ajoute des headers à l'objet response qui permet à des requetes de différentes rigines de communiquer entre elles)
 app.use(cors()); 
 
 // définir la fonction json de express comme middleware global pour l'application
 app.use(express.json());
 
-// utilisation des ressources "static", içi les images 
+// // utilisation des ressources "static", içi les images 
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
 // base des routes de l'api
 require('./routes/findAllPosts')(app);
-require('./routes/findByPkPost')(app);
-require('./routes/createPost')(app);
-require('./routes/updatePost')(app);
-require('./routes/deletePost')(app);
+require('./routes/findByPk')(app);
+require('./routes/cretfindByPk')(app);
 // app.use('/api/post', postRoutes);
 //app.use('/api/comment', commentRoutes);
 

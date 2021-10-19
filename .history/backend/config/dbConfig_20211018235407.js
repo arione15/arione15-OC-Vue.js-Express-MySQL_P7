@@ -48,7 +48,6 @@ User.create({
 posts.map(post => 
 {
 Post.create({
-            title: post.title,
             description: post.description,
             postUrl: post.postUrl,
             userId: post.userId,

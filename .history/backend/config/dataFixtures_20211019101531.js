@@ -59,7 +59,7 @@ const users = [
 
 const posts = [
  {
-  title: "title1",
+title: title1,
   description: "media1",
   mediaUrl: "url1",
   userId: 1,
@@ -69,7 +69,7 @@ const posts = [
   usersDisliked: 1
  },
  {
-  title: "title2",
+    title: title2,
   description: "media2",
   mediaUrl: "url2",
   userId: 2,
@@ -79,7 +79,6 @@ const posts = [
   usersDisliked: 2
  },
  {
-  title: "title3",
   description: "media3",
   mediaUrl: "url3",
   userId: 3,
@@ -88,6 +87,7 @@ const posts = [
   usersLiked: 3,
   usersDisliked: 3
  }
+ 
 ];
 
 module.exports = { users, posts }; //ou bien  exports.users = users; exports.posts = posts;
