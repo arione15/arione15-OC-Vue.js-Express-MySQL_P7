@@ -25,7 +25,7 @@ module.exports = (app) => {
               { expiresIn: "24h" }
             );
             const message = `L'utilsateur s'est connecté avec succès !`;
-            res.status(200).json({ message, data: user, token });
+            res.status(200).json({ message, data: user,  });
           });
       })
       .catch((error) => {

@@ -2,7 +2,7 @@ const auth = require("../../middlewares/authorize");
 const multer = require("../../middlewares/multer-config");
 const bcrypt = require("bcrypt");
 const { User } = require("../../config/dbConfig");
-const jwt = require("jsonwebtoken");
+cons
 
 module.exports = (app) => {
   app.post("/api/login", (req, res) => {
@@ -20,12 +20,15 @@ module.exports = (app) => {
               res.status(401).json({ message });
             }
             const token = jwt.sign(
-              { userId: user.id },
-              process.env.SECRET_KEY,
-              { expiresIn: "24h" }
-            );
+                {
+                  userId: user._id, // c'est le payload, et on encode le userId dans le token pour éviter qu'un user modifie des données d'un autre user
+                },
+                process.env.APP_SECRET,
+                {
+                  expiresIn: "24h",
+                }
             const message = `L'utilsateur s'est connecté avec succès !`;
-            res.status(200).json({ message, data: user, token });
+            res.status(200).json({ message, data: user });
           });
       })
       .catch((error) => {
