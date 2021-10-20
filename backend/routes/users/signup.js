@@ -12,7 +12,7 @@ const Joi = require("joi"); //  valider le mot de passe côté client
 
 module.exports = (app) => {
   app.post("/api/signup", async (req, res) => {
-    const { name, firstname, email, password, imageUrl } = req.body;
+    //const { name, firstname, email, password, imageUrl } = req.body;
 
 const alreadyExistsUser = await User.findOne({ where: { email } }).catch(err => {console.log("Erreur :", err);});
 if(alreadyExistsUser) {

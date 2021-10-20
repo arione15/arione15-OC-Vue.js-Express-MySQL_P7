@@ -31,5 +31,8 @@ require('./routes/posts/deletePost')(app);
 
 require('./routes/users/login')(app);
 require('./routes/users/signup')(app);
+// TODO : 
+//require('./routes/users/updateUser')(app);
+//require('./routes/users/deleteUser')(app);
 
 module.exports = app;
