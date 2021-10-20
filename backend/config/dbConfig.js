@@ -3,6 +3,7 @@ const UserModel = require('../models/User');
 const PostModel = require('../models/Post');
 const { users, posts } = require('./dataFixtures');
 const bcrypt = require('bcrypt');
+//const { users } = require('../routes/users/signup');
 
 // instanciation de l'objet sequelize
 const sequelize = new Sequelize('groupomania', 'root', '', {
@@ -31,38 +32,7 @@ const User = UserModel(sequelize, DataTypes);
 const Post = PostModel(sequelize, DataTypes);
 
 // synchronisation de toutes les tables de la BDD groupomania
-const initDb = () => 
-{
-    return sequelize.sync({ force: true })
-.then(_ => 
-{users.map(user => 
-{
-    bcrypt.hash(user.password, 10)
-    .then(xhash => User.create({
-        name: user.name,
-        firstname: user.firstname,
-        email: user.email,
-        password: xhash,
-        imageUrl: user.imageUrl
-}).then(xUser => console.log(xUser.toJSON())))
+sequelize.sync()
 
-}
-);
-posts.map(post => 
-{
-Post.create({
-            title: post.title,
-            description: post.description,
-            postUrl: post.postUrl,
-            userId: post.userId,
-            likes: post.likes,
-            dislikes: post.dislikes,
-            usersLiked: post.usersLiked,
-            usersDisliked: post.usersDisliked
-}).then(xPost => console.log(xPost.toJSON()))
-}
-);
-}
-)};
-
-module.exports = {initDb, User, Post};
+//module.exports = {initDb, User, Post};
+module.exports = { sequelize, User, Post };

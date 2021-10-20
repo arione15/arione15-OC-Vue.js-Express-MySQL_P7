@@ -4,7 +4,7 @@ const multer = require('../../middlewares/multer-config');
 const { Post } = require('../../config/dbConfig');
 
 module.exports = (app) => {
-    app.get('/api/posts', (req, res) => {
+    app.get('/api/posts', auth, (req, res) => {
         Post.findAll()
         .then(posts => {
             const message = 'La liste des postes a bien été récupérée !';

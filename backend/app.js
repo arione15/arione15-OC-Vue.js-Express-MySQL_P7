@@ -3,7 +3,7 @@ const cors = require("cors");
 const path = require('path');
 
 const { initDb } = require('./config/dbConfig');
-initDb();
+//initDb();
 
 const app = express();
 
@@ -19,6 +19,9 @@ app.use(express.json());
 // utilisation des ressources "static", içi les images 
 app.use('/images', express.static(path.join(__dirname, '/images')));
 
+// pour la version de l'api
+//app.use("/api/v1", api);
+
 // base des routes de l'api
 require('./routes/posts/findAllPosts')(app);
 require('./routes/posts/findByPkPost')(app);
@@ -27,7 +30,6 @@ require('./routes/posts/updatePost')(app);
 require('./routes/posts/deletePost')(app);
 
 require('./routes/users/login')(app);
-// app.use('/api/post', postRoutes);
-//app.use('/api/comment', commentRoutes);
+require('./routes/users/signup')(app);
 
 module.exports = app;

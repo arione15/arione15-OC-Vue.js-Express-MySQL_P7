@@ -28,10 +28,10 @@ module.exports = (sequelize, DataTypes) => {
       //required: true,
       allowNull: false,
     },
-    imageUrl: {
-      type: DataTypes.STRING,
-      allowNull: true
-    }
+    // imageUrl: {
+    //   type: DataTypes.STRING,
+    //   allowNull: true
+    // }
   });
   return User;
 }
