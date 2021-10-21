@@ -4,7 +4,7 @@ const multer = require('../../middlewares/multer-config');
 const { Post } = require('../../config/dbConfig');
 
 module.exports = (app) => {
-    app.post('/api/posts', (req, res) => {
+    app.post('/api/posts', auth, (req, res) => {
         Post.create(req.body)
         .then(post => {
             const message = `Le post ${req.body.title} a bien été créé !`;
