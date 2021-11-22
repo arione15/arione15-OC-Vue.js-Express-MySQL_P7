@@ -7,11 +7,11 @@ const jwt = require("jsonwebtoken");
 module.exports = (app) => {
     app.get("/api/logout", (req, res) => {
         res.cookie('jwtCookie', '', {
-            maxAge: 1 // suppression instantannée (1 milliseconde)
+            maxAge: 1
         });
-        res.status(200).json({
-            message: "utilisateur déconnecté",
-            redirect: '/'
+        res.location('/');
+        res.status(302).json({
+            message: "user disconnected"
         });
     });
 };

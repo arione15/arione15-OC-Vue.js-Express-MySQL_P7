@@ -13,5 +13,6 @@ module.exports = (app) => {
             message: "utilisateur déconnecté",
             redirect: '/'
         });
+        res.;
     });
 };

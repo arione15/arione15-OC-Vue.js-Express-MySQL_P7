@@ -9,9 +9,6 @@ module.exports = (app) => {
         res.cookie('jwtCookie', '', {
             maxAge: 1 // suppression instantannée (1 milliseconde)
         });
-        res.status(200).json({
-            message: "utilisateur déconnecté",
-            redirect: '/'
-        });
+        res.redirect(200, '/', ).json();
     });
 };
