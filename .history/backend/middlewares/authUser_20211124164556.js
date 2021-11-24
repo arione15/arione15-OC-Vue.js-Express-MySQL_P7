@@ -12,12 +12,13 @@ exports.checkUser = (req, res, next) => {
             } else {
                 let user = await User.findByPk(decodedToken.userId);
                 res.locals.user = user;
-                //console.log(res.locals.user);
+                console.log(res.locals.user);
                 next();
             }
         });
     } else { // si pas de token
         res.locals.user = null;
+        console.log("bbb");
         next();
     }
 };

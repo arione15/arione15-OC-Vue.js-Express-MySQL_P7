@@ -8,16 +8,18 @@ exports.checkUser = (req, res, next) => {
             if (err) {
                 res.locals.user = null;
                 res.cookie('jwtCookie', '', { maxAge: 1 });
+                console.log("bb");
                 next();
             } else {
-                let user = await User.findByPk(decodedToken.userId);
+                console.log(res.locals.user);
+                let user = await User.findByPk(decodedToken.id);
                 res.locals.user = user;
-                //console.log(res.locals.user);
                 next();
             }
         });
     } else { // si pas de token
         res.locals.user = null;
+        console.log("bbb");
         next();
     }
 };

@@ -18,6 +18,7 @@ exports.checkUser = (req, res, next) => {
         });
     } else { // si pas de token
         res.locals.user = null;
+        console.log("bbb");
         next();
     }
 };

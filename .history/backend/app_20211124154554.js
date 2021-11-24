@@ -1,6 +1,5 @@
 const express = require('express');
-const {
-    checkUser
+const checkUser, bbb
 } = require('./middlewares/authUser');
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
@@ -30,7 +29,7 @@ app.use('/media', express.static(path.join(__dirname, '/media')));
 //app.use("/api/v1", api);
 
 // pour authentifier le user sur toutes les routes get
-//app.get('*', checkUser);
+app.get('*', checkUser);
 
 
 // routes
