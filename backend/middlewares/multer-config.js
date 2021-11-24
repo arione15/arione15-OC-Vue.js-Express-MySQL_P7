@@ -3,7 +3,7 @@ var path = require("path");
 
 const storage = multer.diskStorage({ // storage contient notre configuration de multer
     destination: (req, file, callback) => {
-        callback(null, 'images/');
+        callback(null, 'media/');
     },
     filename: (req, file, callback) => { // renommer les fichiers pour éviter les doublons et remplacer les espaces par des underscores
         const name = file.originalname.split(' ').join('_');
