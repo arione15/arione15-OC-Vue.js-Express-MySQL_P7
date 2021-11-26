@@ -3,7 +3,7 @@
         "username": "root",
         "password": null,
         "database": "groupomania",
-        "host": "localhost",
+        "host": "loca",
         "dialect": "mysql"
     },
     "test": {
