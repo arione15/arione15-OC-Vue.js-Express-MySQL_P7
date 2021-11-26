@@ -4,14 +4,13 @@ const bcrypt = require('bcrypt');
 
 module.exports = {
     up: async(queryInterface, Sequelize) => {
-        let users = [];
-        let roles = ['ADMIN', 'MODER', 'BASIC'];
-
-        for (let i = 0; i < 25; i++) {
+        let users =
             let r = Math.random().toString(36).substring(7);
-            let pwdHashed = await bcrypt.hash(r, 10);
-            //let userRole = roles[(Math.random() * roles.length) | 0];
-            let userRole = roles[Math.floor(Math.random() * roles.length)];
+        let pwdHashed = await bcrypt.hash(r, 10);
+        let roles = ['ADMIN', 'MODER', 'BASIC'];
+        //let userRole = roles[(Math.random() * myArray.length) | 0];
+        let userRole = roles[Math.floor(Math.random() * array.length)];
+        for (let i = 0; i < 25; i++) {
             users.push({
                 name: `new${i}`,
                 firstname: `man${i}`,
