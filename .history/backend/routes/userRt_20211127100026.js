@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const { checkUser } = require('../middlewares/authUser');
-const { authPage } = require('../middlewares/authPage');
+const { authPage } = require('../middlewares/authUser');
+const = require('../middlewares/');
 
 // const authController = require("../controllers/auth.controller");
 const userControl = require("../controllers/userController");
@@ -18,7 +19,7 @@ router.get("/logout", checkUser, userControl.logout);
 router.get("/", checkUser, userControl.getAllUsers);
 router.get("/:id", checkUser, userControl.getOneUser);
 router.put("/:id", userControl.updateUser);
-router.delete("/:id", authPage(['ADMIN']), userControl.deleteUser);
+router.delete("/:id", authPage([ADMIN]), userControl.deleteUser);
 
 // upload
 //router.post("/upload", upload.single("file"), uploadController.uploadProfil);
