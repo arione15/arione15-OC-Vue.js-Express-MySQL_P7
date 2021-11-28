@@ -21,8 +21,10 @@ module.exports = {
                 type: Sequelize.STRING
             },
             role: {
-                type: Sequelize.STRING
-            },
+                type: DataTypes.STRING,
+                allowNull: false,
+                default: "BASIC"
+            }
             photoUrl: {
                 type: Sequelize.STRING
             },

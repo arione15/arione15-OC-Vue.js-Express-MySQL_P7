@@ -15,13 +15,18 @@ module.exports = {
                 type: Sequelize.STRING
             },
             email: {
-                type: Sequelize.STRING
+                type: Sequelize.STRING,
+                allowNull: false,
+                unique: {
+                    msg: "L'adresse email est déjà prise. Choisissez-en une autre !"
+                }
             },
             password: {
                 type: Sequelize.STRING
             },
             role: {
-                type: Sequelize.STRING
+                type: DataTypes.STRING,
+                default: "BASIC"
             },
             photoUrl: {
                 type: Sequelize.STRING
