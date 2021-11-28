@@ -1,6 +1,4 @@
 'use strict';
-
-const faker = require('faker');
 const bcrypt = require('bcrypt');
 
 module.exports = {
@@ -14,8 +12,8 @@ module.exports = {
             //let userRole = roles[(Math.random() * roles.length) | 0];
             let userRole = roles[Math.floor(Math.random() * roles.length)];
             users.push({
-                firstName: `new${i}`,
-                familyName: `man${i}`,
+                name: `new${i}`,
+                firstname: `man${i}`,
                 email: `newman${i}`,
                 password: pwdHashed,
                 role: userRole,

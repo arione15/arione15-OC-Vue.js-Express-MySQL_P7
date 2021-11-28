@@ -19,12 +19,12 @@ module.exports = {
                 email: `newman${i}`,
                 password: pwdHashed,
                 role: userRole,
-                //imageUrl: req.body.imageUrl
+                photoUrl: req.body.imageUrl
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
         }
-        await queryInterface.bulkInsert('users', users, {})
+        await queryInterface.bulkInsert('Users', users, {})
     },
 
     down: async(queryInterface, Sequelize) => {

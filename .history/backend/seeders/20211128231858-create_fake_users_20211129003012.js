@@ -14,20 +14,21 @@ module.exports = {
             //let userRole = roles[(Math.random() * roles.length) | 0];
             let userRole = roles[Math.floor(Math.random() * roles.length)];
             users.push({
-                firstName: `new${i}`,
+                firstName: faker.name.firstName(),
+                ,
                 familyName: `man${i}`,
                 email: `newman${i}`,
                 password: pwdHashed,
                 role: userRole,
-                //imageUrl: req.body.imageUrl
+                photoUrl: req.body.imageUrl
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
         }
-        await queryInterface.bulkInsert('users', users, {})
+        await queryInterface.bulkInsert('Users', users, {})
     },
 
     down: async(queryInterface, Sequelize) => {
-        await queryInterface.bulkDelete('users', null, {});
+        await queryInterface.bulkDelete('Users', null, {});
     }
 };

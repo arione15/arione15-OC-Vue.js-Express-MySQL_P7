@@ -14,7 +14,7 @@ module.exports = {
             //let userRole = roles[(Math.random() * roles.length) | 0];
             let userRole = roles[Math.floor(Math.random() * roles.length)];
             users.push({
-                firstName: `new${i}`,
+                firstNname: `new${i}`,
                 familyName: `man${i}`,
                 email: `newman${i}`,
                 password: pwdHashed,
