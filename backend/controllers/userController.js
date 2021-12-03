@@ -6,7 +6,7 @@ const Joi = require("joi"); //  valider le mot de passe côté client
 const jwt = require("jsonwebtoken");
 
 /*  *********************************************************** */
-//  I. Contrôleur pour l'enregistrement d'un nouvel utilisateur
+//  enregistrer un nouvel utilisateur
 /*  *********************************************************** */
 // 1- valider les input de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
 exports.signUp = async(req, res) => {
@@ -18,8 +18,8 @@ exports.signUp = async(req, res) => {
     }
     bcrypt.hash(req.body.password, 10).then(hashed => {
         const newUser = new User({
-            name: req.body.name,
-            firstname: req.body.firstname,
+            familyName: req.body.familyName,
+            firstName: req.body.firstName,
             email: req.body.email,
             password: hashed,
             role: req.body.role,
@@ -35,7 +35,7 @@ exports.signUp = async(req, res) => {
 };
 
 /*  ****************************************************** */
-//  I. Contrôleur pour gérer la connexion d'un utilisateur
+//  gérer la connexion d'un utilisateur
 /*  ****************************************************** */
 // 1- vérifier si l'utilisateur est enregistré, 2- envoyer un token avec un payload (ici le userId)
 exports.login = (req, res) => {
@@ -72,7 +72,7 @@ exports.login = (req, res) => {
 };
 
 /*  ****************************************************** */
-//  II. Contrôleur pour gérer la déconnexion d'un utilisateur
+//  gérer la déconnexion d'un utilisateur
 /*  ****************************************************** */
 exports.logout = (req, res) => {
     res.cookie('jwtCookie', '', {
@@ -107,7 +107,9 @@ exports.getOneUser = (req, res) => {
         }).catch(error => console.log(error))
 };
 
+/*  ****************************************************** */
 // modifier un utilisateur
+/*  ****************************************************** */
 exports.updateUser = (req, res) => {
     const id = req.params.id;
     User.update(req.body, { where: { id: id } })
@@ -119,7 +121,9 @@ exports.updateUser = (req, res) => {
         }).catch(error => console.log(error))
 };
 
+/*  ****************************************************** */
 // supprimer un utilisateur
+/*  ****************************************************** */
 exports.deleteUser = (req, res) => {
     User.findByPk(req.params.id)
         .then(user => {

@@ -10,10 +10,11 @@ module.exports = {
             },
             posterId: {
                 type: Sequelize.UUID,
-                referes: {
+                references: {
                     model: "Users",
                     key: "id"
-                }
+                },
+                onDelete: 'CASCADE',
             },
             title: {
                 type: Sequelize.STRING

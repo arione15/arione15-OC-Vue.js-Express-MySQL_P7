@@ -1,39 +1,72 @@
 'use strict';
 
-const User = require("../models/User");
-const Post = require("../models/Post");
+const { User, Post } = require('../config/dbConfig');
 const bcrypt = require("bcrypt");
 const Joi = require("joi"); //  valider le mot de passe côté client
 const jwt = require("jsonwebtoken");
-//const { Post } = require('sequelize');
-
+const auth = require('../middlewares/authorize');
+const multer = require('../middlewares/multer-config');
 
 /*  *********************************************************** */
-//  I. Contrôleur pour l'enregistrement d'un nouveau post
+//  créer un nouveau post
 /*  *********************************************************** */
-// Create and Save a new post:
-
-exports.createPost = (req, res) => {
-    // Validate request
-    if (!req.body.description) {
-        res.status(400).send({
-            message: "Content can not be empty!"
+exports.createPost = async(req, res) => {
+    const postObject = req.body.post;
+    const post = new Post({...postObject });
+    // const post = new Post({
+    //     ...postObject,
+    //     image_url: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+    // });
+    // posterId: req.body.posterId,
+    //     title: req.body.title,
+    //     content: req.body.content,
+    //     likers: [],
+    //     dislikers: [],
+    //     likes: req.body.likes,
+    //     dislikes: req.body.dislikes,
+    //     createdAt: req.body.createdAt
+    // });
+    try {
+        const newPost = await post.save().then(() => {
+            const message = `Le post a été créé avec succès !`;
+            res.status(201).json({ message, data: post });
         });
-        return;
+    } catch (err) {
+        const message = `Le post n'a pas pu être créé !`;
+        res.status(400).json({ message, data: err });
     }
-    // Create a post
-    const post = {
-        description: req.body.description,
-    };
-
-    // Save post in the database
-    Post.createPost(post)
-        .then(data => {
-            res.send(data);
-        })
-        .catch(err => {
-            res.status(500).send({
-                message: err.message || "Some error occurred while creating the medium."
-            });
-        });
 };
+
+/*  ****************************************************** */
+//  récupérer tous les posts
+/*  ****************************************************** */
+exports.getAllPosts = (req, res) => {
+
+}
+
+
+/*  ****************************************************** */
+//  récupérer un post
+/*  ****************************************************** */
+exports.getOnePost = (req, res) => {
+    Post.findByPk(req.params.id)
+        .then(post => {
+            const message = 'Un post a bien été récupérée !';
+            res.json({ message, data: post })
+        }).catch(error => console.log("Error getting a post", error))
+}
+
+/*  ****************************************************** */
+// modifier un utilisateur
+/*  ****************************************************** */
+
+exports.updatePost = (req, res) => {
+
+}
+
+/*  ****************************************************** */
+// supprimer un utilisateur
+/*  ****************************************************** */
+exports.deletePost = (req, res) => {
+
+}

@@ -1,5 +1,6 @@
-module.exports = (sequelize, DataTypes) => {
+'use strict';
 
+module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
         // id: {
         //     type: DataTypes.UUID,
@@ -38,14 +39,8 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.associate = models => {
-        User.hasMany(models.Post, {
-            as: "posts",
-            foreignKey: "userId"
-        });
-        User.hasMany(models.Comment, {
-            as: "comments",
-            foreignKey: "userId"
-        });
+        User.hasMany(models.Post);
+        User.hasMany(models.Comment);
     };
 
     return User;
