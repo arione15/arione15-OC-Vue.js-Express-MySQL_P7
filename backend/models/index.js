@@ -64,6 +64,7 @@ db.Sequelize = Sequelize;
 const User = require("./User")(sequelize, Sequelize);
 const Post = require("./Post")(sequelize, Sequelize);
 const Comment = require("./Comment")(sequelize, Sequelize);
+const Like = require("./Like")(sequelize, Sequelize);
 
 // Post.hasMany(Comment, { as: "comment" });
 // Comment.belongsTo(Post, {

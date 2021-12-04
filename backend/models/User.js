@@ -2,12 +2,6 @@
 
 module.exports = (sequelize, DataTypes) => {
     const User = sequelize.define('User', {
-        // id: {
-        //     type: DataTypes.UUID,
-        //     defaultValue: DataTypes.UUIDV4,
-        //     primaryKey: true,
-        //     allowNull: false
-        // },
         firstName: {
             type: DataTypes.STRING,
             allowNull: false,
@@ -39,8 +33,9 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.associate = models => {
-        User.hasMany(models.Post);
-        User.hasMany(models.Comment);
+        User.hasMany(models.Post, { onDelete: 'cascade' });
+        User.hasMany(models.Comment, { onDelete: 'cascade' });
+        User.hasMany(models.Like, { onDelete: 'cascade' });
     };
 
     return User;

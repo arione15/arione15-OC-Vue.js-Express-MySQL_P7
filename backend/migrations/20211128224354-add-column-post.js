@@ -28,34 +28,6 @@ module.exports = {
             videoUrl: {
                 type: Sequelize.STRING
             },
-            likers: {
-                type: Sequelize.STRING,
-                get() {
-                    return this.getDataValue('likers').split(';')
-                },
-                set(val) {
-                    this.setDataValue('likers', val.join(';'));
-                },
-                required: true
-            },
-            dislikers: {
-                type: Sequelize.STRING,
-                get() {
-                    return this.getDataValue('dislikers').split(';')
-                },
-                set(val) {
-                    this.setDataValue('dislikers', val.join(';'));
-                },
-                required: true
-            },
-            likes: {
-                type: Sequelize.INTEGER,
-                default: 0
-            },
-            dislikes: {
-                type: Sequelize.INTEGER,
-                default: 0
-            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE

@@ -4,7 +4,7 @@ module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
         userId: {
             type: DataTypes.UUID,
-            required: true
+            allowNull: false
         },
         title: {
             type: DataTypes.STRING,
@@ -16,12 +16,14 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: false
         },
         attachmentUrl: {
-            type: DataTypes.STRING
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
 
     Post.associate = models => {
-        Post.hasMany(models.Comment);
+        Post.hasMany(models.Comment, { onDelete: 'cascade' });
+        Post.hasMany(models.Like, { onDelete: 'cascade' });
         Post.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false

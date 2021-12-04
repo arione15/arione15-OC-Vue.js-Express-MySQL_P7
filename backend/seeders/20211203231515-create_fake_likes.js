@@ -3,21 +3,21 @@ const faker = require('faker');
 
 module.exports = {
     up: async(queryInterface, Sequelize) => {
-        let comments = [];
+        let likes = [];
 
         for (let i = 0; i < 25; i++) {
-            comments.push({
-                postId: faker.datatype.uuid(),
+            likes.push({
                 userId: faker.datatype.uuid(),
-                message: faker.lorem.sentence(),
+                postId: faker.datatype.uuid(),
+                isLike: faker.datatype.number({ min: -1, max: 1 }),
                 createdAt: new Date(),
                 updatedAt: new Date(),
-            });
+            })
         };
-        await queryInterface.bulkInsert('Comments', comments, {})
+        await queryInterface.bulkInsert('Likes', likes, {})
     },
 
     down: async(queryInterface, Sequelize) => {
-        await queryInterface.bulkDelete('Comments', null, {});
+        await queryInterface.bulkDelete('Likes', null, {});
     }
 };
