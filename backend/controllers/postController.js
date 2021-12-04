@@ -18,6 +18,11 @@ exports.createPost = async(req, res) => {
     //     ...postObject,
     //     image_url: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
     // });
+    // ou 
+    //const postObject = {
+    //...req.body,
+    //image_url: req.file ? req.file.location : null
+    //};
 
     try {
         const newPost = await post.save().then((x) => {
@@ -61,16 +66,39 @@ exports.getOnePost = (req, res) => {
 }
 
 /*  ****************************************************** */
-// modifier un utilisateur
+// modifier un post
 /*  ****************************************************** */
 
-exports.updatePost = (req, res) => {
+exports.updatePost = (req, res, ) => {
+    const postObject = req.body;
+    const content = req.body.content;
 
-}
+    if (content === null || content === '') {
+        return res.status(400).json({ 'error': "Veuillez modifier le champ 'Contenu' !" });
+    }
+
+    Post.update({...postObject, id: req.params.id }, { where: { id: req.params.id } })
+        .then(() => res.status(200).json({ message: 'Post modifié !' }))
+        .catch(error => res.status(400).json({
+            message: "update failed",
+            data: error
+        }));
+};
 
 /*  ****************************************************** */
-// supprimer un utilisateur
+// supprimer un post
 /*  ****************************************************** */
 exports.deletePost = (req, res) => {
-
-}
+    // Like.destroy({ where: { articleId: req.params.id } })
+    //     .then(() =>
+    //         Comment.destroy({ where: { articleId: req.params.id } })
+    //         .then(() =>
+    Post.destroy({ where: { id: req.params.id } })
+        .then(() => res.status(200).json({ message: 'Post supprimé !' }))
+        // )
+        // )
+        .catch(error => res.status(400).json({
+            message: "update failed",
+            data: error
+        }));
+};
