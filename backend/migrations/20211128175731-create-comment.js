@@ -5,15 +5,19 @@ module.exports = {
             id: {
                 allowNull: false,
                 primaryKey: true,
-                type: Sequelize.UUID
+                type: Sequelize.UUID,
+                defaultValue: Sequelize.UUIDV4
             },
             userId: {
+                allowNull: false,
                 type: Sequelize.UUID
             },
             postId: {
+                allowNull: false,
                 type: Sequelize.UUID
             },
             message: {
+                allowNull: false,
                 type: Sequelize.TEXT
             },
             createdAt: {

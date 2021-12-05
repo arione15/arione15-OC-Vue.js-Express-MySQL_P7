@@ -7,6 +7,7 @@ module.exports = {
 
         for (let i = 0; i < 25; i++) {
             posts.push({
+                id: faker.datatype.uuid(),
                 userId: faker.datatype.uuid(),
                 title: faker.lorem.sentence(),
                 content: faker.lorem.sentence(),

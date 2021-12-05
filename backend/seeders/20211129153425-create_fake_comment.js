@@ -7,8 +7,9 @@ module.exports = {
 
         for (let i = 0; i < 25; i++) {
             comments.push({
-                postId: faker.datatype.uuid(),
+                id: faker.datatype.uuid(),
                 userId: faker.datatype.uuid(),
+                postId: faker.datatype.uuid(),
                 message: faker.lorem.sentence(),
                 createdAt: new Date(),
                 updatedAt: new Date(),

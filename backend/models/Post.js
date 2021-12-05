@@ -22,12 +22,13 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     Post.associate = models => {
-        Post.hasMany(models.Comment, { onDelete: 'cascade' });
-        Post.hasMany(models.Like, { onDelete: 'cascade' });
-        Post.belongsTo(models.User, {
+        models.Post.hasMany(models.Like, { onDelete: 'cascade' });
+        models.Post.hasMany(models.Comment, { onDelete: 'cascade' });
+        models.Post.belongsTo(models.User, {
             foreignKey: {
                 allowNull: false
-            }
+            },
+            onDelete: 'cascade'
         });
     }
     return Post;

@@ -7,6 +7,7 @@ module.exports = {
 
         for (let i = 0; i < 25; i++) {
             likes.push({
+                id: faker.datatype.uuid(),
                 userId: faker.datatype.uuid(),
                 postId: faker.datatype.uuid(),
                 isLike: faker.datatype.number({ min: -1, max: 1 }),
