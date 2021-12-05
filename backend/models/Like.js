@@ -1,4 +1,5 @@
 'use strict';
+
 module.exports = (sequelize, DataTypes) => {
     const Like = sequelize.define('Like', {
         userId: {
@@ -14,24 +15,27 @@ module.exports = (sequelize, DataTypes) => {
             allowNull: true
         }
     });
-    models.User.belongsToMany(Post, {
-        through: models.Like,
-        foreignKey: 'userId',
-        otherKey: 'postId'
-    });
-    models.Post.belongsToMany(User, {
-        through: models.Like,
-        foreignKey: 'postId',
-        otherKey: 'userId'
-    });
-    models.Like.belongsTo(models.User, {
-        foreignKey: 'userId',
-        as: 'user'
-    });
 
-    models.Like.belongsTo(models.Post, {
-        foreignKey: 'postId',
-        as: 'post'
-    });
+    Like.associate = models => {
+        Like.belongsTo(models.Post, {
+            foreignKey: { name: 'postId', allowNull: false },
+            onDelete: 'cascade'
+        });
+        Like.belongsTo(models.User, {
+            foreignKey: { name: 'userId', allowNull: false },
+            onDelete: 'cascade'
+        });
+        Post.belongsToMany(models.User, {
+            through: Like,
+            foreignKey: 'postId',
+            otherKey: 'userId',
+            onDelete: 'cascade'
+        });
+        User.belongsToMany(models.Post, {
+            through: Like,
+            foreignKey: 'userId',
+            otherKey: 'postId'
+        });
+    };
     return Like;
 };

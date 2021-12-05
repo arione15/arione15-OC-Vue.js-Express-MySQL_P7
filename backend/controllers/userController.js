@@ -4,6 +4,7 @@ const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const Joi = require("joi"); //  valider le mot de passe côté client
 const jwt = require("jsonwebtoken");
+const verifyuuid = require("./verifyUuid");
 
 /*  *********************************************************** */
 //  enregistrer un nouvel utilisateur
