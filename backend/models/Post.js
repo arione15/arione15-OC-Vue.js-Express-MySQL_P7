@@ -1,45 +1,35 @@
+'use strict';
+
 module.exports = (sequelize, DataTypes) => {
-  const Post =  sequelize.define('Post', {
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    description: {
-      type: DataTypes.TEXT,
-      allowNull: false
-    },
-    postUrl: {
-      type: DataTypes.STRING,
-      allowNull: true
-    },
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: true,
-      unique: true
-    },
-    likes: {
-        type: DataTypes.INTEGER,
-        default: 0
-    },
-    dislikes: {
-        type: DataTypes.INTEGER,
-        default: 0
-    },
-    usersLiked: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        default: []
-    },
-    usersDisliked: {
-        type: DataTypes.INTEGER,
-        allowNull: true,
-        default: []
+    const Post = sequelize.define('Post', {
+        userId: {
+            type: DataTypes.INTEGER,
+            allowNull: false
+        },
+        title: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        content: {
+            type: DataTypes.TEXT,
+            trim: true,
+            allowNull: false
+        },
+        attachmentUrl: {
+            type: DataTypes.STRING,
+            allowNull: true
+        }
+    });
+
+    Post.associate = models => {
+        models.Post.hasMany(models.Like, { onDelete: 'cascade' });
+        models.Post.hasMany(models.Comment, { onDelete: 'cascade' });
+        models.Post.belongsTo(models.User, {
+            foreignKey: {
+                allowNull: false
+            },
+            onDelete: 'cascade'
+        });
     }
-  });
     return Post;
 }

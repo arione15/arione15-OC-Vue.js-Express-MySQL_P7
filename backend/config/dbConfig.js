@@ -1,6 +1,10 @@
+'use strict';
+
 const { Sequelize, DataTypes } = require('sequelize'); // importer aussi l'objet DataTypes
 const UserModel = require('../models/User');
 const PostModel = require('../models/Post');
+const CommentModel = require('../models/Comment');
+const LikeModel = require('../models/Like');
 //const { users, posts } = require('./dataFixtures');
 const bcrypt = require('bcrypt');
 //const { users } = require('../routes/users/signup');
@@ -29,9 +33,11 @@ sequelize.authenticate()
 // instanciation des classes UserModel et PostModel : elles donnent lieu aux tables users et posts
 const User = UserModel(sequelize, DataTypes);
 const Post = PostModel(sequelize, DataTypes);
+const Comment = CommentModel(sequelize, DataTypes);
+const Like = LikeModel(sequelize, DataTypes);
 
 // synchronisation de toutes les tables de la BDD groupomania
 sequelize.sync();
 
 //module.exports = {initDb, User, Post};
-module.exports = { sequelize, User, Post };
+module.exports = { sequelize, User, Post, Comment, Like };

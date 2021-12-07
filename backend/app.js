@@ -1,11 +1,13 @@
+'use strict';
+
 const express = require('express');
-const {
-    checkUser
-} = require('./middlewares/authUser');
+const { checkUser } = require('./middlewares/authUser');
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/userRt');
-//const postRoutes = require('./routes/postRt');
+const postRoutes = require('./routes/postRt');
+const commentRoutes = require('./routes/commentRt');
+//const likeRoutes = require('./routes/postRt');
 const path = require('path');
 const { initDb } = require('./config/dbConfig');
 //initDb();
@@ -35,6 +37,8 @@ app.use('/media', express.static(path.join(__dirname, '/media')));
 
 // routes
 app.use('/api/user', userRoutes);
-//app.use('/api/post', postRoutes);
+app.use('/api/post', postRoutes);
+app.use('/api/post-comment', commentRoutes);
+//app.use('/api/like', likeRoutes);
 
 module.exports = app;
