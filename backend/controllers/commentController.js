@@ -108,15 +108,22 @@ exports.getOneComment = (req, res) => {
 /*  ****************************************************** */
 // supprimer un commentaire
 /*  ****************************************************** */
-exports.deleteComment = (req, res) => {
+exports.deleteComment = async(req, res) => {
     const id = req.params.commentId;
-    Comment.findByPk(id)
-        .then(comment => {
-            console.log(comment);
-            Comment.destroy({ where: { id: comment.id } })
-                .then(_ => {
-                    const message = `Le commentaire ${ comment.id } a bien été supprimé!`;
-                    res.json({ message, data: comment })
-                })
-        }).catch(error => console.log(error))
-};
+    const myIdComment = await Comment.findOne({
+        where: { id }
+    });
+    if (myIdComment === null) {
+        return res.status(401).json({
+            message: "id not found !"
+        });
+    } else {
+        const comment = req.body.comment;
+        Comment.destroy({ where: { id: id } })
+            .then(_ => {
+                const message = `The commentary ${ id } of the Post ${req.params.postId} has been successfully deleted!`;
+                res.json({ message, data: comment })
+            })
+            .catch(error => console.log(error))
+    };
+}
