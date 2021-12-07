@@ -3,11 +3,11 @@
 module.exports = (sequelize, DataTypes) => {
     const Comment = sequelize.define('Comment', {
         userId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         postId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         message: {
@@ -31,13 +31,17 @@ module.exports = (sequelize, DataTypes) => {
         });
 
         models.Comment.belongsTo(models.User, {
-            foreignKey: 'userId',
-            as: 'user',
+            foreignKey: {
+                allowNull: false
+            },
+            onDelete: 'cascade'
         });
 
         models.Comment.belongsTo(models.Post, {
-            foreignKey: 'postId',
-            as: 'post',
+            foreignKey: {
+                allowNull: false
+            },
+            onDelete: 'cascade'
         });
     };
     return Comment;

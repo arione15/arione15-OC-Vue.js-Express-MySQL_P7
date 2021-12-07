@@ -1,7 +1,6 @@
 'use strict';
 
 const { User, Post, Like, Comment } = require('../config/dbConfig');
-const { isIdUnique } = require("./verifyUuid");
 // const bcrypt = require("bcrypt");
 // const Joi = require("joi"); //  valider le mot de passe côté client
 // const jwt = require("jsonwebtoken");

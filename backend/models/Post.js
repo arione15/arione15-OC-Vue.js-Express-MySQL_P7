@@ -3,7 +3,7 @@
 module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
         userId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         title: {

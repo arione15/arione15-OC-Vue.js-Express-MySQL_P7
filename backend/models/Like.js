@@ -3,11 +3,11 @@
 module.exports = (sequelize, DataTypes) => {
     const Like = sequelize.define('Like', {
         userId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         postId: {
-            type: DataTypes.UUID,
+            type: DataTypes.INTEGER,
             allowNull: false
         },
         isLike: {

@@ -3,14 +3,12 @@ module.exports = {
     up: async(queryInterface, Sequelize) => {
         await queryInterface.createTable('Posts', {
             id: {
-                type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
-                allowNull: false,
-                primaryKey: true
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
             },
             userId: {
-                allowNull: false,
-                type: Sequelize.UUID,
+                type: Sequelize.INTEGER
             },
             title: {
                 allowNull: false,

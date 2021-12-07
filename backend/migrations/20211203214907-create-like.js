@@ -3,18 +3,15 @@ module.exports = {
     up: async(queryInterface, Sequelize) => {
         await queryInterface.createTable('Likes', {
             id: {
-                type: Sequelize.UUID,
-                defaultValue: Sequelize.UUIDV4,
-                allowNull: false,
-                primaryKey: true
+                type: Sequelize.INTEGER,
+                primaryKey: true,
+                autoIncrement: true
             },
             userId: {
-                allowNull: false,
-                type: Sequelize.UUID
+                type: Sequelize.INTEGER
             },
             postId: {
-                allowNull: false,
-                type: Sequelize.UUID
+                type: Sequelize.INTEGER
             },
             isLike: {
                 allowNull: true,

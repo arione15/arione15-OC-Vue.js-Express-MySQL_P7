@@ -4,14 +4,13 @@ const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const Joi = require("joi"); //  valider le mot de passe côté client
 const jwt = require("jsonwebtoken");
-const verifyuuid = require("./verifyUuid");
 
 /*  *********************************************************** */
 //  enregistrer un nouvel utilisateur
 /*  *********************************************************** */
 // 1- valider les input de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
 exports.signUp = async(req, res) => {
-    const { name, firstname, email, password, role } = req.body;
+    const { firstName, familyName, email, password, role } = req.body;
 
     const alreadyExistsUser = await User.findOne({ where: { email } }).catch(err => { console.log("Erreur :", err); });
     if (alreadyExistsUser) {
@@ -19,8 +18,8 @@ exports.signUp = async(req, res) => {
     }
     bcrypt.hash(req.body.password, 10).then(hashed => {
         const newUser = new User({
-            familyName: req.body.familyName,
             firstName: req.body.firstName,
+            familyName: req.body.familyName,
             email: req.body.email,
             password: hashed,
             role: req.body.role,
@@ -59,7 +58,7 @@ exports.login = (req, res) => {
                         process.env.SECRET_KEY, { expiresIn: "24h" }
                     );
                     const message = `L'utilsateur s'est connecté avec succès !`;
-                    res.cookie('jwtCookie', token, {
+                    res.cookie('jwtCookie', token, { //mettre le token dans un cookie
                         httpOnly: true,
                         maxAge: parseInt(process.env.MAX_AGE)
                     });

@@ -17,10 +17,10 @@ router.post("/login", userControl.login);
 router.get("/logout", checkUser, userControl.logout);
 
 // user CRUD
-router.get("/", userControl.getAllUsers);
-router.get("/:id", userControl.getOneUser);
-router.put("/:id", userControl.updateUser);
-router.delete("/:id", userControl.deleteUser);
+router.get("/", checkUser, userControl.getAllUsers);
+router.get("/:id", checkUser, userControl.getOneUser);
+router.put("/:id", checkUser, userControl.updateUser);
+router.delete("/:id", checkUser, userControl.deleteUser);
 
 // upload
 //router.post("/upload", upload.single("file"), uploadController.uploadProfil);
