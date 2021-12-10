@@ -1,6 +1,11 @@
 'use strict';
 
 const { User, Post, Like, Comment } = require('../config/dbConfig');
+const fs = require("fs");
+const { promisify } = require("util");
+const pipeline = promisify(require("stream").pipeline);
+
+
 // const bcrypt = require("bcrypt");
 // const Joi = require("joi"); //  valider le mot de passe côté client
 // const jwt = require("jsonwebtoken");
@@ -11,37 +16,39 @@ const { User, Post, Like, Comment } = require('../config/dbConfig');
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
-
-    const postObject = req.body;
+    let fileName = req.body.userId + Date.now() + ".jpg";;
+    let postObject = req.file ? {...req.body,
+        attachmentUrl: `${req.protocol}://${req.get("host")}/images/profil/${ fileName }`
+    } : {...req.body };
     const post = new Post({...postObject });
-    // const post = new Post({
-    //     ...postObject,
-    //     image_url: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
-    // });
-    // ou 
-    //const postObject = {
-    //...req.body,
-    //image_url: req.file ? req.file.location : null
-    //};
 
-    try {
-        const newPost = await post.save().then((x) => {
-            const message = `The post has been successfully created!`;
-            return res.status(201).json({ message, data: x });
-        });
-    } catch (err) {
-        const message = `Failed to create the post!`;
-        res.status(400).json({ message, data: err });
-    }
-};
+    if (req.file !== null) {
+        try {
+            if (
+                req.file.detectedMimeType != "image/jpg" &&
+                req.file.detectedMimeType != "image/png" &&
+                req.file.detectedMimeType != "image/jpeg"
+            )
+                throw Error("invalid file");
 
-// autre méthode :
-// Post.create(req.body)
-//     .then(post => {
-//         const message = `Le post ${req.body.title} a bien été créé !`;
-//         res.json({ message, data: post })
-//     }).catch(error => console.log(error))
-// };
+            if (req.file.size > 500000) throw Error("max size");
+        } catch (err) {
+            return res.status(201).json({ err });
+        }
+
+        await pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../media/posts/${fileName}`));
+
+        try {
+            post.save().then((x) => {
+                const message = `The post has been successfully created!`;
+                return res.status(201).json({ message, data: x });
+            });
+        } catch (err) {
+            const message = `Failed to create the post!`;
+            res.status(400).json({ message, data: err });
+        }
+    };
+}
 
 /*  ****************************************************** */
 //  récupérer tous les posts

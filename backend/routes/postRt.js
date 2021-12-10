@@ -12,7 +12,7 @@ const multer = require("multer");
 const upload = multer();
 
 // post CRUD
-router.post("/", checkUser, postControl.createPost);
+router.post("/", checkUser, upload.single("file"), postControl.createPost);
 router.get("/", checkUser, postControl.getAllPosts);
 router.get("/:id", checkUser, postControl.getOnePost);
 router.put("/:id", checkUser, postControl.updatePost);
