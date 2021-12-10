@@ -1,15 +1,17 @@
 'use strict';
 
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { checkUser } = require('../middlewares/authUser');
-const { authPage } = require('../middlewares/authPage');
+const { checkUser } = require("../middlewares/authUser");
+const { authPage } = require("../middlewares/authPage");
 const userControl = require("../controllers/userController");
-
-// const authController = require("../controllers/auth.controller");
-// const uploadController = require('../controllers/upload.controller');
+const uploadControl = require("../controllers/uploadController");
+//const multer = require("../middlewares/multer-config");
+//const upload = require("../middlewares/multer-config");
 const multer = require("multer");
 const upload = multer();
+
+
 
 // user auth
 router.post("/signup", userControl.signUp);
@@ -23,6 +25,6 @@ router.put("/:id", checkUser, userControl.updateUser);
 router.delete("/:id", checkUser, userControl.deleteUser);
 
 // upload
-//router.post("/upload", upload.single("file"), uploadController.uploadProfil);
+router.post("/upload", upload.single("file"), uploadControl.uploadProfil);
 
 module.exports = router;

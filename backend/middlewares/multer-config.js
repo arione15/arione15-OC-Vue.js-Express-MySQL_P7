@@ -1,16 +1,24 @@
-const multer = require('multer');
-var path = require("path");
+// const multer = require('multer');
+// const path = require("path");
 
-const storage = multer.diskStorage({ // storage contient notre configuration de multer
-    destination: (req, file, callback) => {
-        callback(null, 'media/');
-    },
-    filename: (req, file, callback) => { // renommer les fichiers pour éviter les doublons et remplacer les espaces par des underscores
-        const name = file.originalname.split(' ').join('_');
-        const extension = path.extname(name); // récupérer l'extension du fichier
-        const fichier = path.basename(name,extension);
-        callback(null, Date.now() + '.' + fichier + extension); // personnaliser le nouveau nom complet du fichier
-    }
-});
+// const MIME_TYPES = {
+//     'image/jpg': 'jpg',
+//     'image/jpeg': 'jpeg',
+//     'image/png': 'png',
+//     'image/gif': 'gif',
+//     'video/mp4': 'mp4'
+// };
 
-module.exports = multer({storage: storage}).single('image'); // indiquer qu'il s'agit juste de la gestion de fichier individuel d'image
+// const storage = multer.diskStorage({
+//     destination: (req, file, cb) => {
+//         cb(null, "../media/profil");
+//     },
+//     filename: (req, file, cb) => { // renommer les fichiers pour éviter les doublons et remplacer les espaces par des underscores
+//         const name = file.originalname.split(" ").join("_");
+//         let extension = MIME_TYPES[file.mimetype]; // Définir l'extension du fichier
+//         name = name.replace("." + extension, "_"); // création du nom final
+//         cb(null, name + Date.now() + "." + extension); // personnaliser le nouveau nom complet du fichier
+//     }
+// });
+
+// module.exports = multer({ storage: storage }).single("image"); // indiquer qu'il s'agit juste de la gestion de fichier individuel d'image

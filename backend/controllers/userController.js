@@ -17,6 +17,11 @@ exports.signUp = async(req, res) => {
         return res.json({ message: "Cet email est pris, choisiisez-en un autre !" });
     }
     bcrypt.hash(req.body.password, 10).then(hashed => {
+        // const userObject = JSON.parse(req.body.user); //transformer "user" dans le body, de form-data en objet json
+        // const newUser = new User({...userObject,
+        //     photoUrl: `${req.protocol}://${req.get("host")}/upload/${req.file.filename}+".png".`
+        // });
+
         const newUser = new User({
             firstName: req.body.firstName,
             familyName: req.body.familyName,
@@ -26,6 +31,7 @@ exports.signUp = async(req, res) => {
             //imageUrl: req.body.imageUrl
         });
 
+        //newUser.save().then(_ =>
         const savedUser = newUser.save().then(_ =>
             res.status(201).json({ message: "Utilisateur créé !" })).catch(err => {
             console.log("Erreur :", err);

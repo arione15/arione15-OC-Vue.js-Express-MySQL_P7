@@ -25,8 +25,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
-// utilisation des ressources "static", içi les images/vidéos
-app.use('/media', express.static(path.join(__dirname, '/media')));
+
+//app.use('/images', express.static('images'));
 
 // pour la version de l'api
 //app.use("/api/v1", api);
@@ -34,6 +34,10 @@ app.use('/media', express.static(path.join(__dirname, '/media')));
 // pour authentifier le user sur toutes les routes get
 //app.get('*', checkUser);
 
+
+// utilisation des ressources "static", içi les images/vidéos
+app.use('/images', express.static(path.join(__dirname, '/media')));
+app.use('/images', express.static(path.join(__dirname, 'profil')));
 
 // routes
 app.use('/api/user', userRoutes);
