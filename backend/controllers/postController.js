@@ -88,12 +88,12 @@ exports.updatePost = (req, res, ) => {
 /********************************************************/
 // supprimer un post
 /********************************************************/
-
 exports.deletePost = async(req, res) => {
     let myUuid = req.params.id;
     const myId = await Post.findOne({
         where: { id: myUuid }
     });
+
     if (myId === null) {
         return res.status(401).json({
             message: "id not found !"
@@ -102,6 +102,6 @@ exports.deletePost = async(req, res) => {
         console.log(myId instanceof Post); // true
         Post.destroy({ where: { id: myUuid } })
             .then(() => res.status(200).json({ message: 'post deleted!' }))
-            .catch(error => res.status(400).json({ message: 'delete failed youpi!', error }));
+            .catch(error => res.status(400).json({ message: 'delete failed!', error }));
     }
 }
