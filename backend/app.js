@@ -7,7 +7,7 @@ const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/userRt');
 const postRoutes = require('./routes/postRt');
 const commentRoutes = require('./routes/commentRt');
-//const likeRoutes = require('./routes/postRt');
+const likeRoutes = require('./routes/likeRt');
 const path = require('path');
 const { initDb } = require('./config/dbConfig');
 //initDb();
@@ -43,6 +43,6 @@ app.use('/images', express.static(path.join(__dirname, 'profil')));
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/post-comment', commentRoutes);
-//app.use('/api/like', likeRoutes);
+app.use('/api/like', likeRoutes);
 
 module.exports = app;
