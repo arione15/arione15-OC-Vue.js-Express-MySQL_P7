@@ -50,10 +50,10 @@ exports.createComment = async(req, res) => {
 
     const content = req.body.message;
     const postId = req.params.postId;
-    const userId = req.userId;
+    const userId = req.body.userId;
 
     if (content == null) {
-        return res.status(400).json({ msg: 'content required!' });
+        return res.status(400).json({ message: 'content required!' });
     };
     User.findOne({
             attributes: ['id'],

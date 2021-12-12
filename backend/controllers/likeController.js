@@ -3,7 +3,7 @@
 const { User, Post, Like } = require("../config/dbConfig");
 
 /*  *********************************************************** */
-//  enregistrer un nouveau like
+//  créer un nouveau like
 /*  *********************************************************** */
 exports.createLike = async(req, res) => {
     const likeObject = req.body;
@@ -23,12 +23,12 @@ exports.createLike = async(req, res) => {
                         Like.findAll({ //chercher les likes par post
                             where: { postId: req.body.postId }
                         }).then(likes => {
-                            res.status(200).json({ like: likes.length });
+                            res.status(200).json({ isLike: likes.length });
                         })
                     })
                     .catch(error => res.status(400).json({ error }));
             } else {
-                Like.destroy({
+                Like.destroy({ //si on "re-like" ça va annuler le premier like 
                         where: {
                             userId: req.body.userId,
                             postId: req.body.postId
@@ -38,7 +38,7 @@ exports.createLike = async(req, res) => {
                         Like.findAll({
                             where: { postId: req.body.postId }
                         }).then(likes => {
-                            res.status(200).json({ like: likes.length });
+                            res.status(200).json({ isLike: likes.length });
                         })
                     })
                     .catch(error => res.status(400).json({ error }));
