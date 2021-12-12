@@ -10,10 +10,10 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.INTEGER,
             allowNull: false
         },
-        // isLike: {
-        //     type: DataTypes.INTEGER,
-        //     allowNull: true
-        // }
+        isLike: {
+            type: DataTypes.INTEGER,
+            allowNull: true
+        }
     });
 
     Like.associate = models => {

@@ -13,7 +13,7 @@ module.exports = {
             postId: {
                 type: Sequelize.INTEGER
             },
-            isLike: {
+            like: {
                 allowNull: true,
                 type: Sequelize.INTEGER
             },

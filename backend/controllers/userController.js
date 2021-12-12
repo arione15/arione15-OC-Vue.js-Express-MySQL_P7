@@ -2,42 +2,53 @@
 
 const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
-const Joi = require("joi"); //  valider le mot de passe côté client
 const jwt = require("jsonwebtoken");
+const emailValidator = require("email-validator");
+
 
 /*  *********************************************************** */
 //  enregistrer un nouvel utilisateur
 /*  *********************************************************** */
-// 1- valider les input de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
+// 1- valider les inputs de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
 exports.signUp = async(req, res) => {
+
     const { firstName, familyName, email, password, role } = req.body;
+    if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
+        email === null || email === '' || password === null || password === '') {
+        return res.status(400).json({ 'error': "Please fill in the fields!" });
+    };
+    const pwdRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
 
-    const alreadyExistsUser = await User.findOne({ where: { email } }).catch(err => { console.log("Erreur :", err); });
-    if (alreadyExistsUser) {
-        return res.json({ message: "Cet email est pris, choisiisez-en un autre !" });
+    const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
+
+    if (user !== null) {
+        return res.status(409).json({ message: 'user already exists' });
+    } else {
+        if (pwdRegex.test(req.body.password) == false) {
+            return res.status(401).send('Please enter a valid password');
+        }
+        if (!emailValidator.validate(req.body.email)) {
+            return res.status(401).send("Please enter a valid email!");
+        } else {
+            bcrypt
+                .hash(req.body.password, 10)
+                .then(hashPass => {
+                    const userObject = {
+                        firstName: firstName,
+                        familyName: familyName,
+                        email: email,
+                        password: hashPass,
+                        role: role
+                            //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
+                    };
+                    const newUser = User
+                        .create(userObject)
+                        .then(createdUser => res.status(201).send(createdUser))
+                        .catch(error => res.status(500).json({ error }))
+                })
+                .catch(error => res.status(500).json({ error }));
+        }
     }
-    bcrypt.hash(req.body.password, 10).then(hashed => {
-        // const userObject = JSON.parse(req.body.user); //transformer "user" dans le body, de form-data en objet json
-        // const newUser = new User({...userObject,
-        //     photoUrl: `${req.protocol}://${req.get("host")}/upload/${req.file.filename}+".png".`
-        // });
-
-        const newUser = new User({
-            firstName: req.body.firstName,
-            familyName: req.body.familyName,
-            email: req.body.email,
-            password: hashed,
-            role: req.body.role,
-            photoUrl: req.body.photoUrl
-        });
-
-        //newUser.save().then(_ =>
-        const savedUser = newUser.save().then(_ =>
-            res.status(201).json({ message: "Utilisateur créé !" })).catch(err => {
-            console.log("Erreur :", err);
-            res.json({ error: "Impossible d'enregistrer cet utilisateur pour le moment !" });
-        });
-    });
 };
 
 /*  ****************************************************** */
@@ -48,14 +59,14 @@ exports.login = (req, res) => {
     User.findOne({ where: { email: req.body.email } })
         .then((user) => {
             if (!user) {
-                const message = `L'utilsateur demandé n'existe pas !`;
+                const message = `this user doesn't exist!`;
                 res.status(404).json({ message });
             }
             bcrypt
                 .compare(req.body.password, user.password)
                 .then((isPasswordValid) => {
                     if (!isPasswordValid) {
-                        const message = `Le mot de passe est incorrect !`;
+                        const message = `the pwd is incorrect!`;
                         res.status(401).json({ message });
                     }
                     // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
@@ -63,7 +74,7 @@ exports.login = (req, res) => {
                         { userId: user.id },
                         process.env.SECRET_KEY, { expiresIn: "24h" }
                     );
-                    const message = `L'utilsateur s'est connecté avec succès !`;
+                    const message = `the user is successfully connected!`;
                     res.cookie('jwtCookie', token, { //mettre le token dans un cookie
                         httpOnly: true,
                         maxAge: parseInt(process.env.MAX_AGE)
@@ -72,7 +83,7 @@ exports.login = (req, res) => {
                 })
         })
         .catch((error) => {
-            const message = `L'utilsateur n'a pas pu se connecter !`;
+            const message = `the user could not connect!`;
             res.status(500).json({ message, data: error });
         });
 };
