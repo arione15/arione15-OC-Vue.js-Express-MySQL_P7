@@ -3,7 +3,7 @@
 const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const emailValidator = require("email-validator");
+//const emailValidator = require("email-validator");
 
 
 /*  *********************************************************** */
@@ -17,38 +17,32 @@ exports.signUp = async(req, res) => {
         email === null || email === '' || password === null || password === '') {
         return res.status(400).json({ 'error': "Please fill in the fields!" });
     };
-    const pwdRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
+    //const pwdRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
 
     const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
 
     if (user !== null) {
         return res.status(409).json({ message: 'user already exists' });
     } else {
-        if (pwdRegex.test(req.body.password) == false) {
-            return res.status(401).send('Please enter a valid password');
-        }
-        if (!emailValidator.validate(req.body.email)) {
-            return res.status(401).send("Please enter a valid email!");
-        } else {
-            bcrypt
-                .hash(req.body.password, 10)
-                .then(hashPass => {
-                    const userObject = {
-                        firstName: firstName,
-                        familyName: familyName,
-                        email: email,
-                        password: hashPass,
-                        role: role
-                            //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
-                    };
-                    const newUser = User
-                        .create(userObject)
-                        .then(createdUser => res.status(201).send(createdUser))
-                        .catch(error => res.status(500).json({ error }))
-                })
-                .catch(error => res.status(500).json({ error }));
-        }
+        bcrypt
+            .hash(req.body.password, 10)
+            .then(hashPass => {
+                const userObject = {
+                    firstName: firstName,
+                    familyName: familyName,
+                    email: email,
+                    password: hashPass,
+                    role: role
+                        //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
+                };
+                const newUser = User
+                    .create(userObject)
+                    .then(createdUser => res.status(201).send(createdUser))
+                    .catch(error => res.status(400).json({ error }))
+            })
+            .catch(error => res.status(400).json({ error }));
     }
+
 };
 
 /*  ****************************************************** */
