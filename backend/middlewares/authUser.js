@@ -25,7 +25,7 @@ exports.checkUser = (req, res, next) => {
     }
 };
 
-// contrôler l'utilisateur et via la route envoyer au frontend le res.locals.usr.id
+// contrôler l'utilisateur et via la route get /jwtid envoyer au frontend le res.locals.user.id
 module.exports.requireAuth = (req, res, next) => {
     const token = req.cookies.jwtCookie;
     console.log(token);

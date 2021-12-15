@@ -34,15 +34,15 @@ exports.signUp = async(req, res) => {
                     role: role
                         //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
                 };
-                const newUser = User
+                const user = User
                     .create(userObject)
-                    .then(createdUser => res.status(201).json({
+                    .then(user => res.status(201).json({
                         message: "User created",
-                        user: user.id
+                        id: user.id
                     }))
                     .catch(error => res.status(400).json({ error }))
             })
-            .catch(error => res.status(400).json({ message: '??? pbme' }));
+            .catch(error => res.status(400).json({ error }));
     }
 
 };
