@@ -12,7 +12,7 @@ module.exports = {
             password: Joi.string().min(8).max(30).regex(
                 /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,32}$/
             ).required(), // doit contenir 8 caractères minimum avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial
-            role: Joi.string().valid('Admin', 'Moder', 'Basic').required()
+            role: Joi.string().valid('admin', 'moder', 'basic').required()
         });
 
         const { error, value } = schema.validate(req.body);

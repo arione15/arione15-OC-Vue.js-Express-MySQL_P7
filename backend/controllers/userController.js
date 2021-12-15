@@ -3,7 +3,6 @@
 const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-//const emailValidator = require("email-validator");
 
 
 /*  *********************************************************** */
@@ -11,14 +10,14 @@ const jwt = require("jsonwebtoken");
 /*  *********************************************************** */
 // 1- valider les inputs de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
 exports.signUp = async(req, res) => {
-
     const { firstName, familyName, email, password, role } = req.body;
+
     if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
         email === null || email === '' || password === null || password === '') {
-        return res.status(400).json({ 'error': "Please fill in the fields!" });
+        return res.status(400).json({
+            message: "Please fill in the fields!"
+        });
     };
-    //const pwdRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
-
     const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
 
     if (user !== null) {
@@ -37,10 +36,13 @@ exports.signUp = async(req, res) => {
                 };
                 const newUser = User
                     .create(userObject)
-                    .then(createdUser => res.status(201).send(createdUser))
+                    .then(createdUser => res.status(201).json({
+                        message: "User created",
+                        user: user.id
+                    }))
                     .catch(error => res.status(400).json({ error }))
             })
-            .catch(error => res.status(400).json({ error }));
+            .catch(error => res.status(400).json({ message: '??? pbme' }));
     }
 
 };
@@ -62,19 +64,21 @@ exports.login = (req, res) => {
                     if (!isPasswordValid) {
                         const message = `the pwd is incorrect!`;
                         res.status(401).json({ message });
+                    } else {
+                        // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
+                        const token = jwt.sign( //générer le token
+                            { userId: user.id },
+                            process.env.SECRET_KEY, { expiresIn: "24h" }
+                        );
+                        const message = `the user is successfully connected!`;
+                        res.cookie('jwtCookie', token, { //mettre le token dans un cookie
+                            httpOnly: true,
+                            maxAge: parseInt(process.env.MAX_AGE)
+                        });
+                        res.status(200).json({ message, data: user, token }); // retourner le token au client
                     }
-                    // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
-                    const token = jwt.sign( //générer le token
-                        { userId: user.id },
-                        process.env.SECRET_KEY, { expiresIn: "24h" }
-                    );
-                    const message = `the user is successfully connected!`;
-                    res.cookie('jwtCookie', token, { //mettre le token dans un cookie
-                        httpOnly: true,
-                        maxAge: parseInt(process.env.MAX_AGE)
-                    });
-                    res.status(200).json({ message, data: user, token }); // retourner le token au client
                 })
+
         })
         .catch((error) => {
             const message = `the user could not connect!`;

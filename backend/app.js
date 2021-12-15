@@ -1,7 +1,7 @@
 'use strict';
 
 const express = require('express');
-const { checkUser } = require('./middlewares/authUser');
+const { checkUser, requireAuth } = require('./middlewares/authUser');
 const cors = require("cors");
 const cookieParser = require('cookie-parser');
 const userRoutes = require('./routes/userRt');
@@ -9,7 +9,7 @@ const postRoutes = require('./routes/postRt');
 const commentRoutes = require('./routes/commentRt');
 const likeRoutes = require('./routes/likeRt');
 const path = require('path');
-const { initDb } = require('./config/dbConfig');
+//const { initDb } = require('./config/dbConfig');
 //initDb();
 
 const app = express();
@@ -32,10 +32,12 @@ app.use(cookieParser());
 //app.use("/api/v1", api);
 
 // pour authentifier le user sur toutes les routes get
-//app.get('*', checkUser);
-
-
-// utilisation des ressources "static", içi les images/vidéos
+app.get('*', checkUser);
+// pour récupérer le id d'un user
+app.get('/jwtid', requireAuth, (req, res) => {
+        res.status(200).json({ "res.locals.user.id": res.locals.user.id });
+    })
+    // utilisation des ressources "static", içi les images/vidéos
 app.use('/images', express.static(path.join(__dirname, '/media')));
 app.use('/images', express.static(path.join(__dirname, 'profil')));
 
