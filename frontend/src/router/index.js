@@ -13,7 +13,7 @@ const router = new VueRouter({
         { path: '/signup', name: 'Signup', component: Signup },
         { path: '/login', name: 'Login', component: Login },
         { path: '/logout', name: 'Logout', component: Logout },
-        { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
+        // { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
     ],
     mode: 'history',
     //base: process.env.BASE_URL

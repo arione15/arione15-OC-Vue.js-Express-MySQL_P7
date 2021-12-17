@@ -9,7 +9,7 @@
         <v-btn text dark :to="{ name: 'Home', }">Accueil</v-btn>
       </v-toolbar-items>
       <v-toolbar-items>
-        <v-btn text dark :to="{ name: 'Posts', }">Mur</v-btn>
+        <!-- <v-btn text dark :to="{ name: 'Posts', }">Mur</v-btn> -->
       </v-toolbar-items>
       <v-spacer></v-spacer>
       <v-toolbar-items>

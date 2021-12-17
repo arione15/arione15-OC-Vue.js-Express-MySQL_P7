@@ -25,67 +25,66 @@ exports.signup = async(req, res) => {
         } else {
             bcrypt
                 .hash(req.body.password, 10)
-                .then(hashPass => {
+                .then(async(hashedPass) => {
                     const userObject = {
                         firstName: firstName,
                         familyName: familyName,
                         email: email,
-                        password: hashPass,
+                        password: hashedPass,
                         role: role,
                         //photoUrl: photoUrl
                         //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
                     };
-                    const user = User
-                        .create(userObject)
-                        // .then(user => res.status(201).json({
-                        //     message: "User created",
-                        //     id: user.id
-                        // }))
-                        // .catch(error => res.status(400).json({ error }))
+                    const user = await User.create(userObject);
+                    const token = jwt.sign( //générer le token
+                        { userId: user.id },
+                        process.env.SECRET_KEY, { expiresIn: "24h" }
+                    );
+                    res.cookie('jwtCookie', token, { //mettre le token dans un cookie
+                        httpOnly: true,
+                        maxAge: parseInt(process.env.MAX_AGE)
+                    });
+                    res.status(200).send({ message: 'The user is successfully registred!', data: user, token }); // retourner le token au client })
                 })
-                //.catch(error => res.status(400).json({ error }));
         }
-    } catch (err) { res.status(400).send(err) }
+    } catch (error) {
+        send({ error: 'An error has occured while trying to sign up!' });
+    }
 };
 
 /*  ****************************************************** */
 //  gérer la connexion d'un utilisateur
 /*  ****************************************************** */
 // 1- vérifier si l'utilisateur est enregistré, 2- envoyer un token avec un payload (ici le userId)
-exports.login = (req, res) => {
-    User.findOne({ where: { email: req.body.email } })
-        .then((user) => {
-            if (!user) {
-                const message = `this user doesn't exist!`;
-                res.status(404).json({ message });
-            }
-            bcrypt
-                .compare(req.body.password, user.password)
-                .then((isPasswordValid) => {
-                    if (!isPasswordValid) {
-                        const message = `the pwd is incorrect!`;
-                        res.status(401).json({ message });
-                    } else {
-                        // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
-                        const token = jwt.sign( //générer le token
-                            { userId: user.id },
-                            process.env.SECRET_KEY, { expiresIn: "24h" }
-                        );
-                        const message = `the user is successfully connected!`;
-                        res.cookie('jwtCookie', token, { //mettre le token dans un cookie
-                            httpOnly: true,
-                            maxAge: parseInt(process.env.MAX_AGE)
-                        });
-                        res.status(200).json({ message, data: user, token }); // retourner le token au client
-                    }
-                })
+exports.login = async(req, res) => {
+    try {
+        const user = await User.findOne({ where: { email: req.body.email } });
+        if (!user) {
+            return res.status(403).send({ error: 'The login information (email) is incorrect!' });
+        }
+        bcrypt
+            .compare(req.body.password, user.password)
+            .then((isPasswordValid) => {
+                if (!isPasswordValid) {
+                    return res.status(403).send({ error: 'The login information (pwd) is incorrect!' });
+                } else {
+                    // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
+                    const token = jwt.sign( //générer le token
+                        { userId: user.id },
+                        process.env.SECRET_KEY, { expiresIn: "24h" }
+                    );
+                    res.cookie('jwtCookie', token, { //mettre le token dans un cookie
+                        httpOnly: true,
+                        maxAge: parseInt(process.env.MAX_AGE)
+                    });
+                    res.status(200).send({ message: 'The user is successfully connected!', data: user, token }); // retourner le token au client
+                }
+            });
+    } catch (error) {
+        send({ error: 'An error has occured while trying to log in!' });
+    }
+}
 
-        })
-        .catch((error) => {
-            const message = `the user could not connect!`;
-            res.status(500).json({ message, data: error });
-        });
-};
 
 /*  ****************************************************** */
 //  gérer la déconnexion d'un utilisateur
