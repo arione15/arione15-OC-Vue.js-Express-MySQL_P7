@@ -7,33 +7,16 @@ import Logout from '../components/Logout.vue'
 
 Vue.use(VueRouter)
 
-const routes = [{
-        path: '/',
-        name: 'Home',
-        component: Home
-    },
-    {
-        path: '/signup',
-        name: 'Signup',
-        component: Signup
-    },
-    {
-        path: '/login',
-        name: 'Login',
-        component: Login
-
-    },
-    {
-        path: '/logout',
-        name: 'Logout',
-        component: Logout
-    }
-]
-
 const router = new VueRouter({
+    routes: [
+        { path: '/', name: 'Home', component: Home },
+        { path: '/signup', name: 'Signup', component: Signup },
+        { path: '/login', name: 'Login', component: Login },
+        { path: '/logout', name: 'Logout', component: Logout },
+        { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
+    ],
     mode: 'history',
-    base: process.env.BASE_URL,
-    routes
+    //base: process.env.BASE_URL
 })
 
 export default router

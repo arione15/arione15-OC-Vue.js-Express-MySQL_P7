@@ -1,21 +1,34 @@
 <template>
   <div id="app">
-  <img src="./assets/icon-above-font.png">
-    <div id="nav">
-      <router-link to="/signup">Je m'inscris</router-link> |
-      <router-link to="/login">Je m'identifie</router-link>
-    </div>
-    <router-view/>
+    <v-app>
+      <Header />
+      <main>
+        <v-container>
+          <router-view></router-view>
+        </v-container>
+      </main>
+    </v-app>
   </div>
 </template>
 
+<script>
+import Header from './components/Header.vue'
+export default {
+  name: 'App',
+  components: {
+    Header
+  }
+}
+</script>
+
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin: 60px;
 }
 
 #nav {

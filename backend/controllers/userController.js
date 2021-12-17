@@ -9,42 +9,43 @@ const jwt = require("jsonwebtoken");
 //  enregistrer un nouvel utilisateur
 /*  *********************************************************** */
 // 1- valider les inputs de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
-exports.signUp = async(req, res) => {
+exports.signup = async(req, res) => {
     const { firstName, familyName, email, password, role } = req.body;
+    try {
+        if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
+            email === null || email === '' || password === null || password === '') {
+            return res.status(400).json({
+                message: "Please fill in the fields!"
+            });
+        };
+        const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
 
-    if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
-        email === null || email === '' || password === null || password === '') {
-        return res.status(400).json({
-            message: "Please fill in the fields!"
-        });
-    };
-    const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
-
-    if (user !== null) {
-        return res.status(409).json({ message: 'user already exists' });
-    } else {
-        bcrypt
-            .hash(req.body.password, 10)
-            .then(hashPass => {
-                const userObject = {
-                    firstName: firstName,
-                    familyName: familyName,
-                    email: email,
-                    password: hashPass,
-                    role: role
+        if (user !== null) {
+            return res.status(409).json({ message: 'user already exists' });
+        } else {
+            bcrypt
+                .hash(req.body.password, 10)
+                .then(hashPass => {
+                    const userObject = {
+                        firstName: firstName,
+                        familyName: familyName,
+                        email: email,
+                        password: hashPass,
+                        role: role,
+                        //photoUrl: photoUrl
                         //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
-                };
-                const user = User
-                    .create(userObject)
-                    .then(user => res.status(201).json({
-                        message: "User created",
-                        id: user.id
-                    }))
-                    .catch(error => res.status(400).json({ error }))
-            })
-            .catch(error => res.status(400).json({ error }));
-    }
-
+                    };
+                    const user = User
+                        .create(userObject)
+                        // .then(user => res.status(201).json({
+                        //     message: "User created",
+                        //     id: user.id
+                        // }))
+                        // .catch(error => res.status(400).json({ error }))
+                })
+                //.catch(error => res.status(400).json({ error }));
+        }
+    } catch (err) { res.status(400).send(err) }
 };
 
 /*  ****************************************************** */
