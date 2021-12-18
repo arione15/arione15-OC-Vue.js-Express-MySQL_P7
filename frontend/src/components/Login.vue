@@ -1,9 +1,8 @@
 <template>
     <v-layout column>
       <v-flex xs6>
-        <div class="white elevation-2">
+        <div>
           <div class="pl-4 pr-4 pt-2 pb-2">
-            <v-img alt="Groupomania logo" max-height="150" max-width="250" :src="require('../assets/icon-above-font.png')"></v-img>
             <h1>Identifiez-vous</h1>
             <v-text-field label="Email" v-model="email"></v-text-field>
             <v-text-field label="Password" type="password" v-model="password" autocomplete="new-password"></v-text-field>

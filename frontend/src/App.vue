@@ -1,9 +1,9 @@
 <template>
   <div id="app">
     <v-app>
-      <Header />
+      <header-compo />
       <main>
-        <v-container>
+        <v-container fluid>
           <router-view></router-view>
         </v-container>
       </main>
@@ -12,11 +12,11 @@
 </template>
 
 <script>
-import Header from './components/Header.vue'
+import HeaderCompo from './components/Header.vue'
 export default {
   name: 'App',
   components: {
-    Header
+    HeaderCompo
   }
 }
 </script>

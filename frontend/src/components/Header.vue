@@ -1,36 +1,35 @@
 <template>
-<v-app>
-  <main>
-    <v-toolbar fixed color="#FD2D01" dark>
-      <!-- <v-toolbar-title class="mr-4">
-        <router-link class="home" tag="span" :to="{ name: 'Home' }">Accueil</router-link>
-      </v-toolbar-title> -->
-      <v-toolbar-items>
-        <v-btn text dark :to="{ name: 'Home', }">Accueil</v-btn>
-      </v-toolbar-items>
-      <v-toolbar-items>
-        <!-- <v-btn text dark :to="{ name: 'Posts', }">Mur</v-btn> -->
-      </v-toolbar-items>
-      <v-spacer></v-spacer>
-      <v-toolbar-items>
-        <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Signup', }">Signup</v-btn>
-      </v-toolbar-items>
-      <v-toolbar-items>
-        <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login', }">Login</v-btn>
-      </v-toolbar-items>
-      <v-toolbar-items>
-        <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Logout', }">Logout</v-btn>
-      </v-toolbar-items>
-    </v-toolbar>
-    </main>
-    </v-app>
+      <v-app-bar fixed color="#FD2D01" dark>
+        <v-toolbar-items>
+          <v-img alt="Groupomania logo" max-height="75" max-width="125" :src="require('../assets/icon-above-font.png')"></v-img>
+        </v-toolbar-items>
+        <v-toolbar-items>
+          <v-btn text dark :to="{ name: 'Home', }">Accueil</v-btn>
+        </v-toolbar-items>
+        <v-spacer></v-spacer>
+        <v-toolbar-items>
+          <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Signup', }">Signup</v-btn>
+        </v-toolbar-items>
+        <v-toolbar-items>
+          <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login', }">Login</v-btn>
+        </v-toolbar-items>
+        <v-toolbar-items>
+          <v-btn v-if="$store.state.isUserLoggedIn" text dark @click="logout">Logout</v-btn>
+        </v-toolbar-items>
+      </v-app-bar>
 </template>
 
 <script>
 export default {
-
+methods: {
+  logout(){
+    this.$store.dispatch('setToken', null)
+    this.$store.dispatch('setUser', null)
+    // redirect to homepage
+    this.$router.push({name: 'root'})
+  }
 }
-
+}
 
 </script>
 

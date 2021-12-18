@@ -31,5 +31,13 @@ export default new Vuex.Store({
         setUser({ commit }, user) {
             commit('setUser', user)
         }
+        // h
+        // setTooken({ dispatch }, token) {
+        //     dispatch('setToken', token)
+        // },
+        // setUsser({ dispatch }, user) {
+        //     dispatch('setUser', user)
+        // }
+
     }
 })

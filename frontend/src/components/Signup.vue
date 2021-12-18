@@ -1,20 +1,15 @@
 <template>
     <v-layout column>
       <v-flex xs6>
-        <div class="white elevation-2">
+        <div>
           <div class="pl-4 pr-4 pt-2 pb-2">
             <form name="register-form" autocomplete="off">
-            <v-img alt="Groupomania logo" max-height="150" max-width="250" :src="require('../assets/icon-above-font.png')"></v-img>
             <h1>Inscription</h1>
             <v-text-field label="First name" v-model="firstName"></v-text-field>
             <v-text-field label="Family name" v-model="familyName"></v-text-field>
             <v-text-field label="Email" v-model="email"></v-text-field>
             <v-text-field label="Password" type="password" v-model="password" autocomplete="new-password" ></v-text-field>
             <v-text-field label="Rôle" v-model="role"></v-text-field>
-            <!-- <br /><br />
-          <img alt="bla"/>
-            <br /><br />-->
-            <!-- <input type="text" v-model="photoUrl" name="photoUrl" placeholder="Photo de profil"/> -->
             </form>
             <v-text-field label="Error" v-html="error"></v-text-field>
             <v-text-field label="Error" v-html="message"></v-text-field>
