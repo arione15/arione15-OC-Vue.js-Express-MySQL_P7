@@ -12,16 +12,15 @@ const jwt = require("jsonwebtoken");
 exports.signup = async(req, res) => {
     const { firstName, familyName, email, password, role } = req.body;
     try {
-        if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
-            email === null || email === '' || password === null || password === '') {
-            return res.status(400).json({
-                message: "Please fill in the fields!"
-            });
-        };
+
+        // if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
+        //     email === null || email === '' || password === null || password === '' || role === null || role === '') {
+        //     return res.status(400).send({ error: 'Please fill in the fields!' });
+        // };
         const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
 
         if (user !== null) {
-            return res.status(409).json({ message: 'user already exists' });
+            return res.status(409).send({ error: 'user already exists' });
         } else {
             bcrypt
                 .hash(req.body.password, 10)
@@ -36,6 +35,7 @@ exports.signup = async(req, res) => {
                         //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
                     };
                     const user = await User.create(userObject);
+                    //console.log(user);
                     const token = jwt.sign( //générer le token
                         { userId: user.id },
                         process.env.SECRET_KEY, { expiresIn: "24h" }

@@ -14,6 +14,7 @@ const validateSignup = require("../middlewares/validateSignup");
 
 // user auth
 router.post("/signup", validateSignup.register, userControl.signup);
+//router.post("/signup", userControl.signup);
 router.post("/login", userControl.login);
 router.get("/logout", checkUser, userControl.logout);
 

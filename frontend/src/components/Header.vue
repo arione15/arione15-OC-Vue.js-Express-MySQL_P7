@@ -13,13 +13,13 @@
       </v-toolbar-items>
       <v-spacer></v-spacer>
       <v-toolbar-items>
-        <v-btn text dark :to="{ name: 'Signup', }">Signup</v-btn>
+        <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Signup', }">Signup</v-btn>
       </v-toolbar-items>
       <v-toolbar-items>
-        <v-btn text dark :to="{ name: 'Login', }">Login</v-btn>
+        <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login', }">Login</v-btn>
       </v-toolbar-items>
       <v-toolbar-items>
-        <v-btn text dark :to="{ name: 'Logout', }">Logout</v-btn>
+        <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Logout', }">Logout</v-btn>
       </v-toolbar-items>
     </v-toolbar>
     </main>
