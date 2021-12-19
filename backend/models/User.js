@@ -14,7 +14,7 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: false,
             unique: {
-                msg: "L'adresse email est déjà prise. Choisissez-en une autre !"
+                message: "Cette adresse email est déjà prise. Choisissez une autre !"
             }
         },
         password: {
@@ -27,8 +27,8 @@ module.exports = (sequelize, DataTypes) => {
         },
         role: {
             type: DataTypes.STRING,
-            allowNull: false,
-            default: "BASIC"
+            allowNull: true,
+            default: "basic"
         }
     });
 

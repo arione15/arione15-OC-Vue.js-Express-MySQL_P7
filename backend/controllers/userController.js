@@ -3,51 +3,52 @@
 const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const emailValidator = require("email-validator");
 
 
 /*  *********************************************************** */
 //  enregistrer un nouvel utilisateur
 /*  *********************************************************** */
 // 1- valider les inputs de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
-exports.signUp = async(req, res) => {
-
+exports.signup = async(req, res) => {
     const { firstName, familyName, email, password, role } = req.body;
-    if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
-        email === null || email === '' || password === null || password === '') {
-        return res.status(400).json({ 'error': "Please fill in the fields!" });
-    };
-    const pwdRegex = new RegExp(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/);
+    try {
 
-    const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
+        // if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
+        //     email === null || email === '' || password === null || password === '' || role === null || role === '') {
+        //     return res.status(400).send({ error: 'Please fill in the fields!' });
+        // };
+        const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
 
-    if (user !== null) {
-        return res.status(409).json({ message: 'user already exists' });
-    } else {
-        if (pwdRegex.test(req.body.password) == false) {
-            return res.status(401).send('Please enter a valid password');
-        }
-        if (!emailValidator.validate(req.body.email)) {
-            return res.status(401).send("Please enter a valid email!");
+        if (user !== null) {
+            return res.status(409).send({ error: 'This email belongs to an exiting user' });
         } else {
             bcrypt
                 .hash(req.body.password, 10)
-                .then(hashPass => {
+                .then(async(hashedPass) => {
                     const userObject = {
                         firstName: firstName,
                         familyName: familyName,
                         email: email,
-                        password: hashPass,
-                        role: role
-                            //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
+                        password: hashedPass,
+                        role: role,
+                        //photoUrl: photoUrl
+                        //image_url: req.file ? req.file.location : `${req.protocol}://${req.get('host')}/images/public/anonyme_avatar.png`,
                     };
-                    const newUser = User
-                        .create(userObject)
-                        .then(createdUser => res.status(201).send(createdUser))
-                        .catch(error => res.status(500).json({ error }))
+                    const user = await User.create(userObject);
+                    //console.log(user);
+                    const token = jwt.sign( //générer le token
+                        { userId: user.id },
+                        process.env.SECRET_KEY, { expiresIn: "24h" }
+                    );
+                    res.cookie('jwtCookie', token, { //mettre le token dans un cookie
+                        httpOnly: true,
+                        maxAge: parseInt(process.env.MAX_AGE)
+                    });
+                    res.status(200).send({ message: 'The user is successfully registred!', data: user, token }); // retourner le token au client })
                 })
-                .catch(error => res.status(500).json({ error }));
         }
+    } catch (error) {
+        send({ error: 'An error has occured while trying to sign up!' });
     }
 };
 
@@ -55,38 +56,35 @@ exports.signUp = async(req, res) => {
 //  gérer la connexion d'un utilisateur
 /*  ****************************************************** */
 // 1- vérifier si l'utilisateur est enregistré, 2- envoyer un token avec un payload (ici le userId)
-exports.login = (req, res) => {
-    User.findOne({ where: { email: req.body.email } })
-        .then((user) => {
-            if (!user) {
-                const message = `this user doesn't exist!`;
-                res.status(404).json({ message });
-            }
-            bcrypt
-                .compare(req.body.password, user.password)
-                .then((isPasswordValid) => {
-                    if (!isPasswordValid) {
-                        const message = `the pwd is incorrect!`;
-                        res.status(401).json({ message });
-                    }
+exports.login = async(req, res) => {
+    try {
+        const user = await User.findOne({ where: { email: req.body.email } });
+        if (!user) {
+            return res.status(403).send({ error: 'The login information (email) is incorrect!' });
+        }
+        bcrypt
+            .compare(req.body.password, user.password)
+            .then((isPasswordValid) => {
+                if (!isPasswordValid) {
+                    return res.status(403).send({ error: 'The login information (pwd) is incorrect!' });
+                } else {
                     // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
                     const token = jwt.sign( //générer le token
                         { userId: user.id },
                         process.env.SECRET_KEY, { expiresIn: "24h" }
                     );
-                    const message = `the user is successfully connected!`;
                     res.cookie('jwtCookie', token, { //mettre le token dans un cookie
                         httpOnly: true,
                         maxAge: parseInt(process.env.MAX_AGE)
                     });
-                    res.status(200).json({ message, data: user, token }); // retourner le token au client
-                })
-        })
-        .catch((error) => {
-            const message = `the user could not connect!`;
-            res.status(500).json({ message, data: error });
-        });
-};
+                    res.status(200).send({ message: 'The user is successfully connected!', data: user, token }); // retourner le token au client
+                }
+            });
+    } catch (error) {
+        send({ error: 'An error has occured while trying to log in!' });
+    }
+}
+
 
 /*  ****************************************************** */
 //  gérer la déconnexion d'un utilisateur

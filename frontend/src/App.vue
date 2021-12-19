@@ -1,21 +1,34 @@
 <template>
   <div id="app">
-  <img src="./assets/icon-above-font.png">
-    <div id="nav">
-      <router-link to="/">Je m'inscris</router-link> |
-      <router-link to="/about">Je m'identifie</router-link>
-    </div>
-    <router-view/>
+    <v-app>
+      <header-compo />
+      <main>
+        <v-container fluid>
+          <router-view></router-view>
+        </v-container>
+      </main>
+    </v-app>
   </div>
 </template>
 
+<script>
+import HeaderCompo from './components/Header.vue'
+export default {
+  name: 'App',
+  components: {
+    HeaderCompo
+  }
+}
+</script>
+
 <style lang="scss">
 #app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
+  margin: 60px;
 }
 
 #nav {
