@@ -20,7 +20,7 @@ exports.signup = async(req, res) => {
         const user = await User.findOne({ attributes: ['email'], where: { email: req.body.email } });
 
         if (user !== null) {
-            return res.status(409).send({ error: 'user already exists' });
+            return res.status(409).send({ error: 'This email belongs to an exiting user' });
         } else {
             bcrypt
                 .hash(req.body.password, 10)

@@ -18,7 +18,7 @@ module.exports = {
         const { error, value } = schema.validate(req.body);
 
         if (error) {
-            res.status(400).send(`Validation error: ${error.details.map(x => x.message + ',')}`);
+            res.status(400).send({ error: `${error.details.map(x => x.message + ',')}` });
         } else {
             req.body = value;
             next();

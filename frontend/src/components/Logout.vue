@@ -1,20 +1,25 @@
 <template>
+  <v-layout column>
+    <v-flex xs6>
+      <panel title="Logout">
+        <form name="register-form" autocomplete="off">
+          <v-text-field label="First name" v-model="firstName"></v-text-field>
+          <v-text-field label="Family name" v-model="familyName"></v-text-field>
+        </form>
 
-  <div class="home">
-    <img alt="Vue logo" src="../assets/icon-above-font.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
-    <h1>Inscription</h1>
-    <input type="email" v-model="email" name="email" placeholder="Email" />
-    <br /><br />
-    <input type="password" v-model="password" name="password" placeholder="Password"/>
-    <br /><br />
-    <button type="submit" @click="register" name="register" value="Register">Register</button>
-  </div>
-  
+      </panel>
+    </v-flex>
+  </v-layout>
 </template>
 
 <script>
+import Panel from './Panel'
 
+export default {
+    components:{
+    Panel
+  }
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

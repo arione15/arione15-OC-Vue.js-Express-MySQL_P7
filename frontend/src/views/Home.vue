@@ -1,6 +1,6 @@
 <template>
   <div>
-    <img src="../assets/icon-above-font.png">
+    
   </div>
 </template>
 

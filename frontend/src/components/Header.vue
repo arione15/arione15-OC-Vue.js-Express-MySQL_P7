@@ -4,7 +4,10 @@
           <v-img alt="Groupomania logo" max-height="75" max-width="125" :src="require('../assets/icon-above-font.png')"></v-img>
         </v-toolbar-items>
         <v-toolbar-items>
-          <v-btn text dark :to="{ name: 'Home', }">Accueil</v-btn>
+          <v-btn text dark :to="{ name: 'Home', }">Home</v-btn>
+        </v-toolbar-items>
+        <v-toolbar-items>
+          <v-btn v-if="$store.state.isUserLoggedIn" text dark :to="{ name: 'Posts', }">Wall</v-btn>
         </v-toolbar-items>
         <v-spacer></v-spacer>
         <v-toolbar-items>
@@ -26,7 +29,7 @@ methods: {
     this.$store.dispatch('setToken', null)
     this.$store.dispatch('setUser', null)
     // redirect to homepage
-    this.$router.push({name: 'root'})
+    this.$router.push({name: 'Home'})
   }
 }
 }
