@@ -24,10 +24,10 @@
 
 <script>
 import AuthenticationService from "../services/AuthenticationService.js";
-import Panel from './Panel'
+import Panel from '../components/Panel'
 
 export default {
-  name: 'SignUp',
+  name: "SignUp",
   data() {
     return {
       firstName: "",
@@ -53,8 +53,8 @@ export default {
           //photoUrl: this.photoUrl
         });
         this.message = response.data.message;
-        this.$store.dispatch('setToken', response.data.token);
-        this.$store.dispatch('setUser', response.data.user);
+        this.$store.dispatch("setToken", response.data.token);
+        this.$store.dispatch("setUser", response.data.user);
       } catch (err) {
         this.error = err.response.data.error;
       }
@@ -63,7 +63,7 @@ export default {
   components: {
     Panel
   }
-}
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

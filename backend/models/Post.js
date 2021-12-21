@@ -19,6 +19,11 @@ module.exports = (sequelize, DataTypes) => {
             type: DataTypes.STRING,
             allowNull: true
         }
+        // },
+        // youtubeId: {
+        //     type: DataTypes.STRING,
+        //     allowNull: true
+        // }
     });
 
     Post.associate = models => {

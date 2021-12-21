@@ -6,9 +6,9 @@ const pipeline = promisify(require("stream").pipeline);
 exports.uploadProfil = async(req, res) => {
     try {
         if (
-            req.file.detectedMimeType != "image/jpg" &&
-            req.file.detectedMimeType != "image/png" &&
-            req.file.detectedMimeType != "image/jpeg"
+            req.file.detectedMimeType !== "image/jpg" &&
+            req.file.detectedMimeType !== "image/png" &&
+            req.file.detectedMimeType !== "image/jpeg"
         )
             throw Error("invalid file");
 
@@ -31,10 +31,10 @@ exports.uploadProfil = async(req, res) => {
 
         User.update(userObject, { where: { id } })
             .then(() => {
-                res.status(200).json({ message: "L'image de votre profil a bien été modifiée" })
-            })
+                res.status(200).json({ message: "L'image de votre profil a bien été modifiée" });
+            });
     } catch (err) {
-        const message = `Failed to add photo!`;
+        const message = "Failed to add photo!";
         res.status(400).json({ message, data: err });
     }
 };

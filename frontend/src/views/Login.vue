@@ -22,7 +22,7 @@
 <script>
 
 import AuthenticationService from "../services/AuthenticationService.js";
-import Panel from './Panel'
+import Panel from '../components/Panel'
 
 export default {
   name: 'Login',

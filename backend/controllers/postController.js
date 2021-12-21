@@ -1,8 +1,15 @@
 'use strict';
 
-const { User, Post, Like, Comment } = require('../config/dbConfig');
+const {
+    User,
+    Post,
+    Like,
+    Comment
+} = require('../config/dbConfig');
 const fs = require("fs");
-const { promisify } = require("util");
+const {
+    promisify
+} = require("util");
 const pipeline = promisify(require("stream").pipeline);
 
 
@@ -16,49 +23,66 @@ const pipeline = promisify(require("stream").pipeline);
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
-    let fileName = req.body.userId + Date.now() + ".jpg";;
-    let postObject = req.file ? {...req.body,
+    let fileName = req.body.userId + Date.now() + ".jpg";
+    let postObject = req.file ? {
+        ...req.body,
         attachmentUrl: `${req.protocol}://${req.get("host")}/images/profil/${ fileName }`
-    } : {...req.body };
-    const post = new Post({...postObject });
+    } : {
+        ...req.body
+    };
+    //const post = new Post({...postObject });
+    const post = await Post.create(postObject); // le post est crée qu'il y est un req.file ou pas
 
     if (req.file !== null) {
-        try {
-            if (
-                req.file.detectedMimeType != "image/jpg" &&
-                req.file.detectedMimeType != "image/png" &&
-                req.file.detectedMimeType != "image/jpeg"
-            )
-                throw Error("invalid file");
-
-            if (req.file.size > 500000) throw Error("max size");
-        } catch (err) {
-            return res.status(201).json({ err });
+        if (
+            req.file.detectedMimeType != "image/jpg" &&
+            req.file.detectedMimeType != "image/png" &&
+            req.file.detectedMimeType != "image/jpeg"
+        ) {
+            //throw ("invalid file");
+            res.status(400).send({ error: 'invalid filet!' });
+        } else if (req.file.size > 500000) {
+            //throw ("max size must be less than 500ko");
+            res.status(400).send({ error: 'max size must be less than 500ko!' });
+        } else {
+            pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../media/posts/${fileName}`));
+            try {
+                post.save().then(_ => {
+                    res.status(200).send({
+                        message: 'The post has been successfully created!',
+                        data: post
+                    })
+                })
+            } catch (error) {
+                res.status(400).send({
+                    error: 'Failed to create the post!'
+                });
+            }
         }
-
-        await pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../media/posts/${fileName}`));
-
-        try {
-            post.save().then((x) => {
-                const message = `The post has been successfully created!`;
-                return res.status(201).json({ message, data: x });
-            });
-        } catch (err) {
-            const message = `Failed to create the post!`;
-            res.status(400).json({ message, data: err });
-        }
-    };
+    } else {
+        res.status(201).send({
+            message: 'req.file est null'
+        });
+    }
 }
 
 /*  ****************************************************** */
 //  récupérer tous les posts
 /*  ****************************************************** */
-exports.getAllPosts = (req, res) => {
-    Post.findAll()
-        .then(posts => {
-            const message = 'The list of all the posts has been successfully retrieved!';
-            res.json({ message, data: posts })
-        }).catch(error => console.log("Error getting all the posts", error))
+exports.getAllPosts = async(req, res) => {
+    try {
+        const posts = await Post.findAll();
+        if (posts) {
+            res.status(200).send({
+                message: 'The list of all the posts has been successfully retrieved!',
+                data: posts
+            });
+        }
+    } catch (error) {
+        res.status(400).send({
+            error: 'Error getting all the posts'
+        });
+    }
 }
 
 /*  ****************************************************** */
@@ -68,8 +92,13 @@ exports.getOnePost = (req, res) => {
     Post.findByPk(req.params.id)
         .then(post => {
             const message = 'A post has been successfully retrieved!';
-            res.json({ message, data: post })
-        }).catch(error => console.log("Error getting the post", error))
+            res.json({
+                message,
+                data: post
+            })
+        }).catch({
+            error: "Error getting the post"
+        })
 }
 
 /*  ****************************************************** */
@@ -81,11 +110,22 @@ exports.updatePost = (req, res, ) => {
     const content = req.body.content;
 
     if (content === null || content === '') {
-        return res.status(400).json({ 'error': "Please enter modification to 'Contenu' field!" });
+        return res.status(400).json({
+            'error': "Please enter modification to 'Contenu' field!"
+        });
     }
 
-    Post.update({...postObject, id: req.params.id }, { where: { id: req.params.id } })
-        .then(() => res.status(200).json({ message: 'Post modified!' }))
+    Post.update({
+            ...postObject,
+            id: req.params.id
+        }, {
+            where: {
+                id: req.params.id
+            }
+        })
+        .then(() => res.status(200).json({
+            message: 'Post modified!'
+        }))
         .catch(error => res.status(400).json({
             message: "update failed",
             data: error
@@ -98,7 +138,9 @@ exports.updatePost = (req, res, ) => {
 exports.deletePost = async(req, res) => {
     let myUuid = req.params.id;
     const myId = await Post.findOne({
-        where: { id: myUuid }
+        where: {
+            id: myUuid
+        }
     });
 
     if (myId === null) {
@@ -107,8 +149,18 @@ exports.deletePost = async(req, res) => {
         });
     } else {
         console.log(myId instanceof Post); // true
-        Post.destroy({ where: { id: myUuid } })
-            .then(() => res.status(200).json({ message: 'post deleted!' }))
-            .catch(error => res.status(400).json({ message: 'delete failed!', error }));
+        Post.destroy({
+                where: {
+                    id: myUuid
+                }
+            })
+            .then(() => res.status(200).json({
+                message: 'post deleted!'
+            }))
+            .catch(error => res.status(400).json({
+                message: 'delete failed!',
+                error
+            }));
     }
+    //.catch(error => res.status(400).json({ message: 'delete failed!', error }));
 }
