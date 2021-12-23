@@ -6,6 +6,7 @@ import Login from '../views/Login.vue'
 import Logout from '../components/Logout.vue'
 import Posts from '../views/Posts.vue'
 import CreatePost from '../views/CreatePost.vue'
+import ViewPost from '../views/ViewPost.vue'
 
 Vue.use(VueRouter)
 
@@ -17,6 +18,7 @@ const router = new VueRouter({
         { path: '/logout', name: 'Logout', component: Logout },
         { path: '/posts', name: 'Posts', component: Posts },
         { path: '/posts/create', name: 'Post-create', component: CreatePost },
+        { path: '/posts/:postId', name: 'Post', component: ViewPost },
         // { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
     ],
     mode: 'history'
