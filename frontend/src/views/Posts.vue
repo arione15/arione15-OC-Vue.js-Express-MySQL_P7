@@ -2,13 +2,18 @@
   <v-layout column>
     <v-flex xs4>
       <panel title="The Wall">
-        <p v-for="post in posts" :key="post.index">{{ post.title }} - {{ post.content }}</p>
-        <!-- <div v-for="message in response" :key="message.id" :message="message.content" :title="message.title" ></div> -->
-
+        <!-- <router-link :to="{name: 'post-create'}"> -->
+          <v-btn slot="action" @click="navigateTo({name: 'post-create'})" class="red accent-1" light small absolute right middle fab>
+            <!-- <i class="material-icons">add</i> -->
+            <v-icon>add</v-icon>
+          </v-btn>
+          <!-- </router-link> -->
+        <div v-for="post in posts" :key="post.index">{{ post.index.title }} - {{ post.content }}</div>
+        <!-- <div v-for="message in posts" :key="message.id" :message="message.content" :title="message.title" ></div> -->
       </panel>
     </v-flex>
-    <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
-    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field>-->
+    <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
+    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field>
   </v-layout>
 </template>
 
@@ -22,20 +27,30 @@ export default {
   },
   data() {
     return {
-      posts: null,
-      //error: null,
-      //message: "",
-      //response: []
+      posts: null
+      //{
+      //   title: "",
+      //   content: "",
+      //   error: "",
+      //   message: "",
+      // },
+      // response: null
     }
   },
+  methode:{
+navigateTo(route){
+  this.$router.push(route);
+}
+  },
   async mounted() {
-    //try {
-      this.posts = (await PostService.getAllPosts()).data;
-      //this.posts = response;
-     // this.message = this.response.data.message;
-    // } catch (err) {
-    //   this.error = err.this.posts.data.error;
-    // }
+    try {
+      const response = (await PostService.getAllPosts()).data;
+      this.posts = response;
+
+      this.message = response.message;
+    } catch (err) {
+      this.error = err.response.error;
+    }
   }
 }
 //   created (){
