@@ -3,32 +3,44 @@
     <v-flex xs4>
       <panel title="The Wall">
         <!-- <router-link :to="{name: 'post-create'}"> -->
-        <v-btn slot="action" @click="navigateTo({ name: 'post-create' })" class="red accent-1" light small absolute right middle fab>
+        <v-btn
+          slot="action"
+          @click="navigateTo({ name: 'post-create' })"
+          class="red accent-1"
+          light
+          small
+          absolute
+          right
+          middle
+          fab
+        >
           <!-- <i class="material-icons">add</i> -->
           <v-icon>add</v-icon>
         </v-btn>
         <!-- </router-link> -->
-        <div v-for="post in posts" class="post" :key="post.index">
-          <v-layout>
-            <v-flex xs6>
-              <div class="post-title">{{ post.title }}</div>
-              <div class="post-author">{{ post.userId }}</div>
-              <div class="post-createdAt">{{ post.createdAt }}</div>
-              <div class="post-content">{{ post.content }}</div>
+        <div v-if="posts">
+          <div v-for="post in posts" class="post" :key="post.id">
+            <v-layout>
+              <v-flex xs6>
+                <div class="post-author">{{ post.userId }}</div>
+                <div class="post-title">{{ post.title }}</div>
+                <div class="post-content">{{ post.content }}</div>
+                <div class="post-createdAt">{{ post.createdAt }}</div>
 
-              <v-btn dark class="cyan" :to="{ name: 'post', params: { postId: post.id } }">View</v-btn>
-            </v-flex>
+                <v-btn dark color="#FD2D01" :to="{ name: 'Post', params: { postId: post.id } }">View</v-btn>
+              </v-flex>
 
-            <v-flex xs6>
-              <img class="album-image" :src="post.attachmentUrl" />
-            </v-flex>
-          </v-layout>
+              <v-flex xs6>
+                <img class="album-image" :src="post.attachmentUrl" />
+              </v-flex>
+            </v-layout>
+          </div>
         </div>
         <!-- <div v-for="message in posts" :key="message.id" :message="message.content" :title="message.title" ></div> -->
       </panel>
     </v-flex>
-    <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
-    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field>
+    <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
+    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field>-->
   </v-layout>
 </template>
 
@@ -42,15 +54,9 @@ export default {
   },
   data() {
     return {
-      posts: null
-      //{
-      //   title: "",
-      //   content: "",
-      //   error: "",
-      //   message: "",
-      // },
-      // response: null
-    }
+      posts: [{}],
+      //response: null
+    };
   },
   methods: {
     navigateTo(route) {
@@ -58,14 +64,14 @@ export default {
     }
   },
   async mounted() {
-    try {
-      const response = (await PostService.getAllPosts()).data;
-      this.posts = response;
+    // try {
+    this.posts = (await PostService.getAllPosts()).data
+    console.log(this.posts)
+    //  this.posts = response;
 
-      this.message = response.message;
-    } catch (err) {
-      this.error = err.response.error;
-    }
+    //   this.message = response.message;
+    // } catch (err) {
+    //   this.error = err.response.error;
   }
 }
 //   created (){
