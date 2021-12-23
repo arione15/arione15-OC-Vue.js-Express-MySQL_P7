@@ -2,19 +2,16 @@
   <v-layout column>
     <v-flex xs4>
       <panel title="New post">
-        <v-text-field label="Auteur" v-model="post.userId"></v-text-field>
-
-        <v-text-field label="Titre" v-model="post.title"></v-text-field>
-
-        <v-text-field label="Contenu" v-model="post.content" multi-line></v-text-field>
-
-        <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
-
-        <v-text-field label="Date de création du post" v-model="post.createdAt"></v-text-field>
+        <v-text-field required :rules="rules.required" label="Auteur" v-model="post.userId"></v-text-field>
+        <v-text-field required :rules="rules.required" label="Titre" v-model="post.title"></v-text-field>
+        <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line></v-text-field>
+        <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field>
+        <v-text-field required :rules="rules.required" label="Date de création du post" v-model="post.createdAt"></v-text-field>
       </panel>
+      <div class="danger-alert" v-if="error"> {{ error }} </div>
     </v-flex>
     <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>-->
-    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> 
+    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field>
     <v-btn color="#FD2D01" dark @click="create">Postez !!</v-btn>
   </v-layout>
 </template>
@@ -33,18 +30,29 @@ export default {
         userId: '',
         title: null,
         content: null,
-        //attachmentUrl: null,
+        attachmentUrl: null,
         createdAt: null,
         error: null,
-        message: "" 
+        message: ""
+      },
+      rules: {
+        required: [value => !!value || "Ce champs est requis.."]
       }
-    }
+    };
   },
   methods: {
     async create() {
+      this.error = null;
+      const areAllFieldsFilledIn = Object
+        .keys(this.post)
+        .every(key => !!this.post[key])
+      if (!areAllFieldsFilledIn) {
+        this.error = 'Veuillez remplir tous les champs !'
+        return
+      }
       try {
         const response = await PostService.createPost(this.post);
-        this.$router.push({name: "Posts"});
+        this.$router.push({ name: "Posts" });
         this.message = response.data.message;
       } catch (err) {
         this.error = err.response.data.error;
@@ -56,5 +64,8 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.danger-alert {
+  color: red;
+}
 </style>
 
