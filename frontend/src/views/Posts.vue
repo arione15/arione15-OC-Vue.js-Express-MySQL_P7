@@ -3,12 +3,27 @@
     <v-flex xs4>
       <panel title="The Wall">
         <!-- <router-link :to="{name: 'post-create'}"> -->
-          <v-btn slot="action" @click="navigateTo({name: 'post-create'})" class="red accent-1" light small absolute right middle fab>
-            <!-- <i class="material-icons">add</i> -->
-            <v-icon>add</v-icon>
-          </v-btn>
-          <!-- </router-link> -->
-        <div v-for="post in posts" :key="post.index">{{ post.index.title }} - {{ post.content }}</div>
+        <v-btn slot="action" @click="navigateTo({ name: 'post-create' })" class="red accent-1" light small absolute right middle fab>
+          <!-- <i class="material-icons">add</i> -->
+          <v-icon>add</v-icon>
+        </v-btn>
+        <!-- </router-link> -->
+        <div v-for="post in posts" class="post" :key="post.index">
+          <v-layout>
+            <v-flex xs6>
+              <div class="post-title">{{ post.title }}</div>
+              <div class="post-author">{{ post.userId }}</div>
+              <div class="post-createdAt">{{ post.createdAt }}</div>
+              <div class="post-content">{{ post.content }}</div>
+
+              <v-btn dark class="cyan" :to="{ name: 'post', params: { postId: post.id } }">View</v-btn>
+            </v-flex>
+
+            <v-flex xs6>
+              <img class="album-image" :src="post.attachmentUrl" />
+            </v-flex>
+          </v-layout>
+        </div>
         <!-- <div v-for="message in posts" :key="message.id" :message="message.content" :title="message.title" ></div> -->
       </panel>
     </v-flex>
@@ -37,10 +52,10 @@ export default {
       // response: null
     }
   },
-  methode:{
-navigateTo(route){
-  this.$router.push(route);
-}
+  methods: {
+    navigateTo(route) {
+      this.$router.push(route);
+    }
   },
   async mounted() {
     try {
@@ -70,5 +85,27 @@ navigateTo(route){
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.post {
+  padding: 20px;
+  height: 330px;
+  overflow: hidden;
+}
+.post-title {
+  font-size: 30px;
+}
+.post-content {
+  font-size: 24px;
+}
+.post-userId {
+  font-size: 18px;
+}
+
+.post-createdAt {
+  font-size: 16px;
+}
+.album-image {
+  width: 70%;
+  margin: 0 auto;
+}
 </style>
 
