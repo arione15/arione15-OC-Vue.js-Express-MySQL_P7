@@ -23,7 +23,7 @@ const fs = require("fs");
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
-    let fileName = req.body.userId + Date.now() + ".jpg";
+    // let fileName = req.body.userId + Date.now() + ".jpg";
     let postObject = req.file ? {
         ...req.body,
         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
@@ -31,33 +31,6 @@ exports.createPost = async(req, res) => {
         ...req.body
     };
     console.log(req.file);
-    //const post = new Post({...postObject });
-    // try {
-    //     if (
-    //         req.file.detectedMimeType != "images/jpg" &&
-    //         req.file.detectedMimeType != "images/png" &&
-    //         req.file.detectedMimeType != "images/jpeg"
-    //     ) {
-    //         //throw ("invalid file");
-    //         res.status(400).send({
-    //             error: 'invalid file!'
-    //         });
-    //     }
-    //     if (req.file.size > 500000) {
-    //         //throw ("max size must be less than 500ko");
-    //         res.status(400).send({
-    //             error: 'max size must be less than 500ko!'
-    //         });
-    //     }
-    // } catch (err) {
-    //     //const errors = uploadErrors(err);
-    //     return res.status(201).json({
-    //         //errors
-    //         err
-    //     });
-    // };
-    //await pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../media/posts/${fileName}`));
-
     try {
         const post = await Post.create(postObject); // le post est crée qu'il y est un req.file ou pas
         // post.save().then(_ => {
@@ -119,7 +92,12 @@ exports.getOnePost = async(req, res) => {
 /*  ****************************************************** */
 
 exports.updatePost = async(req, res, ) => {
-    const postObject = req.body;
+    let postObject = req.file ? {
+        ...req.body,
+        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+    } : {
+        ...req.body
+    };
     //const content = req.body.content;
     try {
         // if (content === null || content === '') {

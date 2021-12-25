@@ -13,7 +13,7 @@ const multer = require("../middlewares/multer-config");
 router.post("/", checkUser, multer, postControl.createPost);
 router.get("/", checkUser, postControl.getAllPosts);
 router.get("/:id", checkUser, postControl.getOnePost);
-router.put("/:id", checkUser, postControl.updatePost);
+router.put("/:id", checkUser, multer, postControl.updatePost);
 router.delete("/:id", authPage(['ADMIN']), postControl.deletePost);
 
 module.exports = router;

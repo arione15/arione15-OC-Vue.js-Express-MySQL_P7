@@ -70,7 +70,7 @@ export default {
       //   this.error = 'Veuillez remplir tous les champs !'
       //   return
       // }
-     // console.log(this.post);
+      console.log("url", this.post.attachmentUrl);
 
       try {
         const formData = new FormData(); 

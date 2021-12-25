@@ -34,7 +34,6 @@
       <v-flex xs6>
         <img class="album-image" :src="post.attachmentUrl" />
         <br>
-        {{post.album}}
       </v-flex>
     </v-layout>
   </panel>

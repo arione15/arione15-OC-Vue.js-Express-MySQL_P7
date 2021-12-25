@@ -67,6 +67,7 @@ export default {
     async save () {
       this.error = null
       this.message = ""
+      //const formData = new FormData();
       // const areAllFieldsFilledIn = Object
       //   .keys(this.song)
       //   .every(key => !!this.song[key])
@@ -74,9 +75,17 @@ export default {
       //   this.error = 'Please fill in all the required fields.'
       //   return
       // }
-      const postId = this.$store.state.route.params.postId
+          
+      const postId = this.$store.state.route.params.postId;
+      const userId= this.post.userId; 
+      const title= this.post.title; 
+      const content= this.post.content; 
+      //const attachmentUrl= this.post.attachmentUrl; 
+      const createdAt= this.post.createdAt;
+      const newPost = {userId: userId, title: title, content: content, createdAt: createdAt};
+      console.log(newPost);
       try {
-        await PostService.updatePost(this.post)
+        await PostService.updatePost(postId, newPost)
         this.$router.push({
           name: 'Post',
           params: {
@@ -86,11 +95,31 @@ export default {
       } catch (err) {
         console.log(err)
       }
+    },
+    async selectedFile(event) {
+      let postId = this.$store.state.route.params.postId
+      this.post.attachmentUrl = event.target.files[0]; 
+      const formData = new FormData();
+      console.log("name",this.post.attachmentUrl);
+      formData.append("image", this.post.attachmentUrl);
+      
+      try {
+        await PostService.updatePost(postId, formData)
+        // this.$router.push({
+        //   name: 'Post',
+        //   params: {
+        //     postId: postId
+        //   }
+        // })
+      } catch (err) {
+        console.log(err)
+      }
+      //console.log(this.post.attachmentUrl);
     }
   },
   async mounted () {
     try {
-      const postId = this.$store.state.route.params.postId
+      let postId = this.$store.state.route.params.postId
       this.post = (await PostService.getOnePost(postId)).data.data
     } catch (err) {
       console.log(err)
