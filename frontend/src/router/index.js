@@ -7,6 +7,7 @@ import Logout from '../components/Logout.vue'
 import Posts from '../views/Posts.vue'
 import CreatePost from '../views/CreatePost.vue'
 import ViewPost from '../views/ViewPost.vue'
+import EditPost from '../views/EditPost.vue'
 
 Vue.use(VueRouter)
 
@@ -19,6 +20,7 @@ const router = new VueRouter({
         { path: '/posts', name: 'Posts', component: Posts },
         { path: '/posts/create', name: 'Post-create', component: CreatePost },
         { path: '/posts/:postId', name: 'Post', component: ViewPost },
+        { path: '/posts/:postId/edit', name: 'Post-Edit', component: EditPost },
         // { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
     ],
     mode: 'history'

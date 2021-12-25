@@ -118,31 +118,27 @@ exports.getOnePost = async(req, res) => {
 // modifier un post
 /*  ****************************************************** */
 
-exports.updatePost = (req, res, ) => {
+exports.updatePost = async(req, res, ) => {
     const postObject = req.body;
     const content = req.body.content;
-
-    if (content === null || content === '') {
-        return res.status(400).json({
-            'error': "Please enter modification to 'Contenu' field!"
+    try {
+        // if (content === null || content === '') {
+        //     return res.status(400).json({
+        //         'error': "Please enter modification to 'Contenu' field!"
+        //     });
+        // }
+        const post = await Post.update(...postObject, {
+            where: { id: req.params.id }
+        });
+        return res.status(200).send({
+            message: 'The post has been successfully modified!',
+            data: post
+        });
+    } catch (error) {
+        res.status(400).send({
+            error: 'Update failed'
         });
     }
-
-    Post.update({
-            ...postObject,
-            id: req.params.id
-        }, {
-            where: {
-                id: req.params.id
-            }
-        })
-        .then(() => res.status(200).json({
-            message: 'Post modified!'
-        }))
-        .catch(error => res.status(400).json({
-            message: "update failed",
-            data: error
-        }));
 };
 
 /********************************************************/
@@ -177,3 +173,5 @@ exports.deletePost = async(req, res) => {
     }
     //.catch(error => res.status(400).json({ message: 'delete failed!', error }));
 }
+
+//.catch(error => res.status(400).json({ message: 'delete failed!', error }));
