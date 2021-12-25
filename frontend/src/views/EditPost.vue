@@ -30,7 +30,8 @@
           v-model="post.createdAt"
         ></v-text-field>
       </panel>
-      <div class="danger-alert" v-if="error">{{ error }}</div>
+      <v-alert type="success" v-if="message">{{ message }}</v-alert>
+      <v-alert type="error" v-if="error">{{ error }}</v-alert>
     </v-flex>
     <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field> -->
     <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
@@ -56,6 +57,7 @@ export default {
         createdAt: null,
       },
       error: null,
+      message: "",
       rules: {
       required: [value => !!value || "Ce champs est requis.."]
       },
@@ -64,6 +66,7 @@ export default {
   methods: {
     async save () {
       this.error = null
+      this.message = ""
       // const areAllFieldsFilledIn = Object
       //   .keys(this.song)
       //   .every(key => !!this.song[key])

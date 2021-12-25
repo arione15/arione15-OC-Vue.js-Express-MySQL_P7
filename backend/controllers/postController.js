@@ -120,15 +120,20 @@ exports.getOnePost = async(req, res) => {
 
 exports.updatePost = async(req, res, ) => {
     const postObject = req.body;
-    const content = req.body.content;
+    //const content = req.body.content;
     try {
         // if (content === null || content === '') {
         //     return res.status(400).json({
         //         'error': "Please enter modification to 'Contenu' field!"
         //     });
         // }
-        const post = await Post.update(...postObject, {
-            where: { id: req.params.id }
+        const post = await Post.update({
+            ...postObject,
+            id: req.params.id
+        }, {
+            where: {
+                id: req.params.id
+            }
         });
         return res.status(200).send({
             message: 'The post has been successfully modified!',
