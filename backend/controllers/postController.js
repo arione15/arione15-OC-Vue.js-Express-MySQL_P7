@@ -100,17 +100,18 @@ exports.getAllPosts = async(req, response) => {
 /*  ****************************************************** */
 //  récupérer un post
 /*  ****************************************************** */
-exports.getOnePost = (req, res) => {
-    Post.findByPk(req.params.id)
-        .then(post => {
-            const message = 'A post has been successfully retrieved!';
-            res.json({
-                message,
-                data: post
-            })
-        }).catch({
-            error: "Error getting the post"
-        })
+exports.getOnePost = async(req, res) => {
+    try {
+        const post = await Post.findByPk(req.params.id);
+        return res.status(200).send({
+            message: 'The post has been successfully retrieved!',
+            data: post
+        });
+    } catch (error) {
+        res.status(400).send({
+            error: 'Error getting the post'
+        });
+    }
 }
 
 /*  ****************************************************** */
