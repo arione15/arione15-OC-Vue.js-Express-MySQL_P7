@@ -5,7 +5,7 @@
         <!-- <router-link :to="{name: 'post-create'}"> -->
         <v-btn
           slot="action"
-          @click="navigateTo({ name: 'post-create' })"
+          @click="navigateTo({ name: 'Post-create' })"
           class="red accent-1"
           light
           small
@@ -19,22 +19,22 @@
         </v-btn>
         <!-- </router-link> -->
         <div v-if="posts">
-          <div v-for="post in posts" class="post" :key="post.id">
-            <v-layout>
-              <v-flex xs6>
-                <div class="post-author">{{ post.userId }}</div>
-                <div class="post-title">{{ post.title }}</div>
-                <div class="post-content">{{ post.content }}</div>
-                <div class="post-createdAt">{{ post.createdAt }}</div>
+        <div v-for="post in posts" class="post" :key="post.id">
+          <v-layout>
+            <v-flex xs6>
+              <div class="post-title">{{ post.title }}</div>
+              <div class="post-author">{{ post.userId }}</div>
+              <div class="post-createdAt">{{ new Date(post.createdAt).toString().substring(0,15) }}</div>
+              <div class="post-content">{{ post.content }}</div>
 
-                <v-btn dark color="#FD2D01" :to="{ name: 'Post', params: { postId: post.id } }">View</v-btn>
-              </v-flex>
+              <v-btn dark color="red" @click="navigateTo({ name: 'Post', params: { postId: post.id } })">View</v-btn>
+            </v-flex>
 
-              <v-flex xs6>
-                <img class="album-image" :src="post.attachmentUrl" />
-              </v-flex>
-            </v-layout>
-          </div>
+            <v-flex xs6>
+              <img class="album-image" :src="post.attachmentUrl" />
+            </v-flex>
+          </v-layout>
+        </div>
         </div>
         <!-- <div v-for="message in posts" :key="message.id" :message="message.content" :title="message.title" ></div> -->
       </panel>
@@ -54,9 +54,9 @@ export default {
   },
   data() {
     return {
-      posts: [{}],
-      //response: null
-    };
+      posts:null
+     //response: null
+    }
   },
   methods: {
     navigateTo(route) {
@@ -65,8 +65,10 @@ export default {
   },
   async mounted() {
     // try {
-    this.posts = (await PostService.getAllPosts()).data
-    console.log(this.posts)
+    this.posts = (await PostService.getAllPosts()).data.data.sort((a,b)=>new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
+    this.message = (await PostService.getAllPosts()).data.message
+    //console.log(this.posts)
+    //console.log(this.message)
     //  this.posts = response;
 
     //   this.message = response.message;

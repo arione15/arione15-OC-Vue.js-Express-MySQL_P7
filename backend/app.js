@@ -48,8 +48,8 @@ app.get('/jwtid', requireAuth, (req, res) => {
         res.status(200).json({ "res.locals.user.id": res.locals.user.id });
     })
     // utilisation des ressources "static", içi les images/vidéos
-app.use('/images', express.static(path.join(__dirname, '/media')));
-app.use('/images', express.static(path.join(__dirname, 'profil')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/images', express.static(path.join(__dirname, 'profil')));
 
 // routes
 app.use('/api/user', userRoutes);

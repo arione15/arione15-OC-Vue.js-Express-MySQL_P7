@@ -81,7 +81,7 @@ exports.login = async(req, res) => {
                 }
             });
     } catch (error) {
-        send({ error: 'An error has occured while trying to log in!' });
+        res.send({ error: 'An error has occured while trying to log in!' });
     }
 }
 

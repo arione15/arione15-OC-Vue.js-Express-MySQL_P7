@@ -7,10 +7,10 @@ const {
     Comment
 } = require('../config/dbConfig');
 const fs = require("fs");
-const {
-    promisify
-} = require("util");
-const pipeline = promisify(require("stream").pipeline);
+// const {
+//     promisify
+// } = require("util");
+// const pipeline = promisify(require("stream").pipeline);
 
 
 // const bcrypt = require("bcrypt");
@@ -26,60 +26,72 @@ exports.createPost = async(req, res) => {
     let fileName = req.body.userId + Date.now() + ".jpg";
     let postObject = req.file ? {
         ...req.body,
-        attachmentUrl: `${req.protocol}://${req.get("host")}/images/profil/${ fileName }`
+        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
     } : {
         ...req.body
     };
+    console.log(req.file);
     //const post = new Post({...postObject });
-    const post = await Post.create(postObject); // le post est crée qu'il y est un req.file ou pas
+    // try {
+    //     if (
+    //         req.file.detectedMimeType != "images/jpg" &&
+    //         req.file.detectedMimeType != "images/png" &&
+    //         req.file.detectedMimeType != "images/jpeg"
+    //     ) {
+    //         //throw ("invalid file");
+    //         res.status(400).send({
+    //             error: 'invalid file!'
+    //         });
+    //     }
+    //     if (req.file.size > 500000) {
+    //         //throw ("max size must be less than 500ko");
+    //         res.status(400).send({
+    //             error: 'max size must be less than 500ko!'
+    //         });
+    //     }
+    // } catch (err) {
+    //     //const errors = uploadErrors(err);
+    //     return res.status(201).json({
+    //         //errors
+    //         err
+    //     });
+    // };
+    //await pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../media/posts/${fileName}`));
 
-    if (req.file !== null) {
-        if (
-            req.file.detectedMimeType != "image/jpg" &&
-            req.file.detectedMimeType != "image/png" &&
-            req.file.detectedMimeType != "image/jpeg"
-        ) {
-            //throw ("invalid file");
-            res.status(400).send({ error: 'invalid filet!' });
-        } else if (req.file.size > 500000) {
-            //throw ("max size must be less than 500ko");
-            res.status(400).send({ error: 'max size must be less than 500ko!' });
-        } else {
-            pipeline(req.file.stream, fs.createWriteStream(`${__dirname}/../media/posts/${fileName}`));
-            try {
-                post.save().then(_ => {
-                    res.status(200).send({
-                        message: 'The post has been successfully created!',
-                        data: post
-                    })
-                })
-            } catch (error) {
-                res.status(400).send({
-                    error: 'Failed to create the post!'
-                });
-            }
-        }
-    } else {
-        res.status(201).send({
-            message: 'req.file est null'
+    try {
+        const post = await Post.create(postObject); // le post est crée qu'il y est un req.file ou pas
+        // post.save().then(_ => {
+        //     res.status(200).send({
+        //         message: 'The post has been successfully created!',
+        //         data: post
+        //     })
+        // })
+        return res.status(201).json(post);
+    } catch (error) {
+        return res.status(400).json({
+            error: 'Failed to create the post!'
         });
     }
 }
 
+
 /*  ****************************************************** */
 //  récupérer tous les posts
 /*  ****************************************************** */
-exports.getAllPosts = async(req, res) => {
+exports.getAllPosts = async(req, response) => {
     try {
-        const posts = await Post.findAll();
+        const posts = await Post.findAll()
+            // .sort({
+            //     createdAt: -1
+            // });
         if (posts) {
-            res.status(200).send({
+            return response.status(200).send({
                 message: 'The list of all the posts has been successfully retrieved!',
                 data: posts
             });
         }
     } catch (error) {
-        res.status(400).send({
+        response.status(400).send({
             error: 'Error getting all the posts'
         });
     }
