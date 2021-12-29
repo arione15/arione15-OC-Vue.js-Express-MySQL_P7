@@ -11,14 +11,14 @@ const upload = multer();
 const validateSignup = require("../middlewares/validateSignup");
 
 // user auth
-router.post("/signup", validateSignup.register, userControl.signup);
+router.post("/signup", validateSignup.register, multer, userControl.signup);
 router.post("/login", userControl.login);
 router.get("/logout", checkUser, userControl.logout);
 
 // user CRUD
 router.get("/", checkUser, userControl.getAllUsers);
 router.get("/:id", checkUser, userControl.getOneUser);
-router.put("/:id", checkUser, userControl.updateUser);
+router.put("/:id", checkUser, multer, userControl.updateUser);
 router.delete("/:id", checkUser, userControl.deleteUser);
 
 // upload

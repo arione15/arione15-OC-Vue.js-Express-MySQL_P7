@@ -1,56 +1,72 @@
 <template>
-  <v-layout column>
-    <v-flex xs4>
-      <panel title="The Wall">
-        <!-- <router-link :to="{name: 'post-create'}"> -->
-        <v-btn
-          slot="action"
-          @click="navigateTo({ name: 'Post-create' })"
-          class="red accent-1"
-          light
-          small
-          absolute
-          right
-          middle
-          fab
-        >
-          <!-- <i class="material-icons">add</i> -->
-          <v-icon>add</v-icon>
-        </v-btn>
-        <!-- </router-link> -->
-        <div v-if="posts">
-        <div v-for="post in posts" class="post" :key="post.id">
-          <v-layout>
-            <v-flex xs6>
-              <div class="post-title">{{ post.title }}</div>
-              <div class="post-author">{{ post.userId }}</div>
-              <div class="post-createdAt">{{ new Date(post.createdAt).toString().substring(0,15) }}</div>
-              <div class="post-content">{{ post.content }}</div>
-
-              <v-btn dark color="red" @click="navigateTo({ name: 'Post', params: { postId: post.id } })">View</v-btn>
-            </v-flex>
-
-            <v-flex xs6>
-              <img class="album-image" :src="post.attachmentUrl" />
-            </v-flex>
-          </v-layout>
+  <div class="block postsBlock">
+    <h2 class="text-center">Posts</h2>
+    
+<v-container class="my-5"> 
+<v-row>
+  <v-col cols="10"> 
+      <h2 class="titre">Partagez votre post !</h2>
+      <div class="container">
+        <div class="card">
+          <div class="card-body">
+            <form action="" class="">
+              <div class="d-flex align-items-start flex-column form-group">
+                <!-- <label for="text" class="panel-heading form-label">Nouveau message</label> -->
+                <textarea type="message" class="panel-body container-fluid form-control" placeholder="nouveau message" rows="3" ></textarea>
+                <!-- <textarea type="message" class="panel-body container-fluid form-control" placeholder="nouveau message" rows="3" v-model="message" v-on:input="message = $event.target.value"></textarea> -->
+              </div>
+              <div class="mb-3 align-items-start">
+                <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
+                <!-- <input class="form-control form-control-sm" type="file" id="file" ref="fileInput" v-on:change="onFileUpload"> -->
+                <input class="form-control form-control-sm" type="file" id="file" ref="fileInput">
+              </div>
+              <div class="d-flex panel-footer form-group">
+                <!-- <button class="btn btn-groupomania w-35" @click="createMessage(message)" type="submit" value="Publier">Publier</button> -->
+                <button class="btn btn-groupomania w-35" type="submit" value="Publier">Publier</button>
+              </div>
+            </form>
+          </div>
         </div>
-        </div>
-        <!-- <div v-for="message in posts" :key="message.id" :message="message.content" :title="message.title" ></div> -->
-      </panel>
-    </v-flex>
-    <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
-    <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field>-->
-  </v-layout>
+      </div>
+  </v-col>
+  </v-row> 
+
+<v-row> 
+  <v-col cols="10" v-for="post of posts" class="post" :key="post.id"> 
+  <v-card outlined class="mx-auto" height="100%">
+  
+    <v-img class="white--text align-end album-image" height="200px" :src="post.attachmentUrl">
+    </v-img>
+      <v-card-title>{{ post.title }}</v-card-title>
+
+    <v-card-subtitle class="pb-0">
+     {{ post.userId }}
+    </v-card-subtitle>
+
+    <v-card-text class="text--primary">
+      <div>{{ new Date(post.createdAt).toString().substring(0,24) }}</div>
+
+      <div>{{ post.content }}</div>
+    </v-card-text>
+
+    <v-card-actions>
+      <v-btn color="#FD2D01" dark :to="{ name: 'Post', params: { postId: post.id }}">View Post</v-btn>
+      <v-btn color="#FD2D01" dark :to="{ name: 'Profil', params: { id: post.userId }}">View Profil</v-btn>
+    </v-card-actions>
+  </v-card>
+  </v-col>
+  </v-row>
+  </v-container>
+  </div>
 </template>
 
 <script>
-import Panel from '../components/Panel'
-import PostService from "../services/PostService.js";
+//import Panel from '../components/Panel'
+import PostService from "../services/PostService.js"; 
 
 export default {
   components: {
-    Panel
+   // Panel
   },
   data() {
     return {
@@ -93,27 +109,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.post {
-  padding: 20px;
-  height: 330px;
-  overflow: hidden;
-}
-.post-title {
-  font-size: 30px;
-}
-.post-content {
-  font-size: 24px;
-}
-.post-userId {
-  font-size: 18px;
-}
 
-.post-createdAt {
-  font-size: 16px;
-}
-.album-image {
-  width: 70%;
-  margin: 0 auto;
-}
 </style>
 

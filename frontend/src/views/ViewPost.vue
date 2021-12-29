@@ -12,7 +12,7 @@
           {{post.content}}
         </div>
 
-        <v-btn dark class="cyan" :to="{name: 'Post-Edit', params() {return {postId: post.id}}}">Edit</v-btn>
+        <v-btn dark class="cyan" :to="{name: 'Post-edit', params() {return {postId: post.id}}}">Edit</v-btn>
 
         <!-- <v-btn
           v-if="isUserLoggedIn && !bookmark"

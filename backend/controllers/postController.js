@@ -53,16 +53,14 @@ exports.createPost = async(req, res) => {
 /*  ****************************************************** */
 exports.getAllPosts = async(req, response) => {
     try {
-        const posts = await Post.findAll()
+        const posts = await Post.findAll().then(posts => {
+                return response.status(200).send({
+                    message: 'The list of all the posts has been successfully retrieved!',
+                    data: posts
+                });
+            })
             // .sort({
             //     createdAt: -1
-            // });
-        if (posts) {
-            return response.status(200).send({
-                message: 'The list of all the posts has been successfully retrieved!',
-                data: posts
-            });
-        }
     } catch (error) {
         response.status(400).send({
             error: 'Error getting all the posts'

@@ -3,16 +3,15 @@
     <v-flex xs6>
       <panel title="Inscription">
         <form name="register-form" autocomplete="off">
-          <v-text-field label="First name" v-model="firstName"></v-text-field>
-          <v-text-field label="Family name" v-model="familyName"></v-text-field>
-          <v-text-field label="Email" v-model="email"></v-text-field>
-          <v-text-field
-            label="Password"
-            type="password"
-            v-model="password"
-            autocomplete="new-password"
-          ></v-text-field>
-          <v-text-field label="Rôle" v-model="role"></v-text-field>
+          <v-text-field label="First name" v-model="user.firstName"></v-text-field>
+          <v-text-field label="Family name" v-model="user.familyName"></v-text-field>
+          <v-text-field label="Email" v-model="user.email"></v-text-field>
+          <v-text-field label="Password" type="password" v-model="user.password" autocomplete="new-password"></v-text-field>
+          <v-text-field label="Rôle" v-model="user.role"></v-text-field>
+          <!-- <v-text-field label="Image" v-model="photoUrl"></v-text-field> -->
+          <input name="image" type="file" v-on:change="selectedUser($event)">
+
+
         </form>
         <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
         <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field>
@@ -30,14 +29,16 @@ export default {
   name: "SignUp",
   data() {
     return {
-      firstName: "",
-      familyName: "",
-      email: "",
-      password: "",
-      role: "basic",
-      error: null,
-      message: ""
-      //photoUrl: "",
+      user: {
+        firstName: "",
+        familyName: "",
+        email: "",
+        password: "",
+        role: "basic",
+        error: null,
+        message: "",
+        photoUrl: "",
+      }
     };
   },
   methods: {
@@ -45,19 +46,39 @@ export default {
       //qui récupère les identifiant entrées par l'utilisateur et les envoie (post) au backend
       try {
         const response = await AuthenticationService.signup({
-          firstName: this.firstName,
-          familyName: this.familyName,
-          email: this.email,
-          password: this.password,
-          role: this.role,
-          //photoUrl: this.photoUrl
+          firstName: this.user.firstName,
+          familyName: this.user.familyName,
+          email: this.user.email,
+          password: this.user.password,
+          role: this.user.role,
+          photoUrl: this.user.photoUrl
         });
-        this.message = response.data.message;
+/*
+try {
+        const formData = new FormData(); 
+        if (this.user.photoUrl) {
+          formData.append("firstName", this.user.firstName);
+          formData.append("familyName", this.user.familyName);
+          formData.append("email", this.user.email);
+          formData.append("password", this.user.password);
+          formData.append("role", this.user.role);
+          formData.append("image", this.user.photoUrl);
+          await AuthenticationService.signup(formData);
+          this.$router.push({ name: "Posts" });
+          //console.log(formData);
+        }
+*/
+
+        this.user.message = response.data.message;
         this.$store.dispatch("setToken", response.data.token);
         this.$store.dispatch("setUser", response.data.user);
       } catch (err) {
-        this.error = err.response.data.error;
+        this.user.error = err.response.data.error;
       }
+    },
+    selectedUser(event) {
+      this.user.photoUrl = event.target.files[0]; 
+      //console.log(this.post.attachmentUrl);
     }
   },
   components: {

@@ -3,6 +3,7 @@
 const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Post = require("../models/Post");
 
 
 /*  *********************************************************** */
@@ -103,13 +104,11 @@ exports.logout = (req, res) => {
 //  récupérer tous les utilisateurs
 /*  ****************************************************** */
 exports.getAllUsers = (req, res) => {
-    User.findAll()
+    User.findAll({ include: [Post] })
         .then(users => {
             const message = 'La liste des utilisateurs a bien été récupérée !';
             res.json({ message, data: users })
         }).catch({ error: "error" })
-
-
 };
 
 /*  ****************************************************** */

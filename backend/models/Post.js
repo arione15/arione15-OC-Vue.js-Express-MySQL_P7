@@ -33,7 +33,8 @@ module.exports = (sequelize, DataTypes) => {
             foreignKey: {
                 allowNull: false
             },
-            onDelete: 'cascade'
+            onDelete: 'cascade',
+            as: 'created',
         });
     }
     return Post;
