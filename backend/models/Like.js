@@ -18,23 +18,14 @@ module.exports = (sequelize, DataTypes) => {
 
     Like.associate = models => {
         Like.belongsTo(models.Post, {
-            foreignKey: { name: 'postId', allowNull: false },
-            onDelete: 'cascade'
+            foreignKey: 'postId',
+            onDelete: 'cascade',
+            as: 'post',
         });
         Like.belongsTo(models.User, {
-            foreignKey: { name: 'userId', allowNull: false },
-            onDelete: 'cascade'
-        });
-        Post.belongsToMany(models.User, {
-            through: Like,
-            foreignKey: 'postId',
-            otherKey: 'userId',
-            onDelete: 'cascade'
-        });
-        User.belongsToMany(models.Post, {
-            through: Like,
             foreignKey: 'userId',
-            otherKey: 'postId'
+            onDelete: 'cascade',
+            as: 'user',
         });
     };
     return Like;

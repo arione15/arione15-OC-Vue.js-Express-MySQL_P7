@@ -24,11 +24,11 @@ module.exports = {
                 createdAt: new Date(),
                 updatedAt: new Date()
             });
-        };
-        await queryInterface.bulkInsert('Users', users, {})
+        }
+        await queryInterface.bulkInsert("Users", users, {})
     },
 
     down: async(queryInterface, Sequelize) => {
-        await queryInterface.bulkDelete('Users', null, {});
+        await queryInterface.bulkDelete("Users", null, {});
     }
 };

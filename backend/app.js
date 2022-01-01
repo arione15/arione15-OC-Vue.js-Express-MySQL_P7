@@ -11,7 +11,10 @@ const likeRoutes = require('./routes/likeRt');
 const path = require('path');
 //const { initDb } = require('./config/dbConfig');
 //initDb();
-
+const db = require('./config/db');
+db.sequelize.sync({ force: false })
+    .then(() => console.log("DB Synced"))
+    .catch(error => console.log(error));
 const app = express();
 
 // les variables d'environnement
@@ -48,8 +51,8 @@ app.get('/jwtid', requireAuth, (req, res) => {
         res.status(200).json({ "res.locals.user.id": res.locals.user.id });
     })
     // utilisation des ressources "static", içi les images/vidéos
-app.use('/images', express.static(path.join(__dirname, '/media')));
-app.use('/images', express.static(path.join(__dirname, 'profil')));
+app.use('/images', express.static(path.join(__dirname, 'images')));
+//app.use('/images', express.static(path.join(__dirname, 'profil')));
 
 // routes
 app.use('/api/user', userRoutes);

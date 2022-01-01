@@ -54,7 +54,7 @@ exports.createComment = async(req, res) => {
 
     if (content == null) {
         return res.status(400).json({ message: 'content required!' });
-    };
+    }
     User.findOne({
             attributes: ['id'],
             where: { id: userId }

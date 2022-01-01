@@ -28,19 +28,19 @@ exports.checkUser = (req, res, next) => {
 // contrôler l'utilisateur et via la route get /jwtid envoyer au frontend le res.locals.user.id
 module.exports.requireAuth = (req, res, next) => {
     const token = req.cookies.jwtCookie;
-    console.log(token);
+    //console.log(token);
     if (token) {
         jwt.verify(token, process.env.SECRET_KEY, async(err, decodedToken) => {
             if (err) {
-                console.log(err);
+                //console.log(err);
                 res.status(200).json('no token')
             } else {
-                console.log("decodedToken.userId", decodedToken.userId);
-                console.log("res.locals.user", res.locals.user);
+                //console.log("decodedToken.userId", decodedToken.userId);
+                //console.log("res.locals.user", res.locals.user);
                 next();
             }
         });
     } else {
-        console.log('No token');
+        return res.status(400).json({ error: 'No token!' });
     }
 };

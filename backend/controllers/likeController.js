@@ -24,7 +24,7 @@ exports.createLike = async(req, res) => {
                             where: { postId: req.body.postId }
                         }).then(likes => {
                             res.status(200).json({ isLike: likes.length });
-                        })
+                        });
                     })
                     .catch(error => res.status(400).json({ error }));
             } else {
@@ -43,7 +43,8 @@ exports.createLike = async(req, res) => {
                     })
                     .catch(error => res.status(400).json({ error }));
             }
-        })
+        }).catch(error => res.status(400).json({ error }));
+
 };
 
 /*  ****************************************************** */
@@ -53,6 +54,6 @@ exports.getAllLikes = (req, res) => {
     Like.findAll({ where: { postId: req.params.postId } })
         .then(likes => {
             const message = 'La liste des likes a bien été récupérée !';
-            res.status(200).json({ message, data: likes })
+            res.status(200).json({ message, data: likes });
         }).catch(error => res.status(400).json({ error }));
 };

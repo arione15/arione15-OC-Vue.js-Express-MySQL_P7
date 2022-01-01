@@ -1,7 +1,7 @@
-'use strict';
+"use strict";
 module.exports = {
     up: async(queryInterface, Sequelize) => {
-        await queryInterface.createTable('Likes', {
+        await queryInterface.createTable("Likes", {
             id: {
                 type: Sequelize.INTEGER,
                 primaryKey: true,
@@ -11,10 +11,6 @@ module.exports = {
                 type: Sequelize.INTEGER
             },
             postId: {
-                type: Sequelize.INTEGER
-            },
-            like: {
-                allowNull: true,
                 type: Sequelize.INTEGER
             },
             createdAt: {
