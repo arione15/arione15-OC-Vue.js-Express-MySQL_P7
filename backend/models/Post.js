@@ -2,10 +2,6 @@
 
 module.exports = (sequelize, DataTypes) => {
     const Post = sequelize.define('Post', {
-        userId: {
-            type: DataTypes.INTEGER,
-            allowNull: false
-        },
         title: {
             type: DataTypes.STRING,
             allowNull: false
@@ -30,11 +26,9 @@ module.exports = (sequelize, DataTypes) => {
         models.Post.hasMany(models.Like, { onDelete: 'cascade' });
         models.Post.hasMany(models.Comment, { onDelete: 'cascade' });
         models.Post.belongsTo(models.User, {
-            foreignKey: {
-                allowNull: false
-            },
+            foreignKey: userId,
             onDelete: 'cascade',
-            as: 'created',
+            as: 'user',
         });
     }
     return Post;
