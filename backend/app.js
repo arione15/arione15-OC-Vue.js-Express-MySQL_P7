@@ -11,7 +11,10 @@ const likeRoutes = require('./routes/likeRt');
 const path = require('path');
 //const { initDb } = require('./config/dbConfig');
 //initDb();
-
+const db = require('./config/db');
+db.sequelize.sync({ force: false })
+    .then(() => console.log("DB Synced"))
+    .catch(error => console.log(error));
 const app = express();
 
 // les variables d'environnement

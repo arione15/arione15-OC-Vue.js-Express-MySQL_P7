@@ -23,12 +23,12 @@
 </template>
 
 <script>
-import Panel from '../components/Panel'
+//import Panel from '../components/Panel'
 import PostService from "../services/PostService.js";
 
 export default {
   components: {
-    Panel
+    //Panel
   },
   data() {
     return {
@@ -61,8 +61,8 @@ export default {
         if (this.post.attachmentUrl || this.post.content) {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
-          formData.append("userId", this.post.userId);
-          formData.append("createdAt", this.post.createdAt);
+          //formData.append("userId", this.post.userId);
+          //formData.append("createdAt", this.post.createdAt);
           formData.append("content", this.post.content);
           await PostService.createPost(formData);
           this.$router.push({ name: "Posts" });

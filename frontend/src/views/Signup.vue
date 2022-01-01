@@ -13,8 +13,8 @@
 
 
         </form>
-        <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
-        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field>
+        <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
+        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
         <v-btn color="#FD2D01" dark type="submit" @click="signup">S'inscrire</v-btn>
       </panel>
     </v-flex>
@@ -35,9 +35,9 @@ export default {
         email: "",
         password: "",
         role: "basic",
+        photoUrl: "",
         error: null,
         message: "",
-        photoUrl: "",
       }
     };
   },
@@ -45,16 +45,6 @@ export default {
     async signup() {
       //qui récupère les identifiant entrées par l'utilisateur et les envoie (post) au backend
       try {
-        const response = await AuthenticationService.signup({
-          firstName: this.user.firstName,
-          familyName: this.user.familyName,
-          email: this.user.email,
-          password: this.user.password,
-          role: this.user.role,
-          photoUrl: this.user.photoUrl
-        });
-/*
-try {
         const formData = new FormData(); 
         if (this.user.photoUrl) {
           formData.append("firstName", this.user.firstName);
@@ -63,20 +53,31 @@ try {
           formData.append("password", this.user.password);
           formData.append("role", this.user.role);
           formData.append("image", this.user.photoUrl);
-          await AuthenticationService.signup(formData);
-          this.$router.push({ name: "Posts" });
+          await AuthenticationService.signupUser(formData);
+          this.$router.push({ name: "Login" });
           //console.log(formData);
         }
-*/
+        // const response = await AuthenticationService.signup({
+        //   firstName: this.user.firstName,
+        //   familyName: this.user.familyName,
+        //   email: this.user.email,
+        //   password: this.user.password,
+        //   role: this.user.role,
+        //   photoUrl: this.user.photoUrl
+        // });
 
-        this.user.message = response.data.message;
-        this.$store.dispatch("setToken", response.data.token);
-        this.$store.dispatch("setUser", response.data.user);
+
+        // this.user.message = response.data.message;
+        // this.$store.dispatch("setToken", response.data.token);
+        // this.$store.dispatch("setUser", response.data.user);
       } catch (err) {
-        this.user.error = err.response.data.error;
+        console.log("2", err);
+        //this.user.error = err.response.data.error;
       }
     },
+    
     selectedUser(event) {
+      console.log("1", event.target.files[0]);
       this.user.photoUrl = event.target.files[0]; 
       //console.log(this.post.attachmentUrl);
     }
