@@ -9,6 +9,7 @@ const postRoutes = require('./routes/postRt');
 const commentRoutes = require('./routes/commentRt');
 const likeRoutes = require('./routes/likeRt');
 const path = require('path');
+
 //const { initDb } = require('./config/dbConfig');
 //initDb();
 const db = require('./config/db');

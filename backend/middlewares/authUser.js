@@ -1,28 +1,26 @@
 const jwt = require('jsonwebtoken');
 const { User } = require("../config/dbConfig");
+const cryptojs = require("crypto-js");
+const Cookies = require("cookies");
 
 // identifier le user et vérifier son token
 exports.checkUser = (req, res, next) => {
-    const token = req.cookies.jwtCookie; // récupérer le token dans le cookie
-    if (token) {
-        jwt.verify(token, process.env.SECRET_KEY, async(err, decodedToken) => {
-            if (err) { //si erreur, on retire le cookie :
-                res.locals.user = null;
-                res.cookie('jwtCookie', '', { maxAge: 1 });
-                next();
-            } else {
-                //console.log('decodedToken', decodedToken);
-                let user = await User.findByPk(decodedToken.userId);
-                res.locals.user = user;
-                req.userId = user.id // Add to req object
-                    //console.log("res.locals.user", res.locals.user);
-                next();
-            }
-        });
-    } else { // si pas de token
-        res.locals.user = null;
-        next();
+    try {
+        const cryptedCookie = new Cookies(req, res).get('snToken');
+        console.log("my2", cryptedCookie);
+        const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
+
+        const token = jwt.verify(cookie.token, process.env.SECRET_KEY);
+        console.log("token01", token);
+        if (cookie.userId && cookie.userId !== token.userId) {
+            throw "User ID non valable";
+        } else {
+            next();
+        }
+    } catch (error) {
+        res.status(401).json({ error: 'Requête non authentifiée' });
     }
+
 };
 
 // contrôler l'utilisateur et via la route get /jwtid envoyer au frontend le res.locals.user.id

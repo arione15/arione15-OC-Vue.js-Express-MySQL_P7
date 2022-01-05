@@ -5,24 +5,28 @@ import Vuex from 'vuex'
 Vue.use(Vuex)
 
 export default new Vuex.Store({
-    strict: true,
+    //strict: true,
     // plugins: [
     //     createPersistedState()
     // ],
     state: {
         token: null,
         user: null,
+        //post: null,
         isUserLoggedIn: false
     },
     mutations: {
-        setToken(state, token) {
+        SET_TOKEN(state, token) {
             state.token = token
             if (token) { state.isUserLoggedIn = true } else { state.isUserLoggedIn = false }
             //state.isUserLoggedIn = !!(token)
         },
-        setUser(state, user) {
+        SET_USER(state, user) {
             state.user = user
-        }
+        },
+        // SET_POST(state, post) {
+        //     state.post = post
+        // }
     },
     actions: {
         setToken({ commit }, token) {
@@ -30,7 +34,10 @@ export default new Vuex.Store({
         },
         setUser({ commit }, user) {
             commit('setUser', user)
-        }
+        },
+        // setPost({ commit }, post) {
+        //     commit('setPost', post)
+        // }
         // h
         // setTooken({ dispatch }, token) {
         //     dispatch('setToken', token)

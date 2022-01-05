@@ -31,23 +31,29 @@ export default {
       email: "",
       password: "",
       error: null,
-      message: ""
+      message: "",
+
     };
   },
   methods: {
     async login() {
       //qui récupère les identifiant entrées par l'utilisateur et les envoie (post) au backend
       try {
-        const response = await AuthenticationService.login({
+        const response = await AuthenticationService.loginUser({
           email: this.email,
           password: this.password
         });
-        this.$router.push({ name: 'Posts' })
         this.message = response.data.message;
+        sessionStorage.setItem("token", response.data.cryptedCookie);
+        //this.$axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.cryptedCookie;
+        this.$router.push({ name: 'Posts' });
+
         this.$store.dispatch('setToken', response.data.token);
         this.$store.dispatch('setUser', response.data.user);
       } catch (err) {
-        this.error = err.response.data.error;
+        console.log("myerr", err);
+        //console.log(cookie);
+        //this.error = err.response.data.error;
       }
 
       //console.log(response.data, 'hello');
