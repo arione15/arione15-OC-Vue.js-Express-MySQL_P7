@@ -2,7 +2,7 @@
 
 const { User, Post, Like, Comment } = require('../config/dbConfig');
 const fs = require("fs");
-const Cookies = require("cookies");
+const Cookies = require("js-cookie");
 const cryptojs = require("crypto-js");
 
 /*  *********************************************************** */
@@ -10,8 +10,8 @@ const cryptojs = require("crypto-js");
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
     // let fileName = req.body.userId + Date.now() + ".jpg";
-    const cryptedCookie = new Cookies(req, res).get("snToken"); //récupérer le cookie  décrypter pour récupérezr le userID
-    const id = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8)).userId
+    const cryptedToken = new Cookies(req, res).get("snToken"); //récupérer le cookie  décrypter pour récupérezr le userID
+    const id = JSON.parse(cryptojs.AES.decrypt(cryptedToken, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8)).userId
     console.log("2", id);
     let postObject = req.file ? {
         ...req.body,

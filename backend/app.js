@@ -34,10 +34,10 @@ const corsOptions = {
 app.use(cors(corsOptions));
 //app.use(cors());
 
-// définir la fonction json de express comme middleware global pour l'application
-app.use(express.json());
+
+app.use(express.json()); // définir la fonction json de express comme middleware global pour l'application
 app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
+app.use(cookieParser()); // entre autres, prend le jwt et le met dans un cookie
 
 
 //app.use('/images', express.static('images'));
@@ -47,11 +47,16 @@ app.use(cookieParser());
 
 // pour authentifier le user sur toutes les routes get
 app.get('*', checkUser);
+
 // pour récupérer le id d'un user
 app.get('/jwtid', requireAuth, (req, res) => {
-        res.status(200).json({ "res.locals.user.id": res.locals.user.id });
-    })
-    // utilisation des ressources "static", içi les images/vidéos
+    //res.status(200).send(res.locals.user.id });
+    //res.status(200).json({ "userFromTheBack": res.locals.user });
+    res.status(200).send(res.locals.user)
+
+});
+
+// utilisation des ressources "static", içi les images/vidéos
 app.use('/images', express.static(path.join(__dirname, 'images')));
 //app.use('/images', express.static(path.join(__dirname, 'profil')));
 

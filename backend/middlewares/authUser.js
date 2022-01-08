@@ -1,44 +1,72 @@
 const jwt = require('jsonwebtoken');
-const { User } = require("../config/dbConfig");
+const db = require("../config/db");
 const cryptojs = require("crypto-js");
-const Cookies = require("cookies");
+
+const User = db.User;
 
 // identifier le user et vérifier son token
-exports.checkUser = (req, res, next) => {
-    try {
-        const cryptedCookie = new Cookies(req, res).get('snToken');
-        console.log("my2", cryptedCookie);
-        const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
+exports.checkUser = async(req, res, next) => {
+    //const cryptedToken = new Cookies(req, res).get('snToken');
+    const cryptedToken = req.cookies.snToken;
+    console.log("cryptedToken01", cryptedToken);
+    const tokenDecrypted = cryptojs.AES.decrypt(cryptedToken, process.env.COOKIE_KEY);
+    console.log("tokenDecrypted", tokenDecrypted);
+    const cookie = JSON.parse(tokenDecrypted.toString(cryptojs.enc.Utf8));
+    console.log("cookie", cookie);
+    console.log("token01", cookie.token);
+    const token = cookie.token;
 
-        const token = jwt.verify(cookie.token, process.env.SECRET_KEY);
-        console.log("token01", token);
-        if (cookie.userId && cookie.userId !== token.userId) {
-            throw "User ID non valable";
-        } else {
-            next();
-        }
-    } catch (error) {
+    if (token) {
+        jwt.verify(token, process.env.COOKIE_KEY, async(err, verifiedJwt) => {
+
+            if (err) { // si c'est pas le bon token
+                console.log("err inside jwt verify", err);
+                console.log("res.locals", res.locals);
+                res.locals.user = null;
+                res.cookie("snToken", "", { maxAge: 1 });
+                next();
+            } else {
+                console.log("verifiedJwt", verifiedJwt);
+                //const user = await User.findOne({ where: { id: verifiedJwt.userId } })
+                const user = await User.findByPk(verifiedJwt.userId);
+                console.log("user", user);
+                console.log("res.locals", res.locals);
+                console.log("verifiedJwt.userId", verifiedJwt.userId);
+                res.locals.user = user;
+                console.log("res.locals.user-ok", res.locals.user);
+                next();
+            }
+        });
+    } else { //si pas de token
         res.status(401).json({ error: 'Requête non authentifiée' });
+        res.locals.user = null;
+        next();
     }
-
 };
 
-// contrôler l'utilisateur et via la route get /jwtid envoyer au frontend le res.locals.user.id
-module.exports.requireAuth = (req, res, next) => {
-    const token = req.cookies.jwtCookie;
-    //console.log(token);
+// contrôler l'utilisateur et via la route get /jwtid envoyer au frontend le id (res.locals.user.id)
+module.exports.requireAuth = async(req, res, next) => {
+
+    const cryptedToken = req.cookies.snToken;
+
+    console.log('err-requireAuth');
+
+    const tokenDecrypted = cryptojs.AES.decrypt(cryptedToken, process.env.COOKIE_KEY);
+    const cookie = JSON.parse(tokenDecrypted.toString(cryptojs.enc.Utf8));
+    const token = cookie.token;
+
     if (token) {
-        jwt.verify(token, process.env.SECRET_KEY, async(err, decodedToken) => {
+        jwt.verify(token, process.env.COOKIE_KEY, (err, verifiedJwt) => {
             if (err) {
-                //console.log(err);
-                res.status(200).json('no token')
+                console.log("err-jwtid", err);
+                res.send(200).json('no token');
+                next();
             } else {
-                //console.log("decodedToken.userId", decodedToken.userId);
-                //console.log("res.locals.user", res.locals.user);
+                console.log("verifiedJwt.id", verifiedJwt.id);
                 next();
             }
         });
     } else {
-        return res.status(400).json({ error: 'No token!' });
+        console.log('No token');
     }
 };

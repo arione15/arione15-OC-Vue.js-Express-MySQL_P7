@@ -53,7 +53,11 @@ export default {
           formData.append("password", this.user.password);
           formData.append("role", this.user.role);
           formData.append("image", this.user.photoUrl);
-          await AuthenticationService.signupUser(formData);
+          const response = await AuthenticationService.signupUser(formData);
+
+          this.$store.dispatch('setToken', response.data.token);
+          this.$store.dispatch('setUser', response.data.user);
+
           this.$router.push({ name: "Login" });
           //console.log(formData);
         }

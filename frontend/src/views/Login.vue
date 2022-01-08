@@ -46,10 +46,11 @@ export default {
         this.message = response.data.message;
         sessionStorage.setItem("token", response.data.cryptedCookie);
         //this.$axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.cryptedCookie;
-        this.$router.push({ name: 'Posts' });
 
         this.$store.dispatch('setToken', response.data.token);
         this.$store.dispatch('setUser', response.data.user);
+        
+        this.$router.push({ name: 'Posts' });
       } catch (err) {
         console.log("myerr", err);
         //console.log(cookie);
@@ -57,7 +58,8 @@ export default {
       }
 
       //console.log(response.data, 'hello');
-    }
+    },
+
   },
   components: {
     Panel

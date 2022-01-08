@@ -3,7 +3,7 @@
 //const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const Cookies = require("cookies");
+const Cookies = require("js-cookie");
 const cryptojs = require("crypto-js");
 //const Post = require("../models/Post");
 //const User = require("../models/User");
@@ -84,16 +84,21 @@ exports.login = async(req, res) => {
                     // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
                     const newToken = jwt.sign( //générer le token
                         { userId: user.id },
-                        process.env.SECRET_KEY, { expiresIn: "24h" }
+                        process.env.COOKIE_KEY, { expiresIn: "24h" }
                     );
                     const newCookie = { token: newToken, userId: user.id };
-                    const cryptedCookie = cryptojs.AES.encrypt(JSON.stringify(newCookie), process.env.COOKIE_KEY).toString();
-                    new Cookies(req, res).set('snToken', cryptedCookie, {
+                    const cryptedToken = cryptojs.AES.encrypt(JSON.stringify(newCookie), process.env.COOKIE_KEY).toString();
+                    // new Cookies(req, res).set('snToken', cryptedToken, {
+                    //     httpOnly: true,
+                    //     maxAge: 86400000 // cookie pendant 24 heure (en millisecondes)
+                    // });
+                    res.cookie('snToken', cryptedToken, { //res.cookie() function set the cookie name to value.
                         httpOnly: true,
-                        maxAge: 3600000 // cookie pendant 1 heure (en millisecondes)
-                    })
+                        maxAge: 86400000 // cookie pendant 24 heure (en millisecondes)
+                    });
 
-                    res.status(200).send({ message: 'The user is successfully connected!', data: user, cryptedCookie: cryptedCookie }); // retourner le token au client
+                    //res.status(200).send({ message: 'The user is successfully connected!', data: user }); // retourner le token au client
+                    res.status(200).send({ message: 'The user is successfully connected!', data: user, cryptedToken: cryptedToken }); // retourner le token au client
                 }
             });
     } catch (error) {
@@ -106,12 +111,12 @@ exports.login = async(req, res) => {
 //  gérer la déconnexion d'un utilisateur
 /*  ****************************************************** */
 exports.logout = (req, res) => {
-    res.cookie('jwtCookie', '', {
-        maxAge: 1 // suppression instantannée (1 milliseconde)
+    res.cookie('snToken', '', {
+        maxAge: 1 // suppression instantannée (1 ms)
     });
     res.status(200).json({
         message: "utilisateur déconnecté",
-        redirect: '/'
+        redirect: '/home'
     });
 };
 

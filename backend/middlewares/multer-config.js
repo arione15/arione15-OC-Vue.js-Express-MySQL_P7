@@ -12,10 +12,9 @@ const path = require("path");
 const storage = multer.diskStorage({
     destination: (req, file, cb) => { cb(null, "images"); },
     filename: (req, file, cb) => { // renommer les fichiers pour éviter les doublons et remplacer les espaces par des underscores
-        let name = file.originalname.split(" ").join("_");
-        //let extension = MIME_TYPES[file.mimetype]; // Définir l'extension du fichier
-        //name = name.replace("." + extension, "_"); // création du nom final
-        cb(null, name + Date.now() + path.extname(file.originalname)); // personnaliser le nouveau nom complet du fichier
+        let extension = path.extname(file.originalname);
+        let name = file.originalname.split(" ").join("_").slice(0, -extension.length);
+        cb(null, name + "_" + Date.now() + extension); // personnaliser le nouveau nom complet du fichier
     }
 });
 
@@ -26,7 +25,7 @@ const upload = multer({
     storage: storage,
     fileFilter: (req, file, cb) => {
         //allowed extension
-        const filetypes = /jprg|jpg|png|gif/;
+        const filetypes = /jpeg|jpg|png|gif/;
         const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
         // Check mime
         const mimetype = filetypes.test(file.mimetype);
@@ -35,7 +34,8 @@ const upload = multer({
             return cb(null, true);
         } else {
             //cb(null, false);
-            return cb(new Error('Only .png, .jpg, .jpeg and .gif format allowed!'));
+            //return cb(new Error('Only .png, .jpg, .jpeg and .gif format allowed!'));
+            return cb('Only .png, .jpg, .jpeg and .gif format allowed!');
         }
     },
     limits: { fileSize: MAX_SIZE },
