@@ -3,6 +3,8 @@
 //const { User } = require("../config/dbConfig");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const Cookies = require("js-cookie");
+const cryptojs = require("crypto-js");
 //const Post = require("../models/Post");
 //const User = require("../models/User");
 const db = require("../config/db");
@@ -33,10 +35,10 @@ exports.signup = async(req, res) => {
 
             //console.log(user);
             if (user) {
-
-                return res.status(409).send({ error: 'This email belongs to an exiting user' });
+                fs.unlinkSync(req.file.path);
+                return res.status(409).send({ error: 'This email already exists!' });
             } else {
-                console.log("1211");
+                //console.log("1211");
                 bcrypt
                     .hash(password, 10)
                     .then(hashPass => {
@@ -46,7 +48,7 @@ exports.signup = async(req, res) => {
                             email: email,
                             password: hashPass,
                             role: role,
-                            photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}`  : null,
+                            photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
                         };
                         console.log("photo", userObject.photoUrl);
                         User.create(userObject)
@@ -80,15 +82,23 @@ exports.login = async(req, res) => {
                     return res.status(403).send({ error: 'The login information (pwd) is incorrect!' });
                 } else {
                     // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
-                    const token = jwt.sign( //générer le token
+                    const newToken = jwt.sign( //générer le token
                         { userId: user.id },
-                        process.env.SECRET_KEY, { expiresIn: "24h" }
+                        process.env.COOKIE_KEY, { expiresIn: "24h" }
                     );
-                    res.cookie('jwtCookie', token, { //mettre le token dans un cookie
+                    const newCookie = { token: newToken, userId: user.id };
+                    const cryptedToken = cryptojs.AES.encrypt(JSON.stringify(newCookie), process.env.COOKIE_KEY).toString();
+                    // new Cookies(req, res).set('snToken', cryptedToken, {
+                    //     httpOnly: true,
+                    //     maxAge: 86400000 // cookie pendant 24 heure (en millisecondes)
+                    // });
+                    res.cookie('snToken', cryptedToken, { //res.cookie() function set the cookie name to value.
                         httpOnly: true,
-                        maxAge: parseInt(process.env.MAX_AGE)
+                        maxAge: 86400000 // cookie pendant 24 heure (en millisecondes)
                     });
-                    res.status(200).send({ message: 'The user is successfully connected!', data: user, token }); // retourner le token au client
+
+                    //res.status(200).send({ message: 'The user is successfully connected!', data: user }); // retourner le token au client
+                    res.status(200).send({ message: 'The user is successfully connected!', data: user, cryptedToken: cryptedToken }); // retourner le token au client
                 }
             });
     } catch (error) {
@@ -101,12 +111,12 @@ exports.login = async(req, res) => {
 //  gérer la déconnexion d'un utilisateur
 /*  ****************************************************** */
 exports.logout = (req, res) => {
-    res.cookie('jwtCookie', '', {
-        maxAge: 1 // suppression instantannée (1 milliseconde)
+    res.cookie('snToken', '', {
+        maxAge: 1 // suppression instantannée (1 ms)
     });
     res.status(200).json({
         message: "utilisateur déconnecté",
-        redirect: '/'
+        redirect: '/home'
     });
 };
 

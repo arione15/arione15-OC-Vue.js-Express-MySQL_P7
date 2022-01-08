@@ -33,9 +33,9 @@ export default {
         }
     },
     async mounted () {
-    const id = this.$store.state.route.params.id
-    this.user = (await UserService.getOneUser(id)).data.data
-    console.log(this.user)
+    const id = this.$store.state.route.params.id;
+    this.user = (await UserService.getOneUser(id)).data.data;
+    console.log("user", this.user);
     // if (this.isUserLoggedIn) {
     //   PostHistoryService.post({
     //     postId: postId

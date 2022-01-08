@@ -22,7 +22,7 @@
       <div class= "col-lg-4">
         <div class= "bg-white text-left d-flex justify-space-around">
           <router-link to="Signup" class="font-weight-bold btn btn-dark mx-1 p-3">Nouveau ?</router-link>
-          <router-link to="Login" class="font-weight-bold btn btn-dark mx-1 p-3">Déjà inscriot ?</router-link>
+          <router-link to="Login" class="font-weight-bold btn btn-dark mx-1 p-3">Déjà inscrit ?</router-link>
         </div>
       </div>
     </v-row>

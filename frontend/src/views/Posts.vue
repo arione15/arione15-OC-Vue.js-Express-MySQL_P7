@@ -79,13 +79,14 @@ export default {
     return {
       posts: {},
       post: {
-        //userId: '',
+       //userId: this.$route.store.params.id,
+        userId: '',
         title: null,
         content: null,
         attachmentUrl: null,
         //createdAt: null,
       },
-      //message: "",
+      message: "",
       error: null,
       rules: {
         required: [value => !!value || "Ce champs est requis.."]
@@ -93,9 +94,6 @@ export default {
     };
   },
   methods: {
-    // navigateTo(route) {
-    //   this.$router.push(route);
-    // },
     async publish() {
       this.error = null;
       // const areAllFieldsFilledIn = Object.keys(this.post).every(key => !!this.post[key])
@@ -111,9 +109,8 @@ export default {
         if (this.post.attachmentUrl || this.post.content) {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
-          //formData.append("userId", this.post.userId);
-          //formData.append("createdAt", this.post.createdAt);
           formData.append("content", this.post.content);
+          formData.append("userId", this.post.userId);
           await PostService.createPost(formData);
           this.get();
           //this.$router.push({ name: "Posts" });
@@ -130,7 +127,6 @@ export default {
     },
     selectedFile(event) {
       this.post.attachmentUrl = event.target.files[0];
-      //console.log(this.post.attachmentUrl);
     },
     async get(){
       this.posts = (await PostService.getAllPosts()).data.data.sort((b, a) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())

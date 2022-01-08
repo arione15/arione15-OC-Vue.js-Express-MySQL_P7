@@ -1,51 +1,59 @@
 'use strict';
 
-const {
-    User,
-    Post,
-    Like,
-    Comment
-} = require('../config/dbConfig');
+const { User, Post, Like, Comment } = require('../config/dbConfig');
 const fs = require("fs");
-// const {
-//     promisify
-// } = require("util");
-// const pipeline = promisify(require("stream").pipeline);
-
-
-// const bcrypt = require("bcrypt");
-// const Joi = require("joi"); //  valider le mot de passe côté client
-// const jwt = require("jsonwebtoken");
-// const auth = require('../middlewares/authorize');
-// const multer = require('../middlewares/multer-config');
+const Cookies = require("js-cookie");
+const cryptojs = require("crypto-js");
 
 /*  *********************************************************** */
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
     // let fileName = req.body.userId + Date.now() + ".jpg";
+    const cryptedToken = new Cookies(req, res).get("snToken"); //récupérer le cookie  décrypter pour récupérezr le userID
+    const id = JSON.parse(cryptojs.AES.decrypt(cryptedToken, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8)).userId
+    console.log("2", id);
     let postObject = req.file ? {
         ...req.body,
         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
     } : {
-        ...req.body
+        ...req.body,
     };
-    console.log(req.file);
+    console.log("222", postObject);
     try {
-        const post = await Post.create(postObject); // le post est crée qu'il y est un req.file ou pas
-        // post.save().then(_ => {
-        //     res.status(200).send({
-        //         message: 'The post has been successfully created!',
-        //         data: post
-        //     })
-        // })
+        const post = await Post.create({
+            title: postObject.title,
+            content: postObject.content,
+            attachmentUrl: postObject.attachmentUrl,
+            userId: id,
+            include: [{
+                model: User,
+                attributes: ["id", "firstName", "familyName", "photoUrl", "role"],
+            }],
+        });
+        // le post est crée qu'il y est un req.file ou pas
         return res.status(201).json(post);
     } catch (error) {
+        console.log("3", error);
         return res.status(400).json({
             error: 'Failed to create the post!'
         });
     }
 }
+
+/*
+const posts = await db.Post.findAll({
+      attributes: ["id", "message", "imageUrl", "link", "createdAt"],
+      order: [["createdAt", "DESC"]],
+      include: [
+        {
+          model: db.User,
+          attributes: ["pseudo", "id", "photo"],
+        },
+        {
+
+*/
+
 
 
 /*  ****************************************************** */
@@ -54,6 +62,7 @@ exports.createPost = async(req, res) => {
 exports.getAllPosts = async(req, response) => {
     try {
         const posts = await Post.findAll().then(posts => {
+                console.log("sntoken", new Cookies(req, res).get("snToken"));
                 return response.status(200).send({
                     message: 'The list of all the posts has been successfully retrieved!',
                     data: posts
@@ -152,7 +161,4 @@ exports.deletePost = async(req, res) => {
                 error
             }));
     }
-    //.catch(error => res.status(400).json({ message: 'delete failed!', error }));
 }
-
-//.catch(error => res.status(400).json({ message: 'delete failed!', error }));

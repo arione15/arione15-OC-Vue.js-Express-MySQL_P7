@@ -13,9 +13,7 @@ module.exports = (sequelize, DataTypes) => {
         email: {
             type: DataTypes.STRING,
             allowNull: false,
-            unique: {
-                message: "Cette adresse email est déjà prise. Choisissez une autre !"
-            }
+            unique: true,
         },
         password: {
             type: DataTypes.STRING,
@@ -33,7 +31,7 @@ module.exports = (sequelize, DataTypes) => {
     });
 
     User.associate = models => {
-        User.hasMany(models.Post, { onDelete: 'cascade' });
+        User.hasMany(models.Post, { foreignKey: { name: 'userId', allowNull: false }, onDelete: 'cascade' });
         User.hasMany(models.Comment, { onDelete: 'cascade' });
         User.hasMany(models.Like, { onDelete: 'cascade' });
     };

@@ -2,14 +2,14 @@
   <v-layout column>
     <v-flex xs6>
       <panel title="Inscription">
-        <form name="register-form" autocomplete="off">
+        <form action="/signup" method="POST" name="register-form" autocomplete="off" enctype="multipart/form-data">
           <v-text-field label="First name" v-model="user.firstName"></v-text-field>
           <v-text-field label="Family name" v-model="user.familyName"></v-text-field>
           <v-text-field label="Email" v-model="user.email"></v-text-field>
           <v-text-field label="Password" type="password" v-model="user.password" autocomplete="new-password"></v-text-field>
           <v-text-field label="Rôle" v-model="user.role"></v-text-field>
           <!-- <v-text-field label="Image" v-model="photoUrl"></v-text-field> -->
-          <input name="image" type="file" v-on:change="selectedUser($event)">
+          <input name="image" type="file" class="responsive-img" v-on:change="selectedUser($event)" placeholder="Enter your avatar">
 
 
         </form>
@@ -53,7 +53,11 @@ export default {
           formData.append("password", this.user.password);
           formData.append("role", this.user.role);
           formData.append("image", this.user.photoUrl);
-          await AuthenticationService.signupUser(formData);
+          const response = await AuthenticationService.signupUser(formData);
+
+          this.$store.dispatch('setToken', response.data.token);
+          this.$store.dispatch('setUser', response.data.user);
+
           this.$router.push({ name: "Login" });
           //console.log(formData);
         }
