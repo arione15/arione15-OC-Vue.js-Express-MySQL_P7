@@ -36,31 +36,34 @@ exports.signup = async(req, res) => {
             //console.log(user);
             if (user) {
                 fs.unlinkSync(req.file.path);
-                return res.status(409).send({ error: 'This email already exists!' });
+                return res.status(409).send('This email already exists!');
             } else {
                 //console.log("1211");
-                bcrypt
-                    .hash(password, 10)
-                    .then(hashPass => {
-                        const userObject = {
-                            firstName: firstName,
-                            familyName: familyName,
-                            email: email,
-                            password: hashPass,
-                            role: role,
-                            photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
-                        };
-                        console.log("photo", userObject.photoUrl);
-                        User.create(userObject)
-                            .then(createdUser => {
-                                res.status(201).send(createdUser);
-                            })
-                            .catch(error => {
-                                res.status(500).json({ error });
-                            })
-                    })
-                    .catch(error => res.status(500).json({ error }));
-            };
+                const hashPass = await bcrypt.hash(password, 10);
+                const userObject = {
+                    firstName: firstName,
+                    familyName: familyName,
+                    email: email,
+                    password: hashPass,
+                    role: role,
+                    photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
+                };
+                console.log("photo", userObject.photoUrl);
+                console.log("userObject", userObject);
+                const createdUser = await User.create(userObject);
+                //envoyer le cookie contenant le token
+                const newToken = jwt.sign({ userId: user.id },
+                    process.env.COOKIE_KEY, { expiresIn: "24h" }
+                );
+                const newCookie = { token: newToken, userId: createdUser.id };
+                const cryptedToken = cryptojs.AES.encrypt(JSON.stringify(newCookie), process.env.COOKIE_KEY).toString();
+                res.cookie('snToken', cryptedToken, {
+                    httpOnly: true,
+                    maxAge: 86400000 // 24h
+                });
+                res.status(200).send({ message: 'The user is successfully connected!', data: createdUser, cryptedToken: cryptedToken });
+                // fin envoyer le cookie
+            }
         } catch (error) {
             return res.status(500).send({ error: 'An error has occured while trying to sign up!' });
         }
@@ -73,13 +76,13 @@ exports.login = async(req, res) => {
     try {
         const user = await User.findOne({ where: { email: req.body.email } });
         if (!user) {
-            return res.status(403).send({ error: 'The login information (email) is incorrect!' });
+            return res.status(403).send('The login information (email) is incorrect!');
         }
         bcrypt
             .compare(req.body.password, user.password)
             .then((isPasswordValid) => {
                 if (!isPasswordValid) {
-                    return res.status(403).send({ error: 'The login information (pwd) is incorrect!' });
+                    return res.status(403).send('The login information (pwd) is incorrect!');
                 } else {
                     // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
                     const newToken = jwt.sign( //générer le token
@@ -151,7 +154,7 @@ exports.updateUser = (req, res) => {
     User.update(req.body, { where: { id: id } })
         .then(_ => {
             User.findByPk(id).then(user => {
-                const message = `L'utilisateur ${user.name} a bien été modifié !`;
+                const message = `L 'utilisateur ${user.name} a bien été modifié !`;
                 res.json({ message, data: req.body })
             })
         }).catch(error => console.log(error))

@@ -11,6 +11,7 @@ const multer = require("../middlewares/multer-config");
 const upload = require('../middlewares/multer-config');
 
 // user auth
+//router.post("/signup", validateSignup, upload, userControl.signup);
 router.post("/signup", upload, userControl.signup);
 router.post("/login", userControl.login);
 router.get("/logout", userControl.logout);
