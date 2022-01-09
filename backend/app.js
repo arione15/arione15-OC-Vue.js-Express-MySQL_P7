@@ -9,13 +9,12 @@ const postRoutes = require('./routes/postRt');
 const commentRoutes = require('./routes/commentRt');
 const likeRoutes = require('./routes/likeRt');
 const path = require('path');
+const { sequelize } = require('./models/index');
+
 
 //const { initDb } = require('./config/dbConfig');
 //initDb();
-const db = require('./config/db');
-db.sequelize.sync({ force: false })
-    .then(() => console.log("DB Synced"))
-    .catch(error => console.log(error));
+
 const app = express();
 
 // les variables d'environnement
@@ -45,17 +44,6 @@ app.use(cookieParser()); // entre autres, prend le jwt et le met dans un cookie
 // pour la version de l'api
 //app.use("/api/v1", api);
 
-// pour authentifier le user sur toutes les routes get
-app.get('*', checkUser);
-
-// pour récupérer le id d'un user
-app.get('/jwtid', requireAuth, (req, res) => {
-    //res.status(200).send(res.locals.user.id });
-    //res.status(200).json({ "userFromTheBack": res.locals.user });
-    res.status(200).send(res.locals.user)
-
-});
-
 // utilisation des ressources "static", içi les images/vidéos
 app.use('/images', express.static(path.join(__dirname, 'images')));
 //app.use('/images', express.static(path.join(__dirname, 'profil')));
@@ -65,5 +53,15 @@ app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
 app.use('/api/post-comment', commentRoutes);
 app.use('/api/like', likeRoutes);
+
+const dbTest = async function() {
+    try {
+        await sequelize.authenticate();
+        console.log('Connection has been established successfully.');
+    } catch (error) {
+        console.error('Unable to connect to the database:', error);
+    }
+};
+dbTest();
 
 module.exports = app;

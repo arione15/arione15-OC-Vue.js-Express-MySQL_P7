@@ -1,15 +1,11 @@
 'use strict';
+const db = require('../models')
+const sequelize = require('sequelize')
+const cryptojs = require('crypto-js')
+const cookies = require('cookies')
+const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 
-//const { User } = require("../config/dbConfig");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const Cookies = require("js-cookie");
-const cryptojs = require("crypto-js");
-//const Post = require("../models/Post");
-//const User = require("../models/User");
-const db = require("../config/db");
-const User = db.User;
-const Post = db.Post;
 const fs = require('fs');
 
 /*  *********************************************************** */
@@ -18,51 +14,42 @@ const fs = require('fs');
 // 1- valider les inputs de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
 exports.signup = async(req, res) => {
         const { firstName, familyName, email, password, role } = req.body;
-        // let userObject = req.file ? {
-        //     ...req.body,
-        //     photoUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
-        // } : {
-        //     ...req.body
-        // };
         console.log("image", req.file);
         try {
-
-            // if (firstName === null || firstName === '' || familyName === null || familyName === '' ||
-            //     email === null || email === '' || password === null || password === '' || role === null || role === '') {
-            //     return res.status(400).send({ error: 'Please fill in the fields!' });
-            // };
-            const user = await User.findOne({ attributes: ['email'], where: { email: email } });
-
-            //console.log(user);
+            const user = await db.User.findOne({
+                    where: { email: req.body.email },
+                }) // si l'email est utilisé existe
             if (user) {
                 fs.unlinkSync(req.file.path);
                 return res.status(409).send('This email already exists!');
             } else {
-                //console.log("1211");
+                const allUsers = await db.User.findAll({
+                    attributes: {
+                        include: [
+                            [sequelize.fn('COUNT', sequelize.col('id')), 'totalUsers']
+                        ],
+                    },
+                })
+                const numUsers = allUsers[0].dataValues.totalUsers //
+                let isAdmin = false
+                    //si on n'a aucun utilisateur dans la BDD, le 1er utilisateur créé
+                    //sera admin
+                if (numUsers === 0) isAdmin = true
                 const hashPass = await bcrypt.hash(password, 10);
                 const userObject = {
                     firstName: firstName,
                     familyName: familyName,
                     email: email,
                     password: hashPass,
-                    role: role,
+                    role: isAdmin,
                     photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
                 };
-                console.log("photo", userObject.photoUrl);
-                console.log("userObject", userObject);
-                const createdUser = await User.create(userObject);
-                //envoyer le cookie contenant le token
-                const newToken = jwt.sign({ userId: user.id },
-                    process.env.COOKIE_KEY, { expiresIn: "24h" }
-                );
-                const newCookie = { token: newToken, userId: createdUser.id };
-                const cryptedToken = cryptojs.AES.encrypt(JSON.stringify(newCookie), process.env.COOKIE_KEY).toString();
-                res.cookie('snToken', cryptedToken, {
-                    httpOnly: true,
-                    maxAge: 86400000 // 24h
-                });
-                res.status(200).send({ message: 'The user is successfully connected!', data: createdUser, cryptedToken: cryptedToken });
-                // fin envoyer le cookie
+
+                console.log("1");
+                const createdUser = await db.User.create(userObject);
+                console.log("2");
+
+                res.status(200).send({ message: 'The user is successfully connected!', data: createdUser });
             }
         } catch (error) {
             return res.status(500).send({ error: 'An error has occured while trying to sign up!' });
@@ -74,36 +61,42 @@ exports.signup = async(req, res) => {
     // 1- vérifier si l'utilisateur est enregistré, 2- envoyer un token avec un payload (ici le userId)
 exports.login = async(req, res) => {
     try {
-        const user = await User.findOne({ where: { email: req.body.email } });
+        const user = await db.User.findOne({ where: { email: req.body.email } });
         if (!user) {
             return res.status(403).send('The login information (email) is incorrect!');
-        }
-        bcrypt
-            .compare(req.body.password, user.password)
-            .then((isPasswordValid) => {
-                if (!isPasswordValid) {
-                    return res.status(403).send('The login information (pwd) is incorrect!');
-                } else {
-                    // si la comparaison est valide, on répond par l'envoi du token (avec le userId qui va avec) et on l'envoie dans un cookie.
-                    const newToken = jwt.sign( //générer le token
-                        { userId: user.id },
-                        process.env.COOKIE_KEY, { expiresIn: "24h" }
-                    );
-                    const newCookie = { token: newToken, userId: user.id };
-                    const cryptedToken = cryptojs.AES.encrypt(JSON.stringify(newCookie), process.env.COOKIE_KEY).toString();
-                    // new Cookies(req, res).set('snToken', cryptedToken, {
-                    //     httpOnly: true,
-                    //     maxAge: 86400000 // cookie pendant 24 heure (en millisecondes)
-                    // });
-                    res.cookie('snToken', cryptedToken, { //res.cookie() function set the cookie name to value.
-                        httpOnly: true,
-                        maxAge: 86400000 // cookie pendant 24 heure (en millisecondes)
-                    });
+        } else {
 
-                    //res.status(200).send({ message: 'The user is successfully connected!', data: user }); // retourner le token au client
-                    res.status(200).send({ message: 'The user is successfully connected!', data: user, cryptedToken: cryptedToken }); // retourner le token au client
+            // on compare les mots de passes
+            const hash = await bcrypt.compare(req.body.password, user.password)
+            if (!hash) {
+                return res.status(401).send({ error: 'Mot de passe incorrect !' })
+            } else {
+                //on créé un token
+                const newToken = jwt.sign({ userId: user.id }, process.env.COOKIE_KEY, {
+                        expiresIn: '24h',
+                    })
+                    //on créé un cookie
+                const cookieContent = {
+                    token: newToken,
+                    userId: user.id,
                 }
-            });
+                console.log("1");
+                //cryptage du cookie
+                const cryptedCookie = cryptojs.AES.encrypt(
+                    JSON.stringify(cookieContent),
+                    process.env.COOKIE_KEY,
+                ).toString()
+                new cookies(req, res).set('snToken', cryptedCookie, {
+                        httpOnly: true,
+                        maxAge: 86400000, // 24h
+                    })
+                    // on renvoie le user et le cookie
+                res.status(200).send({
+                    user: user,
+                    cryptedCookie,
+                })
+            }
+        }
     } catch (error) {
         res.send({ error: 'An error has occured while trying to log in!' });
     }
@@ -126,12 +119,15 @@ exports.logout = (req, res) => {
 /*  ****************************************************** */
 //  récupérer tous les utilisateurs
 /*  ****************************************************** */
-exports.getAllUsers = (req, res) => {
-    User.findAll({ include: [Post] })
-        .then(users => {
-            const message = 'La liste des utilisateurs a bien été récupérée !';
-            res.json({ message, data: users })
-        }).catch({ error: "error" })
+exports.getAllUsers = async(req, res) => {
+    try {
+        const users = await db.User.findAll({
+            attributes: ['id', 'firstName', 'familyName', 'email', 'photoUrl'],
+        })
+        res.status(200).send(users)
+    } catch (error) {
+        return res.status(500).send({ error: 'Erreur serveur' })
+    }
 };
 
 /*  ****************************************************** */
@@ -139,7 +135,7 @@ exports.getAllUsers = (req, res) => {
 /*  ****************************************************** */
 exports.getOneUser = (req, res) => {
     const id = req.params.id;
-    User.findByPk(id)
+    db.User.findByPk(id)
         .then(user => {
             const message = 'Un utilisateur a bien été récupéré !';
             res.json({ message, data: user })
@@ -151,7 +147,7 @@ exports.getOneUser = (req, res) => {
 /*  ****************************************************** */
 exports.updateUser = (req, res) => {
     const id = req.params.id;
-    User.update(req.body, { where: { id: id } })
+    db.User.update(req.body, { where: { id: id } })
         .then(_ => {
             User.findByPk(id).then(user => {
                 const message = `L 'utilisateur ${user.name} a bien été modifié !`;
@@ -164,7 +160,7 @@ exports.updateUser = (req, res) => {
 // supprimer un utilisateur
 /*  ****************************************************** */
 exports.deleteUser = (req, res) => {
-    User.findByPk(req.params.id)
+    db.User.findByPk(req.params.id)
         .then(user => {
             const userDeleted = user;
             User.destroy({ where: { id: user.id } })

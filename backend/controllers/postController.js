@@ -2,7 +2,7 @@
 
 const { User, Post, Like, Comment } = require('../config/dbConfig');
 const fs = require("fs");
-const Cookies = require("js-cookie");
+const cookies = require("cookies");
 const cryptojs = require("crypto-js");
 
 /*  *********************************************************** */
