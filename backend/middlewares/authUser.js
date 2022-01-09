@@ -10,6 +10,8 @@ exports.checkUser = async(req, res, next) => {
     //const cryptedToken = new Cookies(req, res).get('snToken');
     try {
         const cryptedCookie = new Cookies(req, res).get('snToken');
+        console.log("666", cryptedCookie);
+
         const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
         const token = jwt.verify(cookie.token, process.env.COOKIE_KEY);
         if (!cookie || (cookie.userId && cookie.userId !== token.userId)) {

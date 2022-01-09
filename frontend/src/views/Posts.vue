@@ -11,7 +11,7 @@
               <div class="card-body">
                 <form action class>
                   <div class="d-flex align-items-start flex-column form-group">
-                     <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
+                    <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
                     <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line></v-text-field>
                     <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
                     <input name="image" type="file" v-on:change="selectedFile($event)" />
@@ -40,7 +40,7 @@
             ></v-img>
             <v-card-title>{{ post.title }}</v-card-title>
 
-            <v-card-subtitle class="pb-0">{{ post.userId }}</v-card-subtitle>
+            <v-card-subtitle class="pb-0">{{ post.User.id }}</v-card-subtitle>
 
             <v-card-text class="text--primary">
               <div>{{ new Date(post.createdAt).toString().substring(0, 24) }}</div>
@@ -57,7 +57,7 @@
               <v-btn
                 color="#FD2D01"
                 dark
-                :to="{ name: 'Profil', params: { id: post.userId } }"
+                :to="{ name: 'Profil', params: { id: post.User.id } }"
               >View Profil</v-btn>
             </v-card-actions>
           </v-card>
@@ -70,6 +70,7 @@
 <script>
 //import Panel from '../components/Panel'
 import PostService from "../services/PostService.js";
+//import axios from "axios";
 
 export default {
   components: {
@@ -79,12 +80,10 @@ export default {
     return {
       posts: {},
       post: {
-       //userId: this.$route.store.params.id,
-        userId: '',
         title: null,
         content: null,
         attachmentUrl: null,
-        //createdAt: null,
+        userId:""
       },
       message: "",
       error: null,
@@ -101,8 +100,6 @@ export default {
       //   this.error = 'Veuillez remplir tous les champs !'
       //   return
       // }
-      console.log("url", this.post.attachmentUrl);
-      console.log("content", this.post.content);
 
       try {
         const formData = new FormData();
@@ -110,8 +107,9 @@ export default {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
           formData.append("content", this.post.content);
-          formData.append("userId", this.post.userId);
+          //formData.append("userId", this.post.userId);
           await PostService.createPost(formData);
+
           this.get();
           //this.$router.push({ name: "Posts" });
         }
@@ -129,15 +127,19 @@ export default {
       this.post.attachmentUrl = event.target.files[0];
     },
     async get(){
-      this.posts = (await PostService.getAllPosts()).data.data.sort((b, a) => new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf())
+      this.posts = (await PostService.getAllPosts()).data
+      console.log("1", this.posts);
 
     }
+  },
+  created(){
+    document.cookie = "snToken" + "=" + sessionStorage.getItem("token") + ";" + 24*60*60*1000 + ";path=/"
   },
   async mounted() {
     // try {
       this.get();
     console.log("posts", this.posts);
-    this.message = (await PostService.getAllPosts()).data.message
+    //this.message = (await PostService.getAllPosts()).data.message
     //console.log(this.message)
     //  this.posts = response;
 

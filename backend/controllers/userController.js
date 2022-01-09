@@ -87,10 +87,10 @@ exports.login = async(req, res) => {
                     process.env.COOKIE_KEY,
                 ).toString()
                 new cookies(req, res).set('snToken', cryptedCookie, {
-                        httpOnly: true,
-                        maxAge: 86400000, // 24h
-                    })
-                    // on renvoie le user et le cookie
+                    httpOnly: true,
+                    maxAge: 86400000, // 24h
+                });
+                // on renvoie le user et le cookie
                 res.status(200).send({
                     user: user,
                     cryptedCookie,

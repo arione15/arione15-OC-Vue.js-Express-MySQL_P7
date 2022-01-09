@@ -10,7 +10,9 @@ export default {
         return Api.get(`post/${postId}`)
     },
     createPost(post) { // envoi des données par post sur 3000, qui vont être récupérées dans app.js : app.post('/', (req, res) ...)
-        return Api.post('/post', post)
+        return Api.post('/post', post, {
+            withCredentials: true
+        })
     },
     updatePost(postId, formdata) { // envoi des données par post sur 3000, qui vont être récupérées dans app.js : app.post('/', (req, res) ...)
         return Api.put(`post/${postId}`, formdata)

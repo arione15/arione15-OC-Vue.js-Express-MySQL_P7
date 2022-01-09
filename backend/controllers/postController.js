@@ -12,6 +12,7 @@ exports.createPost = async(req, res) => {
     // let fileName = req.body.userId + Date.now() + ".jpg";
     const cryptedCookie = new Cookies(req, res).get('snToken');
     const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
+    console.log("555", cryptedCookie);
     let postObject = req.file ? {
         ...req.body,
         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
@@ -19,10 +20,7 @@ exports.createPost = async(req, res) => {
         ...req.body,
     };
     try {
-        const post = await db.Post.create({
-                content: req.body.content,
-                title: req.body.title,
-                attachmentUrl: req.body.attachmentUrl,
+        const post = await db.Post.create({...postObject,
                 UserId: cookie.userId,
             })
             // le post est crée qu'il y est un req.file ou pas

@@ -23,6 +23,8 @@
 
 import AuthenticationService from "../services/AuthenticationService.js";
 import Panel from '../components/Panel'
+import axios from 'axios'
+//import setHeaders from '../utils'
 
 export default {
   name: 'Login',
@@ -32,7 +34,6 @@ export default {
       password: "",
       error: null,
       message: "",
-
     };
   },
   methods: {
@@ -43,23 +44,22 @@ export default {
           email: this.email,
           password: this.password
         });
-        this.message = response.data.message;
+        //console.log("9", response);
+        //this.message = response.data.message;
         sessionStorage.setItem("token", response.data.cryptedCookie);
-        //this.$axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.cryptedCookie;
+        //setHeaders(response.data.cryptedCookie);
+        this.$axios.defaults.headers.common["Authorization"] = "Bearer " + sessionStorage.getItem("token")
+        console.log("headers", axios.defaults.headers);
 
-        this.$store.dispatch('setToken', response.data.token);
+        //axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.cryptedCookie;
+        //this.$store.dispatch('setToken', response.data.token);
         this.$store.dispatch('setUser', response.data.user);
-        
         this.$router.push({ name: 'Posts' });
       } catch (err) {
         console.log("myerr", err);
-        //console.log(cookie);
         //this.error = err.response.data.error;
       }
-
-      //console.log(response.data, 'hello');
     },
-
   },
   components: {
     Panel
