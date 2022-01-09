@@ -1,79 +1,57 @@
 'use strict';
 
-const { User, Post, Like, Comment } = require('../config/dbConfig');
+const db = require('../models') // accès tables
+const cryptojs = require('crypto-js')
 const fs = require("fs");
-const cookies = require("cookies");
-const cryptojs = require("crypto-js");
+const Cookies = require("cookies");
 
 /*  *********************************************************** */
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
     // let fileName = req.body.userId + Date.now() + ".jpg";
-    const cryptedToken = new Cookies(req, res).get("snToken"); //récupérer le cookie  décrypter pour récupérezr le userID
-    const id = JSON.parse(cryptojs.AES.decrypt(cryptedToken, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8)).userId
-    console.log("2", id);
+    const cryptedCookie = new Cookies(req, res).get('snToken');
+    const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
     let postObject = req.file ? {
         ...req.body,
         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
     } : {
         ...req.body,
     };
-    console.log("222", postObject);
     try {
-        const post = await Post.create({
-            title: postObject.title,
-            content: postObject.content,
-            attachmentUrl: postObject.attachmentUrl,
-            userId: id,
-            include: [{
-                model: User,
-                attributes: ["id", "firstName", "familyName", "photoUrl", "role"],
-            }],
-        });
-        // le post est crée qu'il y est un req.file ou pas
+        const post = await db.Post.create({
+                content: req.body.content,
+                title: req.body.title,
+                attachmentUrl: req.body.attachmentUrl,
+                UserId: cookie.userId,
+            })
+            // le post est crée qu'il y est un req.file ou pas
         return res.status(201).json(post);
     } catch (error) {
-        console.log("3", error);
         return res.status(400).json({
             error: 'Failed to create the post!'
         });
     }
 }
 
-/*
-const posts = await db.Post.findAll({
-      attributes: ["id", "message", "imageUrl", "link", "createdAt"],
-      order: [["createdAt", "DESC"]],
-      include: [
-        {
-          model: db.User,
-          attributes: ["pseudo", "id", "photo"],
-        },
-        {
-
-*/
-
-
-
 /*  ****************************************************** */
 //  récupérer tous les posts
 /*  ****************************************************** */
-exports.getAllPosts = async(req, response) => {
+exports.getAllPosts = async(req, res) => {
     try {
-        const posts = await Post.findAll().then(posts => {
-                console.log("sntoken", new Cookies(req, res).get("snToken"));
-                return response.status(200).send({
-                    message: 'The list of all the posts has been successfully retrieved!',
-                    data: posts
-                });
-            })
-            // .sort({
-            //     createdAt: -1
+        const posts = await db.Post.findAll({
+            attributes: ['id', 'content', 'attachmentUrl', 'createdAt'],
+            order: [
+                ['createdAt', 'DESC']
+            ],
+            include: [{
+                model: db.User,
+                attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
+            }, ],
+        })
+        res.status(200).send(posts)
     } catch (error) {
-        response.status(400).send({
-            error: 'Error getting all the posts'
-        });
+        return res.status(500).send({ error: "Une erreur s'est produite!" })
     }
 }
 
@@ -82,15 +60,36 @@ exports.getAllPosts = async(req, response) => {
 /*  ****************************************************** */
 exports.getOnePost = async(req, res) => {
     try {
-        const post = await Post.findByPk(req.params.id);
-        return res.status(200).send({
-            message: 'The post has been successfully retrieved!',
-            data: post
-        });
+        const post = await db.Post.findOne({
+            // on récupère le post avec l'id fourni en incluant les tables et attributs nécessaires
+            where: { id: req.params.id },
+            include: [{
+                model: db.User,
+                attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
+            }, ],
+        })
+        res.status(200).json(post)
     } catch (error) {
-        res.status(400).send({
-            error: 'Error getting the post'
-        });
+        return res.status(500).send({ error: 'Erreur serveur' })
+    }
+}
+
+/*  ****************************************************** */
+//  tous les posts d'un seul utilisateur
+/*  ****************************************************** */
+
+exports.getUserPosts = async(req, res) => {
+    try {
+        const post = await db.Post.findAll({
+            where: { userId: req.params.id },
+            include: [{
+                model: db.User,
+                attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
+            }, ],
+        })
+        res.status(200).json(post)
+    } catch (error) {
+        return res.status(500).send({ error: 'Erreur serveur' })
     }
 }
 
@@ -98,45 +97,45 @@ exports.getOnePost = async(req, res) => {
 // modifier un post
 /*  ****************************************************** */
 
-exports.updatePost = async(req, res, ) => {
-    let postObject = req.file ? {
-        ...req.body,
-        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
-    } : {
-        ...req.body
-    };
-    //const content = req.body.content;
-    try {
-        // if (content === null || content === '') {
-        //     return res.status(400).json({
-        //         'error': "Please enter modification to 'Contenu' field!"
-        //     });
-        // }
-        const post = await Post.update({
-            ...postObject,
-            id: req.params.id
-        }, {
-            where: {
-                id: req.params.id
-            }
-        });
-        return res.status(200).send({
-            message: 'The post has been successfully modified!',
-            data: post
-        });
-    } catch (error) {
-        res.status(400).send({
-            error: 'Update failed'
-        });
-    }
-};
+// exports.updatePost = async(req, res, ) => {
+//     let postObject = req.file ? {
+//         ...req.body,
+//         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+//     } : {
+//         ...req.body
+//     };
+//     //const content = req.body.content;
+//     try {
+//         // if (content === null || content === '') {
+//         //     return res.status(400).json({
+//         //         'error': "Please enter modification to 'Contenu' field!"
+//         //     });
+//         // }
+//         const post = await Post.update({
+//             ...postObject,
+//             id: req.params.id
+//         }, {
+//             where: {
+//                 id: req.params.id
+//             }
+//         });
+//         return res.status(200).send({
+//             message: 'The post has been successfully modified!',
+//             data: post
+//         });
+//     } catch (error) {
+//         res.status(400).send({
+//             error: 'Update failed'
+//         });
+//     }
+// };
 
 /********************************************************/
 // supprimer un post
 /********************************************************/
 exports.deletePost = async(req, res) => {
     let myUuid = req.params.id;
-    const myId = await Post.findOne({
+    const myId = await db.Post.findOne({
         where: {
             id: myUuid
         }
@@ -147,8 +146,7 @@ exports.deletePost = async(req, res) => {
             message: "id not found !"
         });
     } else {
-        console.log(myId instanceof Post); // true
-        Post.destroy({
+        db.Post.destroy({
                 where: {
                     id: myUuid
                 }
