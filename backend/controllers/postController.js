@@ -54,6 +54,9 @@ exports.getAllPosts = async(req, res) => {
                     model: db.User,
                     attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
                 }]
+            }, {
+                model: db.Like,
+                attributes: ['UserId'],
             }]
         });
         res.status(200).send(posts)
