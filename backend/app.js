@@ -59,7 +59,7 @@ app.use('/images', express.static(path.join(__dirname, 'images')));
 // routes
 app.use('/api/user', userRoutes);
 app.use('/api/post', postRoutes);
-app.use('/api/post-comment', commentRoutes);
+app.use('/api/comment', commentRoutes);
 app.use('/api/like', likeRoutes);
 
 const dbTest = async function() {

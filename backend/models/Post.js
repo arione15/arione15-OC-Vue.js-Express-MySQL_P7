@@ -16,18 +16,16 @@ module.exports = (sequelize, DataTypes) => {
                     allowNull: false
                 },
                 onDelete: 'CASCADE',
-            })
+            });
+            models.Post.hasMany(models.Comment);
         }
     };
     Post.init({
         content: { type: DataTypes.TEXT, allowNull: false },
         title: { type: DataTypes.STRING, allowNull: true },
         attachmentUrl: { type: DataTypes.STRING, allowNull: true },
-
-
     }, {
         sequelize,
-
         modelName: 'Post',
     });
     return Post;

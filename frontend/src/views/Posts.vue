@@ -59,6 +59,7 @@
                 dark
                 :to="{ name: 'Profil', params: { id: post.User.id } }"
               >View Profil</v-btn>
+              <v-text-field required :rules="rules.required" label="Comment" v-model="commentary">Ajoutez un commentaire</v-text-field>
             </v-card-actions>
           </v-card>
         </v-col>
@@ -85,6 +86,7 @@ export default {
         attachmentUrl: null,
         userId:""
       },
+      commentary:"",
       message: "",
       error: null,
       rules: {

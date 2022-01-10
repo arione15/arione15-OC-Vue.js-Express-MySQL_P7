@@ -44,8 +44,18 @@ exports.getAllPosts = async(req, res) => {
             include: [{
                 model: db.User,
                 attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
-            }, ],
-        })
+            }, {
+                model: db.Comment,
+                attributes: ['message', 'id', 'UserId'],
+                order: [
+                    ['createdAt', 'DESC']
+                ],
+                include: [{
+                    model: db.User,
+                    attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
+                }]
+            }]
+        });
         res.status(200).send(posts)
     } catch (error) {
         return res.status(500).send({ error: "Une erreur s'est produite!" })

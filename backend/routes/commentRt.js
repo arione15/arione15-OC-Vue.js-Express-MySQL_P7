@@ -10,9 +10,8 @@ const commentControl = require("../controllers/commentController");
 // const uploadController = require('../controllers/upload.controller');
 
 // comment CRUD
-router.post("/:postId/comment/", checkUser, commentControl.createComment);
-router.get("/:postId/comment", checkUser, commentControl.getAllComments);
-router.get("/:postId/comment/:commentId", checkUser, commentControl.getOneComment);
-router.delete("/:postId/comment/:commentId", checkUser, commentControl.deleteComment);
+router.post("/:id", checkUser, commentControl.createComment);
+//router.get("/:id/:commentId", checkUser, commentControl.getOneComment);
+router.delete("/:commentId", checkUser, commentControl.deleteComment);
 
 module.exports = router;
