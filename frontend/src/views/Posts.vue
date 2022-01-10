@@ -109,7 +109,6 @@ export default {
           formData.append("content", this.post.content);
           //formData.append("userId", this.post.userId);
           await PostService.createPost(formData);
-
           this.get();
           //this.$router.push({ name: "Posts" });
         }
@@ -118,6 +117,10 @@ export default {
         }
         //await PostService.createPost(this.post);
         //this.message = response.data.message;
+        this.post.title = "";
+          this.post.content = "";
+          this.post.attachmentUrl = "";
+          this.post.userId = "";
       } catch (err) {
         console.log(err);
         //this.error = err.response.data.error;

@@ -8,7 +8,7 @@
           <v-text-field label="Family name" v-model="user.familyName"></v-text-field>
           <v-text-field label="Email" v-model="user.email"></v-text-field>
           <v-text-field label="Password" type="password" v-model="user.password" autocomplete="new-password"></v-text-field>
-          <v-text-field label="Rôle" v-model="user.role"></v-text-field>
+          <!-- <v-text-field label="Rôle" v-model="user.role"></v-text-field> -->
           <!-- <v-text-field label="Image" v-model="photoUrl"></v-text-field> -->
           <input name="image" type="file" class="responsive-img" v-on:change="selectedUser($event)" placeholder="Enter your avatar">
 
