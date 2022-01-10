@@ -7,7 +7,14 @@ export default {
         })
     },
     getOnePost(postId) {
-        return Api.get(`post/${postId}`)
+        return Api.get(`post/${postId}`, {
+            withCredentials: true
+        })
+    },
+    getUserPosts(id) {
+        return Api.get(`post/posts/${id}`, {
+            withCredentials: true
+        })
     },
     createPost(post) { // envoi des données par post sur 3000, qui vont être récupérées dans app.js : app.post('/', (req, res) ...)
         return Api.post('/post', post, {
@@ -15,6 +22,8 @@ export default {
         })
     },
     updatePost(postId, formdata) { // envoi des données par post sur 3000, qui vont être récupérées dans app.js : app.post('/', (req, res) ...)
-        return Api.put(`post/${postId}`, formdata)
+        return Api.put(`post/${postId}`, formdata, {
+            withCredentials: true
+        })
     }
 }

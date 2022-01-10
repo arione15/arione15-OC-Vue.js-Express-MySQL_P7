@@ -12,7 +12,6 @@ exports.createPost = async(req, res) => {
     // let fileName = req.body.userId + Date.now() + ".jpg";
     const cryptedCookie = new Cookies(req, res).get('snToken');
     const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
-    console.log("555", cryptedCookie);
     let postObject = req.file ? {
         ...req.body,
         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
@@ -21,7 +20,7 @@ exports.createPost = async(req, res) => {
     };
     try {
         const post = await db.Post.create({...postObject,
-                UserId: cookie.userId,
+                UserId: cookie.userId, //!!!!!!!! U uppercase
             })
             // le post est crée qu'il y est un req.file ou pas
         return res.status(201).json(post);
@@ -87,7 +86,7 @@ exports.getUserPosts = async(req, res) => {
         })
         res.status(200).json(post)
     } catch (error) {
-        return res.status(500).send({ error: 'Erreur serveur' })
+        return res.status(500).send({ error: 'Server Error' })
     }
 }
 
@@ -132,10 +131,10 @@ exports.getUserPosts = async(req, res) => {
 // supprimer un post
 /********************************************************/
 exports.deletePost = async(req, res) => {
-    let myUuid = req.params.id;
+    //let myUuid = req.params.id;
     const myId = await db.Post.findOne({
         where: {
-            id: myUuid
+            id: req.params.id
         }
     });
 
@@ -146,7 +145,7 @@ exports.deletePost = async(req, res) => {
     } else {
         db.Post.destroy({
                 where: {
-                    id: myUuid
+                    id: req.params.id
                 }
             })
             .then(() => res.status(200).json({

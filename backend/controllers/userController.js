@@ -45,10 +45,7 @@ exports.signup = async(req, res) => {
                     photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
                 };
 
-                console.log("1");
                 const createdUser = await db.User.create(userObject);
-                console.log("2");
-
                 res.status(200).send({ message: 'The user is successfully connected!', data: createdUser });
             }
         } catch (error) {
@@ -62,10 +59,10 @@ exports.signup = async(req, res) => {
 exports.login = async(req, res) => {
     try {
         const user = await db.User.findOne({ where: { email: req.body.email } });
+
         if (!user) {
             return res.status(403).send('The login information (email) is incorrect!');
         } else {
-
             // on compare les mots de passes
             const hash = await bcrypt.compare(req.body.password, user.password)
             if (!hash) {
@@ -77,11 +74,10 @@ exports.login = async(req, res) => {
                     })
                     //on créé un cookie
                 const cookieContent = {
-                    token: newToken,
-                    userId: user.id,
-                }
-                console.log("1");
-                //cryptage du cookie
+                        token: newToken,
+                        userId: user.id,
+                    }
+                    //cryptage du cookie
                 const cryptedCookie = cryptojs.AES.encrypt(
                     JSON.stringify(cookieContent),
                     process.env.COOKIE_KEY,
@@ -149,7 +145,7 @@ exports.updateUser = (req, res) => {
     const id = req.params.id;
     db.User.update(req.body, { where: { id: id } })
         .then(_ => {
-            User.findByPk(id).then(user => {
+            db.User.findByPk(id).then(user => {
                 const message = `L 'utilisateur ${user.name} a bien été modifié !`;
                 res.json({ message, data: req.body })
             })
@@ -163,7 +159,7 @@ exports.deleteUser = (req, res) => {
     db.User.findByPk(req.params.id)
         .then(user => {
             const userDeleted = user;
-            User.destroy({ where: { id: user.id } })
+            db.User.destroy({ where: { id: user.id } })
                 .then(_ => {
                     const message = `L'utilisateur ayant l'identifiant ${userDeleted.id} a bien été supprimé !`;
                     res.json({ message, data: userDeleted })

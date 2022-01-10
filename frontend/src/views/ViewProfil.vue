@@ -1,47 +1,88 @@
 <template>
   <panel title="User">
+      <v-container class="my-5">
     <v-layout>
       <v-flex xs6>
-        <div class="user-firstname">
-          {{user.firstName}}
-        </div>
-        <div class="user-familyname">
-          {{user.familyName}}
-        </div>
-        <v-btn dark class="cyan" :to="{name: 'Profil-edit', params() {return {id: user.id}}}">Edit</v-btn>
+        <div class="user-firstname">{{ user.firstName }}</div>
+        <div class="user-familyname">{{ user.familyName }}</div>
+        <v-btn dark class="cyan" :to="{ name: 'Profil-edit', params() { return { id: user.id } } }">Edit</v-btn>
       </v-flex>
       <v-flex xs6>
         <img class="album-image" :src="user.photoUrl" />
-        <br>
+        <br />
       </v-flex>
     </v-layout>
+    <v-layout>
+      <v-flex xs12>
+        <v-row>
+          <h1>Les posts de {{ user.firstName }}</h1>
+          <v-col cols="10" v-for="post of posts" class="post" :key="post.id">
+            <v-card outlined class="mx-auto" height="100%">
+              <v-img
+                class="white--text align-end album-image"
+                height="200px"
+                :src="post.attachmentUrl"
+              ></v-img>
+              <v-card-title>{{ post.title }}</v-card-title>
+
+              <v-card-subtitle class="pb-0">{{ post.User.id }}</v-card-subtitle>
+
+              <v-card-text class="text--primary">
+                <div>{{ new Date(post.createdAt).toString().substring(0, 24) }}</div>
+
+                <div>{{ post.content }}</div>
+              </v-card-text>
+
+              <v-card-actions>
+                <v-btn
+                  color="#FD2D01"
+                  dark
+                  :to="{ name: 'Post', params: { postId: post.id } }"
+                >View Post</v-btn>
+                <v-btn
+                  color="#FD2D01"
+                  dark
+                  :to="{ name: 'Profil', params: { id: post.User.id } }"
+                >View Profil</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-col>
+        </v-row>
+      </v-flex>
+    </v-layout>
+    </v-container>
   </panel>
 </template>
 
 <script>
 import UserService from "../services/UserService.js";
+import PostService from "../services/PostService.js";
 import Panel from '../components/Panel'
 
 export default {
   name: 'ViewProfil',
-    components: {
+  components: {
     Panel
   },
-    data(){
-        return{
-            user: {}
-        }
-    },
-    async mounted () {
+  data() {
+    return {
+      user: {},
+      posts:{}
+    }
+  },
+  methods:{
+    async getAllOfOne(id){
+      this.posts = (await PostService.getUserPosts(id)).data
+    }
+  },
+  async mounted() {
     const id = this.$store.state.route.params.id;
+    console.log("zz", UserService.getOneUser(id));
     this.user = (await UserService.getOneUser(id)).data.data;
     console.log("user", this.user);
-    // if (this.isUserLoggedIn) {
-    //   PostHistoryService.post({
-    //     postId: postId
-    //   })
-    // }
-  },
+    this.getAllOfOne(id);
+  }
+    //console.log("posts", this.posts); // ???!!!! affiche null 
 }
 </script>
 
