@@ -33,7 +33,8 @@ methods: {
     // redirect to homepage
     this.$router.push({name: 'Home'}).catch(()=>{}); //tip to avoid redundant navigation to current location error message (it's not a real error!)
   }
-}
+},
+
 }
 </script>
 
