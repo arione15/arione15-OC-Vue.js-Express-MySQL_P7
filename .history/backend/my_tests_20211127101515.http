@@ -1,1 +1,0 @@
-DELETE localhost:3000/api/user/ HTTP/1.1

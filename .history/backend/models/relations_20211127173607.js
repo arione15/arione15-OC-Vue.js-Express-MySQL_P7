@@ -1,1 +1,0 @@
-const { User, Post } = require("../models/Post");
