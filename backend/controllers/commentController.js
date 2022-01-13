@@ -24,19 +24,19 @@ exports.createComment = async(req, res) => {
             message: "commetary added"
         });
     } catch (err) {
-        return res.status(500).json({ message: 'server error' });
+        return res.status(500).json({ message: 'impossible de vérifier l\'utilisateur' + err });
     };
 };
 /*  ****************************************************** */
 //  récupérer tous les commentaires
 /*  ****************************************************** */
-exports.getAllComments = (req, res) => {
-    Comment.findAll()
-        .then(comments => {
-            const message = `La liste des commentaires du post ${req.params.postId} a bien été récupérée !`;
-            res.json({ message, data: comments })
-        }).catch(error => console.log(error))
-};
+// exports.getAllComments = (req, res) => {
+//     Comment.findAll()
+//         .then(comments => {
+//             const message = `La liste des commentaires du post ${req.params.postId} a bien été récupérée !`;
+//             res.json({ message, data: comments })
+//         }).catch(error => console.log(error))
+// };
 
 /*  ****************************************************** */
 //  récupérer un commentaire

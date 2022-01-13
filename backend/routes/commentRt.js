@@ -11,7 +11,7 @@ const commentControl = require("../controllers/commentController");
 
 // comment CRUD
 router.post("/:id", checkUser, commentControl.createComment);
-router.get("/:id", checkUser, commentControl.getAllComments);
+//router.get("/:id/:commentId", checkUser, commentControl.getOneComment);
 router.delete("/:commentId", checkUser, commentControl.deleteComment);
 
 module.exports = router;

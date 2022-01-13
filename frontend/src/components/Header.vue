@@ -17,9 +17,6 @@
           <v-btn v-if="$store.state.isUserLoggedIn" text dark :to="{ name: 'Login' }"><span class="material-icons">login</span></v-btn>
         </v-toolbar-items>
         <v-toolbar-items>
-          <!-- <v-btn v-if="!$store.state.isUserLoggedIn" text dark><img :src="post.User.photoUrl "></v-btn> -->
-        </v-toolbar-items>
-        <v-toolbar-items>
           <v-btn v-if="!$store.state.isUserLoggedIn" text dark @click="logout" :to="{ name: 'Home' }"><span class="material-icons">logout</span></v-btn>
         </v-toolbar-items>
       </v-app-bar>
@@ -27,28 +24,15 @@
 
 <script>
 export default {
-  data() {
-    return {
-      post: {
-        title: null,
-        content: null,
-        attachmentUrl: null,
-        userId:""
-      }
-    }
-  },
-    methods: {
-      logout(){
-        this.$store.dispatch('setToken', null);
+methods: {
+  logout(){
+    this.$store.dispatch('setToken', null);
     this.$store.dispatch('setUser', null);
-    this.$store.state.isUserLoggedIn=true;
+    this.$store.state.isUserLoggedIn=false;
     sessionStorage.setItem("token", null);
     // redirect to homepage
     this.$router.push({name: 'Home'}).catch(()=>{}); //tip to avoid redundant navigation to current location error message (it's not a real error!)
-  },
-  created(){
-    document.cookie = "snToken" + "=" + sessionStorage.getItem("token") + ";" + 24*60*60*1000 + ";path=/"
-  },
+  }
 },
 
 }
