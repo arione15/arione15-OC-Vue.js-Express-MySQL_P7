@@ -7,7 +7,7 @@ const { authPage } = require("../middlewares/authPage");
 const likeControl = require("../controllers/likeController");
 
 // like CRUD
-router.post("/", checkUser, likeControl.createLike);
-router.get("/:postId", checkUser, likeControl.getAllLikes);
+router.post("/:id", checkUser, likeControl.createLike);
+//router.get("/:postId", checkUser, likeControl.getAllLikes);
 
 module.exports = router;

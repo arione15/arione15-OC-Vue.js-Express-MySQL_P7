@@ -49,13 +49,15 @@ export default {
   },
     data(){
         return{
-            post: {}
+            post: {
+              title: "",
+              content: "",
+            }
         }
     },
     async mounted () {
     const postId = this.$store.state.route.params.postId
-    this.post = (await PostService.getOnePost(postId)).data.data
-    console.log(this.post)
+    this.post = (await PostService.getOnePost(postId)).data
     // if (this.isUserLoggedIn) {
     //   PostHistoryService.post({
     //     postId: postId
