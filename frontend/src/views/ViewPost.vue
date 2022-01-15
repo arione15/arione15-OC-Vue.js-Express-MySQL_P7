@@ -11,6 +11,9 @@
         <div class="post-content">
           {{post.content}}
         </div>
+        <div>
+          {{post.attachmentUrl}}
+        </div>
 
         <v-btn dark class="cyan" :to="{name: 'Post-edit', params() {return {postId: post.id}}}">Edit</v-btn>
 

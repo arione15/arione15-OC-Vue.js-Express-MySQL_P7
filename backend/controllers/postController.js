@@ -14,7 +14,8 @@ exports.createPost = async(req, res) => {
     const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
     let postObject = req.file ? {
         ...req.body,
-        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`,
+        //youtubeId: `${req.protocol}://${req.get("host")}/media/${ req.youtubeId }`
     } : {
         ...req.body,
     };
@@ -37,7 +38,7 @@ exports.createPost = async(req, res) => {
 exports.getAllPosts = async(req, res) => {
     try {
         const posts = await db.Post.findAll({
-            attributes: ['id', 'content', 'attachmentUrl', 'createdAt'],
+            attributes: ['id', 'content', 'attachmentUrl', 'youtubeId', 'createdAt'],
             order: [
                 ['createdAt', 'DESC']
             ],

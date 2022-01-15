@@ -10,8 +10,8 @@ import VueYouTubeEmbed from 'vue-youtube-embed'
 //import setHeaders from './utils'
 import axios from 'axios'
 
-Vue.use(VueYouTubeEmbed)
 Vue.use(Vuetify)
+Vue.use(VueYouTubeEmbed)
 
 if (sessionStorage.getItem("token")) {
     axios.defaults.headers.common["Authorization"] = "Bearer " + sessionStorage.getItem("token")

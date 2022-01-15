@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
         content: { type: DataTypes.TEXT, allowNull: false },
         title: { type: DataTypes.STRING, allowNull: true },
         attachmentUrl: { type: DataTypes.STRING, allowNull: true },
+        youtubeId: { type: DataTypes.STRING, allowNull: true },
     }, {
         sequelize,
         modelName: 'Post',

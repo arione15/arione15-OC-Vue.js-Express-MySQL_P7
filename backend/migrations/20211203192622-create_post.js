@@ -22,6 +22,10 @@ module.exports = {
                 allowNull: true,
                 type: Sequelize.STRING
             },
+            youtubeId: {
+                allowNull: true,
+                type: Sequelize.STRING
+            },
             createdAt: {
                 allowNull: false,
                 type: Sequelize.DATE

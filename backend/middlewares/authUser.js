@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
-const db = require("../config/db");
+//const db = require("../config/db");
+const db = require('../models') // accès tables
+
 const cryptojs = require("crypto-js");
 const Cookies = require('cookies');
 

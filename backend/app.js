@@ -72,4 +72,6 @@ const dbTest = async function() {
 };
 dbTest();
 
+sequelize.sync({ force: false });
+
 module.exports = app;

@@ -11,30 +11,13 @@
               <div class="card-body">
                 <form action class>
                   <div class="d-flex align-items-start flex-column form-group">
-                    <v-text-field
-                      required
-                      :rules="rules.required"
-                      label="Titre"
-                      v-model="post.title"
-                    >Ajoutez un titre</v-text-field>
-                    <v-text-field
-                      required
-                      :rules="rules.required"
-                      label="Contenu"
-                      v-model="post.content"
-                      multi-line
-                    ></v-text-field>
-                    <label
-                      for="formFileSm"
-                      class="form-label d-flex align-items-start"
-                    >Ajoutez une image</label>
+                    <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
+                    <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line>Ajoutez un texte</v-text-field>
+                    <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
                     <input name="image" type="file" v-on:change="selectedFile($event)" />
-                    <!-- <label for="text" class="panel-heading form-label">Nouveau message</label> -->
-                    <!-- <textarea type="message" class="panel-body container-fluid form-control" placeholder="nouveau message" rows="3" v-model="message" v-on:input="message = $event.target.value"></textarea> -->
+                    <v-text-field label="YoutubeID" v-model="post.youtubeId">Ajoutez une vidéo</v-text-field>
                   </div>
                   <div class="d-flex panel-footer form-group">
-                    <!-- <button class="btn btn-groupomania w-35" @click="createMessage(message)" type="submit" value="Publier">Publier</button> -->
-                    <!-- <button class="btn btn-groupomania w-35" type="submit" value="Publier">Publier</button> -->
                     <v-btn color="light-green" dark @click="publishPost()">Créez votre post !!</v-btn>
                   </div>
                 </form>
@@ -47,37 +30,22 @@
       <v-row>
         <v-col cols="10" v-for="post of posts" class="post" :key="post.id">
           <v-card outlined class="mx-auto" height="100%">
-            <v-img
-              class="white--text align-end album-image"
-              height="200px"
-              :src="post.attachmentUrl"
-            ></v-img>
+            <v-img class="white--text align-end album-image" height="200px" :src="post.attachmentUrl"></v-img>
+            <div>{{ post.youtubeId }}</div>
             <v-card-title>{{ post.title }}</v-card-title>
 
             <v-card-subtitle class="pb-0">{{ post.User.firstName }}{{ post.User.familyName }}</v-card-subtitle>
-            <v-img
-              class="white--text align-end album-image"
-              height="50px"
-              width="50px"
-              :src="post.User.photoUrl"
-            ></v-img>
+            <v-img class="white--text align-end album-image" height="50px" width="50px" :src="post.User.photoUrl"></v-img>
             <v-card-text class="text--primary">
               <div>{{ new Date(post.createdAt).toString().substring(0, 24) }}</div>
-
               <div>{{ post.content }}</div>
+                                          <youtube :video-id="post.youtubeId"></youtube>
+
             </v-card-text>
 
             <v-card-actions>
-              <v-btn
-                color="#FD2D01"
-                dark
-                :to="{ name: 'Post', params: { postId: post.id } }"
-              >View Post</v-btn>
-              <v-btn
-                color="#FD2D01"
-                dark
-                :to="{ name: 'Profil', params: { id: post.User.id } }"
-              >View Profil</v-btn>
+              <v-btn color="#FD2D01" dark :to="{ name: 'Post', params: { postId: post.id } }">View Post</v-btn>
+              <v-btn color="#FD2D01" dark :to="{ name: 'Profil', params: { id: post.User.id } }">View Profil</v-btn>
             </v-card-actions>
 
             <div class="card p-3 mt-3">
@@ -87,20 +55,19 @@
                   <v-row>
                     <v-col v-for="comment of post.Comments" :key="comment.id">
                       <div class="d-flex align-items-start flex-column form-group">
-                        <v-img
-                          class="white--text align-end album-image"
-                          height="50px"
-                          width="50px"
-                          :src="comment.User.photoUrl"
-                        ></v-img>
+                        <v-img class="white--text align-end avatar-image" :src="comment.User.photoUrl"></v-img>
                         <span>{{ comment.User.firstName }}{{ comment.User.familyName }}</span>
                         <div>{{ comment.message }}</div>
                       </div>
                     </v-col>
+                    </v-row>
+                    <v-row>
+                      <v-col>
                     <div class="d-flex panel-footer form-group">
                       <v-text-field required :rules="rules.required" label="Comment" v-model="message" multi-line></v-text-field>
                       <v-btn color="light-blue" dark @click="publishComment(post.id)">Ajouter votre commentaire !!</v-btn>
                     </div>
+                    </v-col>
                   </v-row>
                 </form>
               </div>
@@ -155,11 +122,13 @@ export default {
     return {
       posts: {},
       post: {
-        title: null,
-        content: null,
-        attachmentUrl: null,
+        title: "",
+        content: "",
+        attachmentUrl: "",
+        youtubeId: "",
         userId: ""
       },
+      videoId:"",
       comments: {},
       message: "",
       error: null,
@@ -183,11 +152,13 @@ export default {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
           formData.append("content", this.post.content);
+          formData.append("youtubeId", this.post.youtubeId);
           await PostService.createPost(formData);
           this.get();
           this.post.title = "";
           this.post.content = "";
           this.post.attachmentUrl = "";
+          this.post.youtubeId = "";
           this.post.userId = "";
           //this.$router.push({ name: "Posts" });
         }
@@ -241,5 +212,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.avatar-image{
+  width: 10%;
+  /* margin: auto; */
+}
 </style>
 
