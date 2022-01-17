@@ -1,30 +1,31 @@
-<template>
-  <v-container>
-  <!-- <v-container class="my-5"> -->
-    <v-row>
-      <v-col cols="10">
-        <h2 class="titre">Partagez votre post !</h2>
-        <div class="container">
-          <div class="card">
-            <div class="card-body">
-              <form action class>
-                <div class="d-flex align-items-start flex-column form-group">
-                  <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
-                  <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line>Ajoutez un texte</v-text-field>
-                  <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
-                  <input name="image" type="file" v-on:change="selectedFile($event)" />
-                  <v-text-field label="YoutubeID" v-model="post.youtubeId">Ajoutez une vidéo</v-text-field>
-                </div>
-                <div class="d-flex panel-footer form-group">
-                  <v-btn color="light-green" dark @click="publishPost()">Créez votre post !!</v-btn>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </v-col>
+<!-- <template>
+//   <v-container>
+//   <v-container class="my-5">
+//     <v-row>
+//       <v-col cols="10">
+//         <h2 class="titre">Partagez votre post !</h2>
+//         <div class="container">
+//           <div class="card">
+//             <div class="card-body">
+//               <form action class>
+//                 <div class="d-flex align-items-start flex-column form-group">
+//                   <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
+//                   <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line>Ajoutez un texte</v-text-field>
+//                   <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
+//                   <input name="image" type="file" v-on:change="selectedFile($event)" />
+//                   <v-text-field label="YoutubeID" v-model="post.youtubeId">Ajoutez une vidéo</v-text-field>
+//                 </div>
+//                 <div class="d-flex panel-footer form-group">
+//                   <v-btn color="light-green" dark @click="publishPost()">Créez votre post !!</v-btn>
+//                 </div>
+//               </form>
+//             </div>
+//           </div>
+//         </div>
+//       </v-col>
     </v-row>
-    <!-- </v-container> -->
+    -->
+    <!-- </v-container>
   </v-container>
 </template>
 

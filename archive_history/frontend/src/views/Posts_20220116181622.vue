@@ -2,45 +2,12 @@
   <v-app id="inspire" app>
     <h2 class="text-center">Posts</h2>
 
-<!-- <v-container class="my-5"> -->
-    <v-row>
-      <v-col cols="10">
-        <h2 class="titre">Partagez votre post !</h2>
-        <div class="container">
-          <div class="card">
-            <div class="card-body">
-              <form action class>
-                <div class="d-flex align-items-start flex-column form-group">
-                  <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
-                  <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line>Ajoutez un texte</v-text-field>
-                  <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
-                  <input name="image" type="file" v-on:change="selectedFile($event)" />
-                  <v-text-field label="YoutubeID" v-model="post.youtubeId">Ajoutez une vidéo</v-text-field>
-                </div>
-                <div class="d-flex panel-footer form-group">
-                  <v-btn color="light-green" dark @click="publishPost()">Créez votre post !!</v-btn>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </v-col>
-    </v-row>
-    <!-- </v-container> -->
+  <add-post />
+
     <!-- <v-row v-for="post of posts" class="post" :key="post.id"> -->
     <v-row >
       <v-col cols="10">
-
-      <post v-for="post of posts" class="post" @likePost="likePost(post.id)" :post="post" :key="post.id">
-        <template v-slot:publishComment>
-          <create-comment v-on:comment-sent="updateBody">
-          <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)"></v-btn>
-          </create-comment>
-        </template>
-
-        <template v-slot:likes>{{ post.Likes.length }}</template>
-      </post>
-
+      <post v-for="post of posts" class="post" :post="post" :key="post.id" />
       </v-col>
     </v-row>
   </v-app>
@@ -52,16 +19,15 @@
 //import Panel from '../components/Panel'
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
-import LikeService from "../services/LikeService.js";
+//import LikeService from "../services/LikeService.js";
 import Post from "../components/Post.vue";
-import CreateComment from "../components/CreateComment.vue";
-//import AddPost from "../components/AddPost.vue";
+import AddPost from "../components/AddPost.vue";
 
 export default {
   name: "Posts",
   components: {
     Post,
-    CreateComment
+    AddPost,
   },
   data() {
     return {
@@ -134,11 +100,13 @@ export default {
       //console.log("likes", this.likes);
 
     },
-    async publishComment(id, message) { // id du post et message preovenant de updateBody
+
+    async publishComment(id) { 
       try {
-        if (message) {
-          await CommentService.createComment(id, message);
+        if (this.message) {
+          await CommentService.createComment(id, this.message);
           this.get();
+          this.message = "";
         }
         else {
           console.log("please select a file or enter text");
@@ -153,23 +121,6 @@ export default {
       const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
       return event.toLocaleDateString('fr-FR', options);
     },
-async likePost(id){
-  try{
-    await LikeService.createLike(id);
-    this.get();
-        console.log("11111like", id);
-    
-  }catch (err) {
-        console.log(err);
-        //this.error = err.response.data.error;
-      }
-},
-updateBody(data){ //fonction qui stocke la valeur de l'input provenant de l'enfant
-//this.message="";
-this.message=data.message;
-console.log(this.message);
-//data.message="";
-}
 
   },
   created() {

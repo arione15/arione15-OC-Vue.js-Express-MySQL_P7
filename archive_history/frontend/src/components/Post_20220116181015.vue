@@ -1,59 +1,64 @@
 <template>
-  <v-container>
+  <v-container class="d-flex flex-column pa-2">
     <v-row justify="space-around">
       <v-card width="400">
-        <v-img height="200px" src="https://cdn.pixabay.com/photo/2020/07/12/07/47/bee-5396362_1280.jpg"
-        >
-          <v-app-bar flat color="rgba(0, 0, 0, 0)">
-            <v-app-bar-nav-icon color="white"></v-app-bar-nav-icon>
+      
 
-            <v-toolbar-title class="text-h6 white--text pl-0">
-              Commentaires
-            </v-toolbar-title>
+    <v-app-bar color="light-blue accent-4" dense dark>
+      <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
 
-            <v-spacer></v-spacer>
-
-            <v-btn color="white" icon>
-              <v-icon>mdi-dots-vertical</v-icon>
-            </v-btn>
-          </v-app-bar>
-
-          <v-card-title class="white--text mt-8">
+    <v-card-title class="white--text mt-8">
+            <span class="ml-3 red">{{ post.User.firstName }} {{ post.User.familyName }}</span>
+            <!-- <span class="ml-3 red">{{ post.createdAt }}</span> -->
             <v-avatar size="56">
               <img alt="user" :src="post.User.photoUrl">
             </v-avatar>
-            <p class="ml-3">{{ post.User.firstName }}{{ post.User.familyName }}</p>
-          </v-card-title>
-        </v-img>
+    </v-card-title>
+      <v-btn icon>
+<span class="material-icons">thumb_up</span>
+      </v-btn>
+<span class="compteur">{{ nbreLike }}</span>
 
-                  <v-img class="white--text align-end album-image" height="200px" width="200px" :src="post.attachmentUrl"></v-img>
-                  <v-card-title>{{ post.title }}</v-card-title>
+      <v-menu left bottom>
+        <template v-slot:activator="{ on, attrs }">
+          <v-btn icon v-bind="attrs" v-on="on">
+<span class="material-icons">more_vert</span> 
+        </v-btn>
+        </template>
 
-                  <v-card-text class="text--primary">
+        <v-list>
+          <v-list-item :to="{ name: 'Post', params: { postId: post.id } }">
+            <v-list-item-title>View Post</v-list-item-title>
+          </v-list-item>
+          <v-list-item :to="{ name: 'Profil', params: { id: post.User.id } }">
+            <v-list-item-title>View Profil</v-list-item-title>
+          </v-list-item>
+        </v-list>
+      </v-menu>
+
+    </v-app-bar>
+
+                  <v-card-text class="yellow">{{ post.title }}</v-card-text>
+                  <v-img class="white--text align-end album-image" max-width="400px" max-height="200px" :src="post.attachmentUrl"></v-img>
                     <div>{{ post.content }}</div>
-                    <youtube :video-id="post.youtubeId"></youtube>
-                  </v-card-text>
-
-
-        <v-card-text>
+                  <!-- <youtube :video-id="post.youtubeId" player-width="400" player-height="287"></youtube> -->
+<v-card-text>
           <div class="font-weight-bold ml-8 mb-2">Today</div>
-
           <v-timeline align-top dense>
-            <v-timeline-item v-for="comment in comments" :key="comment.id" small>
+            <v-timeline-item v-for="comment in post.Comments" :key="comment.id" small>
               <div>
                 <div class="font-weight-normal">
-                  <strong>{{ post.Comments.User.firstName }}{{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
+                  <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
                 </div>
                 <div>{{ comment.message }}</div>
               </div>
             </v-timeline-item>
           </v-timeline>
-        </v-card-text>
+  </v-card-text>
       </v-card>
     </v-row>
   </v-container>
 </template>
-
 
 <script>
 //import Panel from '../components/Panel'
@@ -73,22 +78,14 @@ export default {
   },
   data() {
     return {
-          //videoId: "",
       comments: {},
       message: "",
       error: null,
       rules: {
         required: [value => !!value || "Ce champs est requis.."]
       },
-      cards: ['Today', 'Yesterday'],
-      drawer: null,
-      links: [
-        ['mdi-inbox-arrow-down', 'View Post'],
-        ['mdi-send', 'View Profil'],
-        // ['mdi-delete', 'Trash'],
-        // ['mdi-alert-octagon', 'Spam'],
-      ],
       likes:{},
+      nbreLike: 0
     };
   },
   methods: {
@@ -129,9 +126,7 @@ export default {
     },
     async get() {
       this.posts = (await PostService.getAllPosts()).data;
-      
-      console.log("1xx", this.post);
-      //console.log("2xx", this.likes);
+      //console.log("posts", this.posts);
 
     },
 
@@ -166,6 +161,22 @@ async likePost(id){
       }
 },
 
+async likePost(id){
+  try{
+    await LikeService.createLike(id);
+        console.log("11111Message");
+    
+  }catch (err) {
+        console.log(err);
+        //this.error = err.response.data.error;
+      }
+},
+
+
+  },
+    mounted() {
+    // try {
+    this.get();
   }
 }
 </script>
@@ -178,6 +189,11 @@ async likePost(id){
 }
   .green-color {
         color:green;
+    }
+    .madiv{
+      width: 30px;
+      height: 100px;
+      background-color: blue;
     }
 </style>
 

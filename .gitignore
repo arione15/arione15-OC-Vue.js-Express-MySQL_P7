@@ -2,3 +2,4 @@ backend/.env
 backend/node_modules/
 frontend/.history/
 frontend/node_modules/
+.history/
