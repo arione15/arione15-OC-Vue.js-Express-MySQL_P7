@@ -2,7 +2,6 @@
   <form>
     <v-text-field label="commenter" v-model="message" v-on:input="sendComment"></v-text-field>
     <slot></slot>
-    <!-- Bouton pour le publier -->
   </form>
 </template>
 

@@ -1,11 +1,10 @@
 <template>
   <v-app id="inspire" app>
-    <h2 class="text-center">Posts</h2>
+    <h2 class="text-center">Partagez votre post !</h2>
 
 <!-- <v-container class="my-5"> -->
     <v-row>
       <v-col cols="10">
-        <h2 class="titre">Partagez votre post !</h2>
         <div class="container">
           <div class="card">
             <div class="card-body">
@@ -33,9 +32,14 @@
 
       <post v-for="post of posts" class="post" @likePost="likePost(post.id)" :post="post" :key="post.id">
         <template v-slot:publishComment>
-          <create-comment v-on:comment-sent="updateBody">
-          <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)"></v-btn>
-          </create-comment>
+
+
+
+
+          <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
+          <v-text-field label="commenter" v-model="message"></v-text-field>
+          <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Envoyer</v-btn>
+          <!-- </create-comment> -->
         </template>
 
         <template v-slot:likes>{{ post.Likes.length }}</template>
@@ -54,14 +58,14 @@ import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
 import Post from "../components/Post.vue";
-import CreateComment from "../components/CreateComment.vue";
+//import CreateComment from "../components/CreateComment.vue";
 //import AddPost from "../components/AddPost.vue";
 
 export default {
   name: "Posts",
   components: {
     Post,
-    CreateComment
+    //CreateComment
   },
   data() {
     return {
@@ -139,6 +143,7 @@ export default {
         if (message) {
           await CommentService.createComment(id, message);
           this.get();
+          this.message="";
         }
         else {
           console.log("please select a file or enter text");
@@ -164,12 +169,12 @@ async likePost(id){
         //this.error = err.response.data.error;
       }
 },
-updateBody(data){ //fonction qui stocke la valeur de l'input provenant de l'enfant
-//this.message="";
-this.message=data.message;
-console.log(this.message);
-//data.message="";
-}
+// updateCommentBody(data){ //fonction qui stocke la valeur de l'input provenant de l'enfant
+// //this.message="";
+// this.message=data.message;
+// console.log(this.message);
+// //data.message="";
+// }
 
   },
   created() {
