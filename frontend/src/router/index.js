@@ -10,6 +10,8 @@ import EditPost from '../views/EditPost.vue'
 import Profils from '../views/Profils.vue'
 import ViewProfil from '../views/ViewProfil.vue'
 import EditProfil from '../views/EditProfil.vue'
+import Admin from '../views/Admin.vue'
+import EditRole from '../views/EditRole.vue'
 
 Vue.use(VueRouter)
 
@@ -25,6 +27,8 @@ const router = new VueRouter({
         { path: '/users', name: 'Profils', component: Profils },
         { path: '/users/:id', name: 'Profil', component: ViewProfil },
         { path: '/users/:id/edit', name: 'Profil-edit', component: EditProfil },
+        { path: '/users/:id/role', name: 'Role-edit', component: EditRole },
+        { path: '/admin', name: 'Admin', component: Admin },
         // { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
     ],
     mode: 'history'

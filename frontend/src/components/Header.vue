@@ -19,6 +19,10 @@
         <v-toolbar-items>
           <v-btn v-if="$store.state.isUserLoggedIn" text dark @click="logout" :to="{ name: 'Home' }"><span class="material-icons">logout</span></v-btn>
         </v-toolbar-items>
+        <v-toolbar-items>
+          <v-btn v-if="$store.state.user && $store.state.user.role == 1" text dark :to="{ name: 'Admin' }"><span class="material-icons">
+admin_panel_settings</span></v-btn>
+        </v-toolbar-items>
       </v-app-bar>
 </template>
 
@@ -29,7 +33,9 @@ methods: {
     this.$store.dispatch('setToken', null);
     this.$store.dispatch('setUser', null);
     this.$store.state.isUserLoggedIn=false;
-    sessionStorage.setItem("token", null);
+    //sessionStorage.setItem("token", null);
+    sessionStorage.clear();
+
     // redirect to homepage
     //this.$router.push({name: 'Home'}).catch(()=>{}); //tip to avoid redundant navigation to current location error message (it's not a real error!)
   }

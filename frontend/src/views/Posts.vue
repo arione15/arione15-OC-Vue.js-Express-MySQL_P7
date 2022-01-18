@@ -93,6 +93,7 @@ export default {
         // ['mdi-alert-octagon', 'Spam'],
       ],
       likes:{},
+      user: {}
     };
   },
   methods: {
@@ -180,7 +181,7 @@ async likePost(id){
   created() {
     document.cookie = "snToken" + "=" + sessionStorage.getItem("token") + ";" + 24 * 60 * 60 * 1000 + ";path=/"
   },
-  mounted() {
+  async mounted() {
     // try {
     this.get();
   }
