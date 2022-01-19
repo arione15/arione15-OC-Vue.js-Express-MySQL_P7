@@ -118,9 +118,9 @@ exports.logout = (req, res) => {
 exports.getAllUsers = async(req, res) => {
     try {
         const users = await db.User.findAll({
-            attributes: ['id', 'firstName', 'familyName', 'email', 'photoUrl'],
+            attributes: ['id', 'firstName', 'familyName', 'email', 'photoUrl', 'role'],
         })
-        res.status(200).send(users)
+        return res.status(200).send(users)
     } catch (error) {
         return res.status(500).send({ error: 'Erreur serveur' })
     }

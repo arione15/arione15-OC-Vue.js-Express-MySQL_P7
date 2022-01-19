@@ -11,8 +11,13 @@ export default {
             withCredentials: true
         })
     },
-    updateUser(id, formdata) { // envoi des données par post sur 3000, qui vont être récupérées dans app.js : app.post('/', (req, res) ...)
+    updateUser(id, formdata) {
         return Api.put(`user/${id}`, formdata, {
+            withCredentials: true
+        })
+    },
+    deleteUser(id) {
+        return Api.delete(`user/${id}`, {
             withCredentials: true
         })
     }
