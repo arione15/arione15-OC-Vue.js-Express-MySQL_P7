@@ -26,7 +26,7 @@
             <v-container fill-height>
               <v-layout row wrap align-center>
                 <v-flex class="text-xs-center">
-                  <v-btn color="red" v-on:click.prevent="changeRole(user.id)" :to="{ name: 'Role-edit' }" dark class="mb-5 mr-4">Modifier le rôle</v-btn>
+                  <v-btn color="red" :to="{ name: 'Role-edit',  params: { id: user.id } }" dark class="mb-5 mr-4">Modifier le rôle</v-btn>
                   <v-btn color="yellow" v-on:click.prevent="removeUser(user.id)" dark class="mb-5">Supprimer</v-btn>
                 </v-flex>
               </v-layout>
@@ -54,9 +54,6 @@ export default {
     };
   },
   methods: {
-    async changeRole(id, role) {
-      await UserService.updateUser(id, role);
-    },
     async removeUser(id) {
       await UserService.deleteUser(id);
       this.users = await UserService.getAllUsers(); // pour afficher les users sans celui qui a été supprimé

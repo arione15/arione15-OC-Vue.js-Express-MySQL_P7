@@ -51,8 +51,7 @@
     <v-toolbar-items>
       <v-tooltip bottom>
         <template v-slot:activator="{ on, attrs }">
-          <v-btn v-bind="attrs"
-            v-on="on"
+          <v-btn v-bind="attrs" v-on="on"
             v-if="!$store.state.isUserLoggedIn"
             text
             dark
@@ -83,11 +82,8 @@
 
     <v-toolbar-items>
       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-bind="attrs"
-            v-on="on"
-            v-if="$store.state.isUserLoggedIn && $store.state.user && $store.state.user.role == 1" text
+        <template v-slot:activator="{ on, attrs }"> 
+          <v-btn v-bind="attrs" v-on="on" v-if="$store.state.isUserLoggedIn && $store.state.user && $store.state.user.role == 1" text
             dark
             :to="{ name: 'Admin' }"
             ><span class="material-icons"> admin_panel_settings</span></v-btn
@@ -105,7 +101,7 @@ export default {
     logout() {
       this.$store.dispatch("setToken", null);
       this.$store.dispatch("setUser", null);
-      this.$store.state.isUserLoggedIn = false;
+      this.$store.state.isUserLoggedIn = false; 
       //sessionStorage.setItem("token", null);
       sessionStorage.clear();
 
