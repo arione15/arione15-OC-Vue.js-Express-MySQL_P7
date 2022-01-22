@@ -1,21 +1,16 @@
 <template>
-  <v-layout column>
-    <v-flex xs6>
+  <v-layout>
       <panel title="Identification">
+
         <form name="register-form" autocomplete="off">
           <v-text-field label="Email" v-model="email"></v-text-field>
-          <v-text-field
-            label="Password"
-            type="password"
-            v-model="password"
-            autocomplete="new-password"
-          ></v-text-field>
+          <v-text-field label="Password" type="password" v-model="password" autocomplete="new-password"></v-text-field>
         </form>
-        <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
-        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field>
-        <v-btn color="#FD2D01" dark type="submit" @click="login">S'identifier</v-btn>
+          <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
+          <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field>
+          <v-btn color="#FD2D01" dark type="submit" @click="login">S'identifier</v-btn>
+        
       </panel>
-    </v-flex>
   </v-layout>
 </template>
 
@@ -64,7 +59,6 @@ export default {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 .error {
   color: red;

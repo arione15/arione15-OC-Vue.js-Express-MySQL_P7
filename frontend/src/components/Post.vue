@@ -1,18 +1,19 @@
 <template>
   <div>
-    <v-card class="mt-8 mb-5" width="600px">
-      <v-card-text class="light-blue accent-1" dark>
-        <v-container pa-0>
-          <v-row align="center">
-            <v-col cols="4">
-              <!-- <v-app-bar-nav-icon></v-app-bar-nav-icon> -->
-                <v-avatar size="56">
-                  <img alt="user" :src="post.User.photoUrl" />
-                </v-avatar>
+
+    <v-card class="mt-8 mb-5">
+      <v-card-text class="light-blue">
+        <v-container pa-1>
+
+          <v-row d-flex align-center>
+            <v-col cols="6">
+          <v-avatar>
+                <img size="56" alt="avatar" :src="post.User.photoUrl" />
+          </v-avatar>
                 <span class="infoPost">{{ post.User.firstName }} {{ post.User.familyName }}</span>
             </v-col>
 
-            <v-col cols="4" offset="4">
+            <v-col cols="3" offset="3">
                 <v-btn icon>
                   <v-icon v-if="ifLiked" color="green" @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
                   <v-icon v-else @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
@@ -33,11 +34,15 @@
                     >
                       <v-list-item-title>View Post</v-list-item-title>
                     </v-list-item>
+
                     <v-list-item
                       :to="{ name: 'Profil', params: { id: post.User.id } }"
                     >
                       <v-list-item-title>View Profil</v-list-item-title>
                     </v-list-item>
+
+<slot name="delPost"></slot>
+                  
                   </v-list>
                 </v-menu>
             </v-col>
@@ -46,41 +51,40 @@
           <v-row>
             <v-col cols="5">
                 <span class="infoPost"
-                  >Posté le : {{ dateFormat(post.createdAt) }}</span
-                >
+                  >Posté le : {{ dateFormat(post.createdAt) }}</span>
             </v-col>
           </v-row>
+
         </v-container>
       </v-card-text>
     </v-card>
 
-    <v-card width="600px">
-      <v-row justify="space-around" class="d-flex mb-3">
-        <v-col cols="6">
-          <v-card-text class="yellow">{{ post.title }}</v-card-text>
-        </v-col>
-      </v-row>
+    <v-card>
+      <!-- <v-row justify="space-around" class="d-flex">
+        <v-col cols="12"> -->
+            <v-card-title class="yellow mb-1">{{ post.title }}</v-card-title>
+        <!-- </v-col>
+      </v-row> -->
 
-      <v-row justify="space-around" class="d-flex mb-3">
-        <v-col>
-          <v-img
-            class="white--text align-end album-image"
-            max-width="600px"
-            max-height="200px"
-            :src="post.attachmentUrl"
-          ></v-img>
-        </v-col>
-      </v-row>
+      <!-- <v-row justify="space-around" class="d-flex">
+        <v-col> -->
+          <v-img class="image-attached" :src="post.attachmentUrl"></v-img>
+        <!-- </v-col>
+      </v-row> -->
 
-      <v-row justify="space-around" class="d-flex mb-3">
-        <v-col>
+      <v-card-text>
+      <!-- <v-row justify="space-around" class="d-flex mb-3">
+        <v-col> -->
           <div>{{ post.content }}</div>
           <!-- <youtube :video-id="post.youtubeId" player-width="400" player-height="287"></youtube> -->
-        </v-col>
-      </v-row>
+        <!-- </v-col>
+      </v-row> -->
+          </v-card-text>
 
-      <v-row justify="space-around" class="d-flex mb-3">
-        <v-col>
+    <v-divider class="mx-4"></v-divider>
+
+      <!-- <v-row justify="space-around" class="d-flex mb-3">
+        <v-col> -->
           <v-card-text>
             <div class="row">
               <div class="col-6">
@@ -99,8 +103,9 @@
               </div>
             </div>
           </v-card-text>
-        </v-col>
-      </v-row>
+        <!-- </v-col>
+      </v-row> -->
+
     </v-card>
   </div>
 </template>
@@ -167,8 +172,8 @@ export default {
     likePost() {
       this.$emit("likePost", this.post.id); //envoi de la fonction likePost au parent
     },
-  },
-};
+}
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -176,6 +181,12 @@ export default {
 .avatar-image {
   width: 10%;
   /* margin: auto; */
+}
+.image-attached {
+  width: 70%;
+  height: auto;
+  margin-left: auto;
+  margin-right: auto;
 }
 .green-color {
   background-color: green;
@@ -190,7 +201,7 @@ i.v-icon.v-icon {
 }
 .infoPost {
   font-size: 0.75rem;
-  font-weight: 700;
+  font-weight: 800;
 }
 </style>
 

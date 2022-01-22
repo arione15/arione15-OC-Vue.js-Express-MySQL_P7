@@ -1,59 +1,52 @@
 <template>
-  <v-app id="inspire" app>
-    <h2 class="text-center">Partagez votre post !</h2>
+  <v-layout>
+    <v-container d-flex flex-column justify-center>
 
-<!-- <v-container class="my-5"> -->
-    <v-row>
-      <v-col cols="10">
-        <div class="container">
-          <div class="card">
-            <div class="card-body">
-              <form action class>
-                <div class="d-flex align-items-start flex-column form-group">
-                  <v-text-field required :rules="rules.required" label="Titre" v-model="post.title">Ajoutez un titre</v-text-field>
-                  <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line>Ajoutez un texte</v-text-field>
-                  <label for="formFileSm" class="form-label d-flex align-items-start">Ajoutez une image</label>
-                  <input name="image" type="file" v-on:change="selectedFile($event)" />
-                  <v-text-field label="YoutubeID" v-model="post.youtubeId">Ajoutez une vidéo</v-text-field>
-                </div>
-                <div class="d-flex panel-footer form-group">
-                  <v-btn color="light-green" dark @click="publishPost()">Créez votre post !!</v-btn>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </v-col>
-    </v-row>
-    <!-- </v-container> -->
-    <!-- <v-row v-for="post of posts" class="post" :key="post.id"> -->
-    <v-row >
-      <v-col cols="10">
+      <panel title="Partager votre post !">
+        <form name="register-form" autocomplete="off" enctype="multipart/form-data">
+          <v-text-field label="Titre" v-model="post.title"></v-text-field>
+          <v-text-field label="Contenu" v-model="post.content" multi-line></v-text-field>
+          <img class="d-block" src="https://img.icons8.com/ios-filled/50/000000/attach-resume-male.png" />
+          <input class="d-block btn-upload" name="image" type="file" v-on:change="selectedFile($event)" placeholder="Ajoutez une imagr">
+          <v-text-field label="YoutubeID" v-model="post.youtubeId"></v-text-field>
+        </form>
+        <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
+        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
+        <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Envoyer !</v-btn>
+      </panel>
 
-      <post v-for="post of posts" class="post" @likePost="likePost(post.id)" :post="post" :key="post.id">
-        <template v-slot:publishComment>
+      <panel title="Forum">
+        <v-row >
+          <v-col>
 
+            <post v-for="post in posts" v-on:likePost="likePost(post.id)" class="post" :post="post" :key="post.id">
+              
+              <template v-slot:delPost>
+                <v-list-item @click="removePost(post.id)">
+                  <v-list-item-title>Supprimer le post</v-list-item-title>
+                </v-list-item>
+              </template>
 
+              <template v-slot:publishComment>
+                <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
+                <v-text-field label="commenter" v-model="message"></v-text-field>
+                <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Envoyer</v-btn>
+                <!-- </create-comment> -->
+              </template>
+              <template v-slot:likes>{{ post.Likes.length }}</template>
+            </post>
 
-
-          <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
-          <v-text-field label="commenter" v-model="message"></v-text-field>
-          <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Envoyer</v-btn>
-          <!-- </create-comment> -->
-        </template>
-
-        <template v-slot:likes>{{ post.Likes.length }}</template>
-      </post>
-
-      </v-col>
-    </v-row>
-  </v-app>
+          </v-col>
+        </v-row>
+      </panel>
+    </v-container>
+  </v-layout>
 </template>
 
 
 
 <script>
-//import Panel from '../components/Panel'
+import Panel from '../components/Panel'
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
@@ -65,6 +58,7 @@ export default {
   name: "Posts",
   components: {
     Post,
+    Panel
     //CreateComment
   },
   data() {
@@ -176,7 +170,13 @@ async likePost(id){
 // console.log(this.message);
 // //data.message="";
 // }
-
+async removePost(id){
+      await PostService.deletePost(id);
+      const indexPost = this.posts.map(element=>{ // calculer les indices des éléménts puis les comparer avec le id en paramètre : si correspondance, la fonction retourne la valeur de l'index correspondant
+        return element.id;}).indexOf(id);
+        this.posts.splice(indexPost, 1);
+    
+  },
   },
   created() {
     document.cookie = "snToken" + "=" + sessionStorage.getItem("token") + ";" + 24 * 60 * 60 * 1000 + ";path=/"
