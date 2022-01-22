@@ -1,5 +1,4 @@
 <template>
-<div>
     <v-app-bar fixed color="#FD2D01" dark>
 
       <v-toolbar-items>
@@ -16,7 +15,7 @@
       <v-toolbar-items>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-                      <v-btn v-bind="attrs" v-on="on" v-if="$store.state.isUserLoggedIn" text dark :to="{ name: 'Posts' }">
+                      <v-btn v-if="$store.state.isUserLoggedIn" v-bind="attrs" v-on="on" text dark :to="{ name: 'Posts' }">
               <span class="material-icons">dynamic_feed</span>
             </v-btn>
           </template>
@@ -28,9 +27,9 @@
 
       <v-toolbar-items>
         <v-tooltip bottom>
-          <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Signup' }">
-              <span class="material-icons">subscriptions</span>
+        <template v-slot:activator="{ on, attrs }"> 
+                      <v-btn v-if="!$store.state.isUserLoggedIn" v-bind="attrs" v-on="on" text dark :to="{ name: 'Signup' }">
+              <span class="material-icons">subscriptions</span> 
             </v-btn>
           </template>
           <span>Inscription</span>
@@ -40,7 +39,7 @@
       <v-toolbar-items>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <v-btn v-bind="attrs" v-on="on" v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login' }">
+            <v-btn v-if="!$store.state.isUserLoggedIn" v-bind="attrs" v-on="on" text dark :to="{ name: 'Login' }">
               <span class="material-icons">login</span>
             </v-btn>
           </template>
@@ -51,7 +50,7 @@
       <v-toolbar-items>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }"> 
-                      <v-btn v-bind="attrs" v-on="on" v-if="$store.state.isUserLoggedIn" text dark @click="logout" :to="{ name: 'Home' }">
+                      <v-btn v-if="$store.state.isUserLoggedIn" text dark @click="logout" v-bind="attrs" v-on="on" :to="{ name: 'Home' }">
               <span class="material-icons">logout</span>
             </v-btn>
           </template>
@@ -62,7 +61,7 @@
       <v-toolbar-items>
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }"> 
-            <v-btn v-bind="attrs" v-on="on" v-if="$store.state.isUserLoggedIn && $store.state.user && $store.state.user.role == 1" text dark :to="{ name: 'Admin' }">
+            <v-btn v-if="$store.state.isUserLoggedIn === true && $store.state.user && $store.state.user.role === '1'" v-bind="attrs" v-on="on" text dark :to="{ name: 'Admin' }">
               <span class="material-icons"> admin_panel_settings</span>
             </v-btn>
           </template>
@@ -71,7 +70,6 @@
       </v-toolbar-items>
 
     </v-app-bar>
-  </div>
 </template>
 
 <script>

@@ -5,7 +5,8 @@
       <v-flex xs6>
         <div class="user-firstname">{{ user.firstName }}</div>
         <div class="user-familyname">{{ user.familyName }}</div>
-        <v-btn dark class="cyan" :to="{ name: 'Profil-edit', params() { return { id: user.id } } }">Edit</v-btn>
+        <v-btn dark v-if="user.id === $store.state.user.id || $store.state.user.role === '1'" class="cyan" :to="{ name: 'Profil-edit', params() { return { id: user.id } } }">Editer</v-btn>
+        <v-btn dark v-if="user.id === $store.state.user.id || $store.state.user.role === '1'" v-on:click="delUser(user.id)" class="red">Supprimer</v-btn>
       </v-flex>
       <v-flex xs6>
         <img class="album-image" :src="user.photoUrl" />
@@ -73,7 +74,12 @@ export default {
   methods:{
     async getAllOfOne(id){
       this.posts = (await PostService.getUserPosts(id)).data
-    }
+    },
+    async delUser(id){
+      await UserService.deleteUser(id);
+      this.$router.push({ name: 'Home' });
+    },
+
   },
   async mounted() {
     const id = this.$store.state.route.params.id;

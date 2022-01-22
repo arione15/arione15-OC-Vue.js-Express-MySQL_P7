@@ -21,11 +21,17 @@
 
             <post v-for="post in posts" v-on:likePost="likePost(post.id)" class="post" :post="post" :key="post.id">
               
-              <template v-slot:delPost>
+              <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role === '1'">
                 <v-list-item @click="removePost(post.id)">
                   <v-list-item-title>Supprimer le post</v-list-item-title>
                 </v-list-item>
               </template>
+
+              <!-- <template v-slot:delPost v-else-if="$store.state.user.role === '1'" >
+              <v-list-item @click="removePost(post.id)">
+                  <v-list-item-title>Supprimer le post</v-list-item-title>
+                </v-list-item>
+              </template> -->
 
               <template v-slot:publishComment>
                 <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
@@ -184,6 +190,7 @@ async removePost(id){
   async mounted() {
     // try {
     this.get();
+    console.log("v-if user.id", this.$store.state.user.role)
   }
 }
 </script>
