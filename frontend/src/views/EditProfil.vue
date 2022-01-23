@@ -36,7 +36,12 @@
     </v-flex>
     <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field> -->
     <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
-    <v-btn color="#FD2D01" dark @click="save">Enregistrez votre profil !!</v-btn>
+    <v-btn color="#FD2D01" dark @click="saveNewProfil">Enregistrez votre profil !!</v-btn>
+  <v-layout>
+        <v-text-field required :rules="rules.required" label="Password" v-model="user.password"></v-text-field>
+        <br><br>
+<v-btn color="#FD2D01" dark @click="saveNewPwd()">Enregistrez votre nouveau mot de passe !!</v-btn>
+  </v-layout>
   </v-layout>
 </template>
 
@@ -56,8 +61,8 @@ export default {
         familyName: null,
         email: null,
         photoUrl: null,
+        password: null,
         createdAt: null,
-       // bio:
       },
       error: null,
       message: "",
@@ -67,38 +72,32 @@ export default {
     };
   },
   methods: {
-    async save () {
-      this.error = null
-      this.message = ""
-      //const formData = new FormData();
-      // const areAllFieldsFilledIn = Object
-      //   .keys(this.song)
-      //   .every(key => !!this.song[key])
-      // if (!areAllFieldsFilledIn) {
-      //   this.error = 'Please fill in all the required fields.'
-      //   return
-      // }
-          
-      const id = this.$store.state.route.params.id;
-      //const userId= this.post.userId; 
-      const firstName= this.user.firstName; 
-      const familyName= this.user.familyName; 
-      const email= this.user.email; 
-      //const attachmentUrl= this.post.attachmentUrl; 
-      const createdAt= this.user.createdAt;
-      const newUser = {id, firstName, familyName, email, createdAt};
-      console.log(newUser);
+     async saveNewProfil() {
+      this.error = null;
       try {
-        await UserService.updateUser(id, newUser)
-        this.$router.push({
-          name: 'Profil',
-          params: {
-            id: id
-          }
-        })
+        const formData = new FormData();
+        if (this.user.photoUrl) {
+          formData.append("image", this.user.photoUrl);
+          formData.append("firstName", this.user.firstName);
+          formData.append("familyName", this.user.familyName);
+          formData.append("email", this.user.email);
+          await UserService.updateUser(formData);
+          this.$router.push({ name: "Posts" });
+        }
+        else {
+          console.log("please select a file or enter modification");
+        }
       } catch (err) {
-        console.log(err)
+        console.log(err);
+        //this.error = err.response.data.error;
       }
+    },
+    async saveNewPwd(){
+      const id = this.$store.state.route.params.id;
+      const password= this.user.passsword;
+      const newPwd = { password };
+      await UserService.updatePwd(id, newPwd);
+      this.$router.push({name: 'Posts'});
     },
     async selectedFile(event) {
       let id = this.$store.state.route.params.id

@@ -2,7 +2,7 @@
   <v-app-bar fixed color="#FD2D01" dark>
     <v-toolbar-items>
       <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }"> 
+        <template v-slot:activator="{ on, attrs }">
           <v-btn
             v-bind="attrs"
             v-on="on"
@@ -23,116 +23,43 @@
       </v-tooltip>
     </v-toolbar-items>
 
-    <v-toolbar-items>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="$store.state.isUserLoggedIn"
-            v-bind="attrs"
-            v-on="on"
-            text
-            dark
-            :to="{ name: 'Posts' }"
-          >
-            <span class="material-icons">dynamic_feed</span>
-          </v-btn>
-        </template>
-        <span>Forum</span>
-      </v-tooltip>
-    </v-toolbar-items>
+    <v-btn v-if="$store.state.isUserLoggedIn" text dark :to="{ name: 'Posts' }">
+      Forum
+    </v-btn>
 
     <v-spacer></v-spacer>
-      <v-flex >
-    <v-layout column align-center fill-height class="pt-3">
-        <v-avatar size="40" class="grey lighten-2">
-          <img
-            v-if="$store.state.isUserLoggedIn"
-            alt="avatar"
-            :src="$store.state.user.photoUrl"
-          />
-        </v-avatar>
-      <span class="text-caption white--text mb-2">{{
-        $store.state.user.firstName
-      }}</span>
-    </v-layout>
-      </v-flex>
 
-    <v-toolbar-items>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="!$store.state.isUserLoggedIn"
-            v-bind="attrs"
-            v-on="on"
-            text
-            dark
-            :to="{ name: 'Signup' }"
-          >
-            <span class="material-icons">subscriptions</span>
-          </v-btn>
-        </template>
-        <span>Inscription</span>
-      </v-tooltip>
-    </v-toolbar-items>
+    <v-avatar v-if="$store.state.user" size="40" class="grey lighten-2">
+      <img alt="avatar" :src="$store.state.user.photoUrl"/>
+    </v-avatar>
+    <span v-if="$store.state.user" class="text-caption white--text mb-2">{{
+      $store.state.user.firstName
+    }}</span>
 
-    <v-toolbar-items>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="!$store.state.isUserLoggedIn"
-            v-bind="attrs"
-            v-on="on"
-            text
-            dark
-            :to="{ name: 'Login' }"
-          >
-            <span class="material-icons">login</span>
-          </v-btn>
-        </template>
-        <span>Login</span>
-      </v-tooltip>
-    </v-toolbar-items>
+    <v-btn
+      v-if="!$store.state.isUserLoggedIn"
+      text
+      dark
+      :to="{ name: 'Signup' }"
+      >Inscription
+    </v-btn>
 
-    <v-toolbar-items>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="$store.state.isUserLoggedIn"
-            text
-            dark
-            @click="logout"
-            v-bind="attrs"
-            v-on="on"
-            :to="{ name: 'Home' }"
-          >
-            <span class="material-icons">logout</span>
-          </v-btn>
-        </template>
-        <span>Sortir</span>
-      </v-tooltip>
-    </v-toolbar-items>
+    <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login' }"
+      >Login
+    </v-btn>
 
-    <v-toolbar-items>
-      <v-tooltip bottom>
-        <template v-slot:activator="{ on, attrs }">
-          <v-btn
-            v-if="
-              $store.state.isUserLoggedIn === true &&
-              $store.state.user &&
-              $store.state.user.role === '1'
-            "
-            v-bind="attrs"
-            v-on="on"
-            text
-            dark
-            :to="{ name: 'Admin' }"
-          >
-            <span class="material-icons"> admin_panel_settings</span>
-          </v-btn>
-        </template>
-        <span>Administrateur</span>
-      </v-tooltip>
-    </v-toolbar-items>
+    <v-btn
+      v-if="$store.state.isUserLoggedIn"
+      text
+      dark
+      @click="logout"
+      :to="{ name: 'Home' }"
+      >Sortir
+    </v-btn>
+
+    <v-btn
+      v-if="$store.state.isUserLoggedIn === true && $store.state.user && $store.state.user.role == true" text dark :to="{ name: 'Admin' }">Admin
+    </v-btn>
   </v-app-bar>
 </template>
 

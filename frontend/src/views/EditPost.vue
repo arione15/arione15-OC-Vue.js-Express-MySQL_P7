@@ -2,7 +2,6 @@
   <v-layout column>
     <v-flex xs4>
       <panel title="New post">
-        <v-text-field required :rules="rules.required" label="Auteur" v-model="post.userId"></v-text-field>
         <v-text-field required :rules="rules.required" label="Titre" v-model="post.title"></v-text-field>
         <v-text-field
           required
@@ -15,7 +14,7 @@
 
         <!-- <v-btn color="success" @click="$refs.inputUpload.click()">Success</v-btn>
 <input v-show="false" ref="inputUpload" type="file" @change="yourFunction" >
- -->
+-->
 
         <input name="image"
           type="file"
@@ -23,12 +22,7 @@
         >
 
         <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
-        <v-text-field
-          required
-          :rules="rules.required"
-          label="Date de création du post"
-          v-model="post.createdAt"
-        ></v-text-field>
+        
       </panel>
       <v-alert type="success" v-if="message">{{ message }}</v-alert>
       <v-alert type="error" v-if="error">{{ error }}</v-alert>
@@ -77,7 +71,7 @@ export default {
       // }
           
       const postId = this.$store.state.route.params.postId;
-      const userId= this.post.userId; 
+      const userId= this.post.UserId; 
       const title= this.post.title; 
       const content= this.post.content; 
       //const attachmentUrl= this.post.attachmentUrl; 
@@ -120,12 +114,14 @@ export default {
   async mounted () {
     try {
       let postId = this.$store.state.route.params.postId
-      this.post = (await PostService.getOnePost(postId)).data.data
+      this.post = (await PostService.getOnePost(postId)).data
     } catch (err) {
       console.log(err)
     }
   }
 }
+
+
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

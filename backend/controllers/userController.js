@@ -146,10 +146,27 @@ exports.updateUser = (req, res) => {
     db.User.update(req.body, { where: { id: id } })
         .then(_ => {
             db.User.findByPk(id).then(user => {
-                const message = `L 'utilisateur ${user.name} a bien été modifié !`;
+                const message = `L'utilisateur ${user.firstName} a bien été modifié !`;
                 res.json({ message, data: req.body })
             })
         }).catch(error => console.log(error))
+};
+
+/*  ****************************************************** */
+// modifier le mot de passe
+/*  ****************************************************** */
+exports.updatePwd = async(req, res) => {
+    const id = req.params.id;
+    const hashPass = await bcrypt.hash(req.body.password, 10);
+    const newPwdObject = { password: hashPass };
+    db.User.findByPk(id).then(user => {
+
+        user.update(newPwdObject, { where: { id: id } })
+            .then(_ => {
+                const message = `Le mdp de l'utilisateur ${user.name} a bien été modifié !`;
+                res.json(message)
+            })
+    }).catch(error => console.log(error))
 };
 
 /*  ****************************************************** */

@@ -16,6 +16,11 @@ export default {
             withCredentials: true
         })
     },
+    updatePwd(id, formdata) {
+        return Api.put(`user/${id}/pwd`, formdata, {
+            withCredentials: true
+        })
+    },
     deleteUser(id) {
         return Api.delete(`user/${id}`, {
             withCredentials: true

@@ -108,38 +108,37 @@ exports.getUserPosts = async(req, res) => {
 // modifier un post
 /*  ****************************************************** */
 
-// exports.updatePost = async(req, res, ) => {
-//     let postObject = req.file ? {
-//         ...req.body,
-//         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
-//     } : {
-//         ...req.body
-//     };
-//     //const content = req.body.content;
-//     try {
-//         // if (content === null || content === '') {
-//         //     return res.status(400).json({
-//         //         'error': "Please enter modification to 'Contenu' field!"
-//         //     });
-//         // }
-//         const post = await Post.update({
-//             ...postObject,
-//             id: req.params.id
-//         }, {
-//             where: {
-//                 id: req.params.id
-//             }
-//         });
-//         return res.status(200).send({
-//             message: 'The post has been successfully modified!',
-//             data: post
-//         });
-//     } catch (error) {
-//         res.status(400).send({
-//             error: 'Update failed'
-//         });
-//     }
-// };
+exports.updatePost = async(req, res, ) => {
+    let postObject = req.file ? {
+        ...req.body,
+        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+    } : {
+        ...req.body
+    };
+    //const content = req.body.content;
+    try {
+        // if (content === null || content === '') {
+        //     return res.status(400).json({
+        //         'error': "Please enter modification to 'Contenu' field!"
+        //     });
+        // }
+        const post = await db.Post.update({
+            ...postObject,
+            id: req.params.id
+        }, {
+            where: {
+                id: req.params.id
+            }
+        });
+        return res.status(200).send({
+            message: 'The post has been successfully modified!'
+        });
+    } catch (error) {
+        res.status(400).send({
+            error: 'Update failed'
+        });
+    }
+};
 
 /********************************************************/
 // supprimer un post

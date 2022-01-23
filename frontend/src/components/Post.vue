@@ -1,99 +1,113 @@
 <template>
   <div class="post">
-
-<!-- Le user qui a posté -->
+    <!-- Le user qui a posté -->
     <v-container>
       <v-layout row wrap>
         <v-flex sm10 md8 lg6>
-      <v-card flat class="text-xs-center ma-3">
-        <v-responsive class="pt-4">
-          <v-avatar size="100" class="grey lighten-2">
-            <img alt="avatar" :src="post.User.photoUrl">
-          </v-avatar>
-          </v-responsive>
-          <v-card-text>
-          <div class="font-weight-black">{{ post.User.firstName }} {{ post.User.familyName }}</div>
-          <div class="grey--text">Posté le : {{ dateFormat(post.createdAt) }}</div>
-          </v-card-text>
+          <v-card flat class="text-xs-center ma-3">
+            
+            <v-responsive>
+              <v-avatar size="100" class="grey lighten-2">
+                <img alt="avatar" :src="post.User.photoUrl" />
+              </v-avatar>
 
-<v-card-action>
-          <v-btn flat color="light-blue">
-            <v-icon v-if="ifLiked" color="green" @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
-            <v-icon v-else @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
-          </v-btn>
+                <v-menu left bottom>
+                  <template v-slot:activator="{ on, attrs }">
+                    <v-btn icon v-bind="attrs" v-on="on">
+                      <span class="material-icons">more_vert</span>
+                    </v-btn>
+                  </template>
+                  <v-list>
+                    <v-list-item v-if="post.User.id === $store.state.user.id || $store.state.user.role == true"
+                      :to="{ name: 'Post', params: { postId: post.id } }"
+                    >
+                      <v-list-item-title>Modifier le post</v-list-item-title>
+                    </v-list-item>
+                    <v-list-item
+                      :to="{ name: 'Profil', params: { id: post.User.id } }"
+                    >
+                      <v-list-item-title>Voir le profil</v-list-item-title>
+                    </v-list-item>
+                    <slot name="delPost"></slot>
+                  </v-list>
+                </v-menu>
+            </v-responsive>
 
-          <slot name="likes" />
-          <v-menu left bottom>
-            <template v-slot:activator="{ on, attrs }">
-              <v-btn icon v-bind="attrs" v-on="on">
-                <span class="material-icons">more_vert</span>
-              </v-btn>
-            </template>
-            <v-list>
-              <v-list-item :to="{ name: 'Post', params: { postId: post.id } }">
-                <v-list-item-title>Modifier le post</v-list-item-title>
-              </v-list-item>
-              <v-list-item :to="{ name: 'Profil', params: { id: post.User.id } }">
-                <v-list-item-title>Editer le profil</v-list-item-title>
-              </v-list-item>
-              <slot name="delPost"></slot>
-            </v-list>
-          </v-menu>
-</v-card-action>
-        </v-card>
+            <v-card-text>
+              <div class="font-weight-black">
+                {{ post.User.firstName }} {{ post.User.familyName }}
+              </div>
+              <div class="grey--text">
+                Posté le : {{ dateFormat(post.createdAt) }}
+              </div>
+            </v-card-text>
 
-      </v-flex>
+            <v-flex>
+                <v-icon
+                  v-if="ifLiked"
+                  color="green"
+                  @click="likePost(post.id)"
+                  class="material-icons"
+                  >thumb_up</v-icon
+                >
+                <v-icon v-else @click="likePost(post.id)" class="material-icons"
+                  >thumb_up</v-icon
+                >
+                <slot name="likes" />
+            </v-flex>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-container>
 
-<!-- Le post -->
+    <!-- Le post -->
     <v-container>
       <v-layout row wrap>
         <v-flex sm10 md8 lg6>
-
- <v-card flat class="text-xs-center ma-3">
-        <v-responsive>
-            <v-img :src="post.attachmentUrl"></v-img>
-          </v-responsive>
-          <v-card-text>
-          <div class="subheading">{{ post.title }}</div>
-        <div>{{ post.content }}</div>
-          </v-card-text>
-</v-card>
-      </v-flex>
+          <v-card flat class="text-xs-center ma-3">
+            <v-responsive>
+              <v-img :src="post.attachmentUrl"></v-img>
+            </v-responsive>
+            <v-card-text>
+              <div class="subheading">{{ post.title }}</div>
+              <div>{{ post.content }}</div>
+            </v-card-text>
+          </v-card>
+        </v-flex>
       </v-layout>
     </v-container>
 
-<!-- Les commentaires -->
-<v-container>
-        <v-layout row wrap>
+    <!-- Les commentaires -->
+    <v-container>
+      <v-layout row wrap>
         <v-flex sm10 md8 lg6>
-
- <v-card flat class="text-xs-center ma-3">
-      <v-card-text>
-        <div class="subheading">
-            <slot name="publishComment"></slot>
-        </div>
-          <div v-for="comment in post.Comments" :key="comment.id" small>
-          <v-card-text>
-                    <v-responsive class="pt-4">
-          <v-avatar size="30" class="grey lighten-2">
-            <img alt="avatar" :src="comment.User.photoUrl">
-          </v-avatar>
-          </v-responsive>
-          <div class="subheading">{{ comment.User.firstName }} {{ comment.User.familyName }}</div>
-          <div class="grey--text">commenté le : {{ comment.createdAt }}</div>
-              <div>{{ comment.message }}</div>
-          </v-card-text>
-          </div>
-      </v-card-text>
-</v-card>
-
+          <v-card flat class="text-xs-center ma-3">
+            <v-card-text>
+              <div class="subheading">
+                <slot name="publishComment"></slot>
+              </div>
+              <div v-for="comment in post.Comments" :key="comment.id" small>
+                <v-card-text>
+                  <v-responsive class="pt-4">
+                    <v-avatar size="30" class="grey lighten-2">
+                      <img alt="avatar" :src="comment.User.photoUrl" />
+                    </v-avatar>
+                  </v-responsive>
+                  <div class="subheading">
+                    {{ comment.User.firstName }} {{ comment.User.familyName }}
+                  </div>
+                  <div class="grey--text">
+                    commenté le : {{ comment.createdAt }}
+                  </div>
+                  <div>{{ comment.message }}</div>
+                </v-card-text>
+              </div>
+            </v-card-text>
+          </v-card>
         </v-flex>
       </v-layout>
     </v-container>
     <v-divider class="mx-4 my-5"></v-divider>
-
   </div>
 </template>
 
