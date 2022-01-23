@@ -8,11 +8,11 @@
           <v-text-field label="Contenu" v-model="post.content" multi-line></v-text-field>
           <img class="d-block" src="https://img.icons8.com/ios-filled/50/000000/attach-resume-male.png" />
           <input class="d-block btn-upload" name="image" type="file" v-on:change="selectedFile($event)" placeholder="Ajoutez une imagr">
-          <v-text-field label="YoutubeID" v-model="post.youtubeId"></v-text-field>
+          <!-- <v-text-field label="YoutubeID" v-model="post.youtubeId"></v-text-field> -->
         </form>
         <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
         <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
-        <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Envoyer !</v-btn>
+        <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Postez !</v-btn>
       </panel>
 
       <panel title="Forum">
@@ -27,16 +27,10 @@
                 </v-list-item>
               </template>
 
-              <!-- <template v-slot:delPost v-else-if="$store.state.user.role === '1'" >
-              <v-list-item @click="removePost(post.id)">
-                  <v-list-item-title>Supprimer le post</v-list-item-title>
-                </v-list-item>
-              </template> -->
-
               <template v-slot:publishComment>
                 <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
                 <v-text-field label="commenter" v-model="message"></v-text-field>
-                <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Envoyer</v-btn>
+                <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
                 <!-- </create-comment> -->
               </template>
               <template v-slot:likes>{{ post.Likes.length }}</template>

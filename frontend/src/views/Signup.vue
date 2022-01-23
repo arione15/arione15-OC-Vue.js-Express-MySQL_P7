@@ -10,9 +10,15 @@
           <!-- <v-file-input v-model="file"></v-file-input> -->
           <!-- <v-file-input placeholder="Choisissez votre avatar" prepend-icon="mdi-camera" v-on:change="selectedUser($event)" label="Avatar">
           </v-file-input> -->
-<div d-flex align-center>
+
+<!-- <div d-flex align-center>
           <img class="d-block" src="https://img.icons8.com/ios-filled/50/000000/attach-resume-male.png" />
           <input class="d-block btn-upload" name="image" type="file" v-on:change="selectedUser($event)" placeholder="Enter your avatar">
+</div> -->
+
+<div>
+<input type="file" id="files" class="hidden" style="width: 90px" v-on:change="selectedUser($event)"/>
+<label for="files">Select file</label>
 </div>
 
 <!-- 
@@ -121,6 +127,10 @@ export default {
   padding: 10px 25px;
   border-radius: 10px;
   font-size: 1rem;
+}
+input[type=file]{
+    width:90px;
+    color:transparent;
 }
 </style>
 
