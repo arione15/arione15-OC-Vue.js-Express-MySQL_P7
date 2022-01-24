@@ -141,16 +141,33 @@ exports.getOneUser = (req, res) => {
 /*  ****************************************************** */
 // modifier un utilisateur
 /*  ****************************************************** */
-exports.updateUser = (req, res) => {
-    const id = req.params.id;
-    db.User.update(req.body, { where: { id: id } })
-        .then(_ => {
-            db.User.findByPk(id).then(user => {
-                const message = `L'utilisateur ${user.firstName} a bien été modifié !`;
-                res.json({ message, data: req.body })
-            })
-        }).catch(error => res.send(error))
-};
+exports.updateUser = async(req, res) => {
+    let userObject = req.file ? {
+        ...req.body,
+        photoUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+    } : {
+        ...req.body
+    };
+    //const content = req.body.content;
+    try {
+        const user = await db.User.update({
+            ...userObject,
+            id: req.params.id
+        }, {
+            where: {
+                id: req.params.id
+            }
+        });
+        return res.status(200).send({
+            message: 'The user has been successfully modified!',
+            data: user
+        });
+    } catch (error) {
+        res.status(400).send({
+            error: 'Update failed'
+        });
+    }
+}
 
 /*  ****************************************************** */
 // modifier le mot de passe

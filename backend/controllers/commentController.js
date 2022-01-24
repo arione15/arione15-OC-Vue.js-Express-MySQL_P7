@@ -64,12 +64,7 @@ exports.deleteComment = async(req, res) => {
         where: { id: req.params.commentId }
     });
 
-    if (user.role === 1 || cookie.userId == comment.UserId) {
-        await db.Comment.destroy({ where: { id: req.params.commentId } });
-        const message = `Commentary deleted`;
-        res.json({ message })
-    } else {
-        const message = `Commentary could not be removed`;
-        res.json({ message })
-    }
+    await db.Comment.destroy({ where: { id: req.params.commentId } });
+    const message = `Commentary deleted`;
+    res.json({ message })
 }

@@ -18,7 +18,7 @@
                     </v-btn>
                   </template>
                   <v-list>
-                    <v-list-item v-if="post.User.id === $store.state.user.id || $store.state.user.role == true"
+                    <v-list-item v-if="post.User.id === $store.state.user.id"
                       :to="{ name: 'Post', params: { postId: post.id } }"
                     >
                       <v-list-item-title>Modifier le post</v-list-item-title>
@@ -83,25 +83,16 @@
         <v-flex sm10 md8 lg6>
           <v-card flat class="text-xs-center ma-3">
             <v-card-text>
+              
               <div class="subheading">
                 <slot name="publishComment"></slot>
               </div>
-              <div v-for="comment in post.Comments" :key="comment.id" small>
-                <v-card-text>
-                  <v-responsive class="pt-4">
-                    <v-avatar size="30" class="grey lighten-2">
-                      <img alt="avatar" :src="comment.User.photoUrl" />
-                    </v-avatar>
-                  </v-responsive>
-                  <div class="subheading">
-                    {{ comment.User.firstName }} {{ comment.User.familyName }}
-                  </div>
-                  <div class="grey--text">
-                    commenté le : {{ comment.createdAt }}
-                  </div>
-                  <div>{{ comment.message }}</div>
-                </v-card-text>
+              
+              <div class="subheading">
+                <slot name="comments"></slot>
               </div>
+
+              
             </v-card-text>
           </v-card>
         </v-flex>

@@ -96,16 +96,12 @@ export default {
       this.error = null;
       try {
         const formData = new FormData();
-        if (this.user.photoUrl) {
-          formData.append("image", this.user.photoUrl);
-          formData.append("firstName", this.user.firstName);
-          formData.append("familyName", this.user.familyName);
-          formData.append("email", this.user.email);
-          await UserService.updateUser(formData);
-          this.$router.push({ name: "Posts" });
-        } else {
-          console.log("please select a file or enter modification");
-        }
+        let id = this.$store.state.route.params.id;
+        formData.append("firstName", this.user.firstName);
+        formData.append("familyName", this.user.familyName);
+        formData.append("email", this.user.email);
+        await UserService.updateUser(id, formData);
+        this.$router.push({ name: "Posts" });
       } catch (err) {
         console.log(err);
         //this.error = err.response.data.error;
@@ -128,16 +124,9 @@ export default {
 
       try {
         await UserService.updateUser(id, formData);
-        // this.$router.push({
-        //   name: 'Post',
-        //   params: {
-        //     postId: postId
-        //   }
-        // })
       } catch (err) {
         console.log(err);
       }
-      //console.log(this.post.attachmentUrl);
     },
   },
   async mounted() {
