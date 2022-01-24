@@ -135,7 +135,7 @@ exports.getOneUser = (req, res) => {
         .then(user => {
             const message = 'Un utilisateur a bien été récupéré !';
             res.json({ message, data: user })
-        }).catch(error => console.log(error))
+        }).catch(error => res.send(error))
 };
 
 /*  ****************************************************** */
@@ -149,25 +149,26 @@ exports.updateUser = (req, res) => {
                 const message = `L'utilisateur ${user.firstName} a bien été modifié !`;
                 res.json({ message, data: req.body })
             })
-        }).catch(error => console.log(error))
+        }).catch(error => res.send(error))
 };
 
 /*  ****************************************************** */
 // modifier le mot de passe
 /*  ****************************************************** */
 exports.updatePwd = async(req, res) => {
-    const id = req.params.id;
-    const hashPass = await bcrypt.hash(req.body.password, 10);
-    const newPwdObject = { password: hashPass };
-    db.User.findByPk(id).then(user => {
+    const id = req.params.id
+    const hashedPwd = await bcrypt.hash(req.body.password, 10)
+    const newUser = {
+        password: hashedPwd
+    }
+    db.User.findByPk(id).then((user) => {
+        user
+            .update(newUser, { where: { id: id } })
+            .then((user = res.send(user)))
+            .catch(error => res.send(error))
+    })
+}
 
-        user.update(newPwdObject, { where: { id: id } })
-            .then(_ => {
-                const message = `Le mdp de l'utilisateur ${user.name} a bien été modifié !`;
-                res.json(message)
-            })
-    }).catch(error => console.log(error))
-};
 
 /*  ****************************************************** */
 // supprimer un utilisateur
@@ -181,5 +182,5 @@ exports.deleteUser = (req, res) => {
                     const message = `L'utilisateur ayant l'identifiant ${userDeleted.id} a bien été supprimé !`;
                     res.json({ message, data: userDeleted })
                 })
-        }).catch(error => console.log(error))
+        }).catch(error => res.send(error))
 };
