@@ -16,7 +16,7 @@
 
           <v-card-title class="white--text mt-8">
             <v-avatar size="56">
-              <img alt="user" :src="post.User.photoUrl">
+              <img alt="user" :src="`${req.protocol}://${req.get('host')}/images/${post.User.photoUrl}`">
             </v-avatar>
             <p class="ml-3 red">{{ post.User.firstName }} {{ post.User.familyName }}</p>
           </v-card-title>

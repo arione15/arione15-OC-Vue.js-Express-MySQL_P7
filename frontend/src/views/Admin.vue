@@ -14,7 +14,9 @@
         <tr v-for="user in users.data" :key="user.id">
           <td class="text-xs-center">
             <v-avatar size="56">
-              <img alt="user" :src="user.photoUrl" />
+              <img alt="user" :src="`${$store.state.localUrl}/${user.photoUrl}`" />
+              
+
             </v-avatar>
             <span>{{ user.firstName }} {{ user.familyName }}</span>
           </td>

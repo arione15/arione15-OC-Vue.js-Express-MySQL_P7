@@ -19,7 +19,9 @@
       </v-flex>
 
       <v-flex xs6>
-        <img class="album-image" :src="post.attachmentUrl" />
+        <img class="album-image" :src="`${$store.state.localUrl}/${post.attachmentUrl}`" />
+                        
+
         <br>
       </v-flex>
     </v-layout>

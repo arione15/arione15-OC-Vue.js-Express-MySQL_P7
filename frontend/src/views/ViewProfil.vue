@@ -9,7 +9,7 @@
         <v-btn dark v-if="user.id === $store.state.user.id || $store.state.user.role === true" v-on:click="delUser(user.id)" class="red">Supprimer</v-btn>
       </v-flex>
       <v-flex xs6>
-        <img class="album-image" :src="user.photoUrl" />
+        <img class="album-image" :src="`${$store.state.localUrl}/${user.photoUrl}l`" />
         <br />
       </v-flex>
     </v-layout>
@@ -22,7 +22,7 @@
               <v-img
                 class="white--text align-end album-image"
                 height="200px"
-                :src="post.attachmentUrl"
+                :src="`${$store.state.localUrl}/${post.attachmentUrl}`"
               ></v-img>
               <v-card-title>{{ post.title }}</v-card-title>
 

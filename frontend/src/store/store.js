@@ -11,7 +11,8 @@ export default new Vuex.Store({
     state: {
         token: null,
         user: null,
-        isUserLoggedIn: false
+        isUserLoggedIn: false,
+        localUrl: "http://localhost:3000/images"
     },
     mutations: {
         SET_TOKEN(state, token) {

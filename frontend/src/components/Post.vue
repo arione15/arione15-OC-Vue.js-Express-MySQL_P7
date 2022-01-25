@@ -8,9 +8,8 @@
             
             <v-responsive>
               <v-avatar size="100" class="grey lighten-2">
-                <img alt="avatar" :src="post.User.photoUrl" />
+                <img alt="avatar" :src="`${$store.state.localUrl}/${post.User.photoUrl}`" />
               </v-avatar>
-
                 <v-menu left bottom>
                   <template v-slot:activator="{ on, attrs }">
                     <v-btn icon v-bind="attrs" v-on="on">
@@ -66,7 +65,9 @@
         <v-flex sm10 md8 lg6>
           <v-card flat class="text-xs-center ma-3">
             <v-responsive>
-              <v-img :src="post.attachmentUrl"></v-img>
+              <v-img :src="`${$store.state.localUrl}/${post.attachmentUrl}`"></v-img>
+
+              
             </v-responsive>
             <v-card-text>
               <div class="subheading">{{ post.title }}</div>

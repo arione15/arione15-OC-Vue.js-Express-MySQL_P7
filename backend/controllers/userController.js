@@ -42,7 +42,8 @@ exports.signup = async(req, res) => {
                     email: email,
                     password: hashPass,
                     role: isAdmin,
-                    photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
+                    // photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
+                    photoUrl: req.file ? req.file.filename : null,
                 };
 
                 const createdUser = await db.User.create(userObject);
@@ -144,7 +145,7 @@ exports.getOneUser = (req, res) => {
 exports.updateUser = async(req, res) => {
     let userObject = req.file ? {
         ...req.body,
-        photoUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+        photoUrl: req.file.filename
     } : {
         ...req.body
     };
@@ -196,7 +197,10 @@ exports.deleteUser = (req, res) => {
             const userDeleted = user;
             db.User.destroy({ where: { id: user.id } })
                 .then(_ => {
-                    const message = `L'utilisateur ayant l'identifiant ${userDeleted.id} a bien été supprimé !`;
+                    const message = `
+                L 'utilisateur ayant l'
+                identifiant $ { userDeleted.id }
+                a bien été supprimé!`;
                     res.json({ message, data: userDeleted })
                 })
         }).catch(error => res.send(error))

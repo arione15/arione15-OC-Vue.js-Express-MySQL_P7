@@ -29,7 +29,7 @@
               </v-flex>
 
               <v-flex xs6>
-                <img class="album-image" :src="user.photoUrl" />
+                <img class="album-image" :src="`${$store.state.localUrl}/${user.photoUrl}`" />
               </v-flex>
             </v-layout>
           </div>

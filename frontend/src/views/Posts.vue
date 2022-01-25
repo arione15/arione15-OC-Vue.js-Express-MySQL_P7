@@ -74,8 +74,6 @@
               </template>
               <template v-slot:likes>{{ post.Likes.length }}</template>
 
-
-
               <template v-slot:comments>
             <Comments
               v-for="comment in post.Comments"
