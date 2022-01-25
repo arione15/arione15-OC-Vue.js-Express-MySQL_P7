@@ -9,6 +9,7 @@
             text
             dark
             color="#FD2D01"
+            :to="{ name: 'Home' }"
           >
             <v-img
               alt="Groupomania logo"
@@ -26,10 +27,11 @@
       Forum
     </v-btn>
     <v-spacer></v-spacer>
-
-    <v-avatar v-if="$store.state.user" size="40" class="grey lighten-2">
-      <img alt="avatar" :src="`${$store.state.localUrl}/${$store.state.user.photoUrl}`"/>
-    </v-avatar>
+    <v-btn v-if="$store.state.user" color="#FD2D01" :to="{ name: 'Profil', params: { id: $store.state.user.id  } }">
+      <v-avatar size="40" class="grey lighten-2">
+        <img alt="avatar" :src="`${$store.state.localUrl}/${$store.state.user.photoUrl}`" />
+      </v-avatar>
+    </v-btn>
     <span v-if="$store.state.user" class="text-caption white--text mb-2">{{
       $store.state.user.firstName
     }}</span>

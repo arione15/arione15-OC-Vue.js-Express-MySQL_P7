@@ -143,29 +143,20 @@ exports.updatePost = async(req, res, ) => {
 // supprimer un post
 /********************************************************/
 exports.deletePost = async(req, res) => {
-    //let myUuid = req.params.id;
-    const myId = await db.Post.findOne({
-        where: {
-            id: req.params.id
+    try {
+        const post = await db.Post.findByPk(req.params.id);
+        console.log(post);
+        if (!post) {
+            res.status(401).json({
+                message: "post non trouvé !"
+            });
+        } else {
+            await post.destroy();
+            res.status(200).json({ message: "Suppression du post ok" })
         }
-    });
-
-    if (myId === null) {
-        return res.status(401).json({
-            message: "id not found !"
+    } catch (error) {
+        res.status(400).send({
+            error: 'Echec de la suppression du post !'
         });
-    } else {
-        db.Post.destroy({
-                where: {
-                    id: req.params.id
-                }
-            })
-            .then(() => res.status(200).json({
-                message: 'post deleted!'
-            }))
-            .catch(error => res.status(400).json({
-                message: 'delete failed!',
-                error
-            }));
     }
 }

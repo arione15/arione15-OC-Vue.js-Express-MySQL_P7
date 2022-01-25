@@ -9,7 +9,7 @@
         <v-btn dark v-if="user.id === $store.state.user.id || $store.state.user.role === true" v-on:click="delUser(user.id)" class="red">Supprimer</v-btn>
       </v-flex>
       <v-flex xs6>
-        <img class="album-image" :src="`${$store.state.localUrl}/${user.photoUrl}l`" />
+        <img class="album-image" :src="`${$store.state.localUrl}/${user.photoUrl}`" />
         <br />
       </v-flex>
     </v-layout>

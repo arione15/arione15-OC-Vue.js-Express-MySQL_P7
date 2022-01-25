@@ -191,17 +191,31 @@ exports.updatePwd = async(req, res) => {
 /*  ****************************************************** */
 // supprimer un utilisateur
 /*  ****************************************************** */
-exports.deleteUser = (req, res) => {
-    db.User.findByPk(req.params.id)
-        .then(user => {
-            const userDeleted = user;
-            db.User.destroy({ where: { id: user.id } })
-                .then(_ => {
-                    const message = `
-                L 'utilisateur ayant l'
-                identifiant $ { userDeleted.id }
-                a bien été supprimé!`;
-                    res.json({ message, data: userDeleted })
-                })
-        }).catch(error => res.send(error))
-};
+exports.deleteUser = async(req, res) => {
+        try {
+            const user = await db.User.findByPk(req.params.id);
+            console.log(user.role);
+            if (user.role == 0) {
+                await user.destroy();;
+                res.status(200).json({ message: "Suppression du ok" })
+            } else {
+                res.status(200).json({ message: "Ne pas supprimer le dernier Admin !" })
+            }
+        } catch (error) {
+            res.status(400).send({
+                error: 'Echec de la suppression !'
+            });
+        }
+    }
+    // .then(user => {
+    // if (user.role === true) {
+    //       res.json({ message: "Ne pas supprimer le dernier Admin !" })
+    //     }
+    //  const userDeleted = user;
+    //   db.User.destroy({ where: { id: user.id } })
+    //         .then(_ => {
+    // const message = `L 'utilisateur ayant l'identifiant ${ userDeleted.id } a bien été supprimé!`;
+    //           res.json({ message, data: userDeleted })
+    //         })
+    // }).catch(error => res.send(error))
+    //};
