@@ -14,14 +14,16 @@ const fs = require('fs');
 // 1- valider les inputs de l'email et du mdp, 2- crypter le mdp, 3- créer nouvel user, 4- l'enregistrer dans la BDD
 exports.signup = async(req, res) => {
         const { firstName, familyName, email, password, role } = req.body;
-        console.log("image", req.file);
         try {
             const user = await db.User.findOne({
-                    where: { email: req.body.email },
-                }) // si l'email est utilisé existe
+                where: { email: req.body.email },
+            });
+
             if (user) {
                 fs.unlinkSync(req.file.path);
-                return res.status(409).send('This email already exists!');
+                return res.status(409).json({
+                    message: "Cet email existe déja !"
+                });
             } else {
                 const allUsers = await db.User.findAll({
                     attributes: {
@@ -30,11 +32,10 @@ exports.signup = async(req, res) => {
                         ],
                     },
                 })
-                const numUsers = allUsers[0].dataValues.totalUsers //
-                let isAdmin = false
-                    //si on n'a aucun utilisateur dans la BDD, le 1er utilisateur créé
-                    //sera admin
-                if (numUsers === 0) isAdmin = true
+                const numUsers = allUsers[0].dataValues.totalUsers
+                let isAdmin = false;
+
+                if (numUsers === 0) isAdmin = true;
                 const hashPass = await bcrypt.hash(password, 10);
                 const userObject = {
                     firstName: firstName,
@@ -42,15 +43,17 @@ exports.signup = async(req, res) => {
                     email: email,
                     password: hashPass,
                     role: isAdmin,
-                    // photoUrl: req.file ? `${req.protocol}://${req.get('host')}/images/${req.file.filename}` : null,
                     photoUrl: req.file ? req.file.filename : null,
                 };
-
                 const createdUser = await db.User.create(userObject);
-                res.status(200).send({ message: 'The user is successfully connected!', data: createdUser });
+                res.status(200).json({
+                    message: "L'utilisateur a été crée avec succès !"
+                });
             }
-        } catch (error) {
-            return res.status(500).send({ error: 'An error has occured while trying to sign up!' });
+        } catch (err) {
+            return res.json({
+                err: "Une erreur est apparu lors de l'inscription !"
+            });
         }
     }
     /*  ****************************************************** */
@@ -62,12 +65,12 @@ exports.login = async(req, res) => {
         const user = await db.User.findOne({ where: { email: req.body.email } });
 
         if (!user) {
-            return res.status(403).send('The login information (email) is incorrect!');
+            return res.status(403).json({ err: "Les informations de login (email) sont incorrectes !" });
         } else {
             // on compare les mots de passes
             const hash = await bcrypt.compare(req.body.password, user.password)
             if (!hash) {
-                return res.status(401).send({ error: 'Mot de passe incorrect !' })
+                return res.status(401).json({ err: 'Mot de passe incorrect !' })
             } else {
                 //on créé un token
                 const newToken = jwt.sign({ userId: user.id }, process.env.COOKIE_KEY, {
@@ -88,17 +91,16 @@ exports.login = async(req, res) => {
                     maxAge: 86400000, // 24h
                 });
                 // on renvoie le user et le cookie
-                res.status(200).send({
+                res.status(200).json({
                     user: user,
                     cryptedCookie,
                 })
             }
         }
-    } catch (error) {
-        res.send({ error: 'An error has occured while trying to log in!' });
+    } catch (err) {
+        res.json({ err: "Une erreru est apparue lors de login!" });
     }
 }
-
 
 /*  ****************************************************** */
 //  gérer la déconnexion d'un utilisateur
@@ -107,10 +109,7 @@ exports.logout = (req, res) => {
     res.cookie('snToken', '', {
         maxAge: 1 // suppression instantannée (1 ms)
     });
-    res.status(200).json({
-        message: "utilisateur déconnecté",
-        redirect: '/home'
-    });
+    res.status(200).json({ message: "utilisateur déconnecté" });
 };
 
 /*  ****************************************************** */
@@ -121,9 +120,9 @@ exports.getAllUsers = async(req, res) => {
         const users = await db.User.findAll({
             attributes: ['id', 'firstName', 'familyName', 'email', 'photoUrl', 'role'],
         })
-        return res.status(200).send(users)
-    } catch (error) {
-        return res.status(500).send({ error: 'Erreur serveur' })
+        return res.status(200).json(users)
+    } catch (err) {
+        return res.status(500).json({ err: "Erreur serveur" })
     }
 };
 
@@ -134,9 +133,8 @@ exports.getOneUser = (req, res) => {
     const id = req.params.id;
     db.User.findByPk(id)
         .then(user => {
-            const message = 'Un utilisateur a bien été récupéré !';
-            res.json({ message, data: user })
-        }).catch(error => res.send(error))
+            res.json({ message: "Un utilisateur a bien été récupéré !", data: user })
+        }).catch(() => res.json({ err: "Echec de la récupération de l\'utilsateur !" }))
 };
 
 /*  ****************************************************** */
@@ -149,7 +147,6 @@ exports.updateUser = async(req, res) => {
     } : {
         ...req.body
     };
-    //const content = req.body.content;
     try {
         const user = await db.User.update({
             ...userObject,
@@ -159,14 +156,12 @@ exports.updateUser = async(req, res) => {
                 id: req.params.id
             }
         });
-        return res.status(200).send({
-            message: 'The user has been successfully modified!',
+        return res.status(200).json({
+            message: "Utilisateur modifié avec succès !",
             data: user
         });
-    } catch (error) {
-        res.status(400).send({
-            error: 'Update failed'
-        });
+    } catch (err) {
+        res.status(400).json({ err: "Echec de la mise à jour" });
     }
 }
 
@@ -174,48 +169,31 @@ exports.updateUser = async(req, res) => {
 // modifier le mot de passe
 /*  ****************************************************** */
 exports.updatePwd = async(req, res) => {
-    const id = req.params.id
-    const hashedPwd = await bcrypt.hash(req.body.password, 10)
-    const newUser = {
-        password: hashedPwd
-    }
+    const id = req.params.id;
+    const hashedPwd = await bcrypt.hash(req.body.password, 10);
+    const newUser = { password: hashedPwd };
     db.User.findByPk(id).then((user) => {
         user
             .update(newUser, { where: { id: id } })
-            .then((user = res.send(user)))
-            .catch(error => res.send(error))
-    })
+            .then((user = res.json(user)))
+            .catch(() => res.json({ err: "Echec de la modification du mot de passe !" }))
+    }).catch(() => res.json({ err: "User non trouvé !" }))
 }
-
 
 /*  ****************************************************** */
 // supprimer un utilisateur
 /*  ****************************************************** */
 exports.deleteUser = async(req, res) => {
-        try {
-            const user = await db.User.findByPk(req.params.id);
-            console.log(user.role);
-            if (user.role == 0) {
-                await user.destroy();;
-                res.status(200).json({ message: "Suppression du ok" })
-            } else {
-                res.status(200).json({ message: "Ne pas supprimer le dernier Admin !" })
-            }
-        } catch (error) {
-            res.status(400).send({
-                error: 'Echec de la suppression !'
-            });
+    try {
+        const user = await db.User.findByPk(req.params.id);
+
+        if (user.role == 0) {
+            await user.destroy();
+            res.status(200).json({ message: "L'utilisateur a bien été supprimé !" })
+        } else {
+            res.status(200).json({ err: "Ne pas supprimer le dernier Admin !" })
         }
+    } catch (err) {
+        res.status(400).json({ err: "Echec de la suppression !" })
     }
-    // .then(user => {
-    // if (user.role === true) {
-    //       res.json({ message: "Ne pas supprimer le dernier Admin !" })
-    //     }
-    //  const userDeleted = user;
-    //   db.User.destroy({ where: { id: user.id } })
-    //         .then(_ => {
-    // const message = `L 'utilisateur ayant l'identifiant ${ userDeleted.id } a bien été supprimé!`;
-    //           res.json({ message, data: userDeleted })
-    //         })
-    // }).catch(error => res.send(error))
-    //};
+}

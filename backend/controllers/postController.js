@@ -9,7 +9,6 @@ const Cookies = require("cookies");
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
-    // let fileName = req.body.userId + Date.now() + ".jpg";
     const cryptedCookie = new Cookies(req, res).get('snToken');
     const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
     let postObject = req.file ? {
@@ -23,11 +22,9 @@ exports.createPost = async(req, res) => {
                 UserId: cookie.userId, //!!!!!!!! U uppercase
             })
             // le post est crée qu'il y est un req.file ou pas
-        return res.status(201).json(post);
-    } catch (error) {
-        return res.status(400).json({
-            error: 'Failed to create the post!'
-        });
+        return res.status(201).json(post)
+    } catch (err) {
+        return res.status(400).json({ err: "Echec de la création du post !" });
     }
 }
 
@@ -59,9 +56,9 @@ exports.getAllPosts = async(req, res) => {
                 attributes: ['UserId'],
             }]
         });
-        res.status(200).send(posts)
-    } catch (error) {
-        return res.status(500).send({ error: "Une erreur s'est produite!" })
+        res.status(200).json(posts)
+    } catch (err) {
+        return res.status(500).json({ err: "Une erreur s'est produite!" })
     }
 }
 
@@ -79,8 +76,8 @@ exports.getOnePost = async(req, res) => {
             }, ],
         })
         res.status(200).json(post)
-    } catch (error) {
-        return res.status(500).send({ error: 'Erreur serveur' })
+    } catch (err) {
+        return res.status(500).json({ err: "Erreur serveur" })
     }
 }
 
@@ -98,8 +95,10 @@ exports.getUserPosts = async(req, res) => {
             }, ],
         })
         res.status(200).json(post)
-    } catch (error) {
-        return res.status(500).send({ error: 'Server Error' })
+    } catch (err) {
+        return res.status(500).json({ err: "Erreur serveur" })
+
+
     }
 }
 
@@ -114,13 +113,8 @@ exports.updatePost = async(req, res, ) => {
     } : {
         ...req.body
     };
-    //const content = req.body.content;
+
     try {
-        // if (content === null || content === '') {
-        //     return res.status(400).json({
-        //         'error': "Please enter modification to 'Contenu' field!"
-        //     });
-        // }
         const post = await db.Post.update({
             ...postObject,
             id: req.params.id
@@ -129,13 +123,9 @@ exports.updatePost = async(req, res, ) => {
                 id: req.params.id
             }
         });
-        return res.status(200).send({
-            message: 'The post has been successfully modified!'
-        });
-    } catch (error) {
-        res.status(400).send({
-            error: 'Update failed'
-        });
+        return res.status(200).json({ message: "Le post a été crée avec succès !" });
+    } catch (err) {
+        res.status(400).json({ err: "Echec de la mise à jour du post !" });
     }
 };
 
@@ -145,18 +135,14 @@ exports.updatePost = async(req, res, ) => {
 exports.deletePost = async(req, res) => {
     try {
         const post = await db.Post.findByPk(req.params.id);
-        console.log(post);
+
         if (!post) {
-            res.status(401).json({
-                message: "post non trouvé !"
-            });
+            res.status(401).json({ err: "post non trouvé !" });
         } else {
             await post.destroy();
-            res.status(200).json({ message: "Suppression du post ok" })
+            res.status(200).json({ message: "Post supprimé avec succès" })
         }
-    } catch (error) {
-        res.status(400).send({
-            error: 'Echec de la suppression du post !'
-        });
+    } catch (err) {
+        res.status(400).json({ err: "Echec de la suppression du post !" });
     }
 }

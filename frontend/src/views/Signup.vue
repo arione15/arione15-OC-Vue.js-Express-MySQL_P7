@@ -7,44 +7,15 @@
           <v-text-field label="Nom" v-model="user.familyName"></v-text-field>
           <v-text-field label="Email" v-model="user.email"></v-text-field>
           <v-text-field label="Mot de passe" type="password" v-model="user.password" autocomplete="new-password"></v-text-field>
-          <!-- <v-file-input v-model="file"></v-file-input> -->
-          <!-- <v-file-input placeholder="Choisissez votre avatar" prepend-icon="mdi-camera" v-on:change="selectedUser($event)" label="Avatar">
-          </v-file-input> -->
-
-<!-- <div d-flex align-center>
-          <img class="d-block" src="https://img.icons8.com/ios-filled/50/000000/attach-resume-male.png" />
-          <input class="d-block btn-upload" name="image" type="file" v-on:change="selectedUser($event)" placeholder="Enter your avatar">
-</div> -->
 
 <div>
 <input type="file" id="files" class="hidden" style="width: 90px" v-on:change="selectedUser($event)"/>
 <label for="files">Select file</label>
 </div>
 
-<!-- 
-  <span class="material-icons">camera_alt</span>
-  <label for="files">Choisissez votre avatar</label>
-  <input type="file" id="files" style="visibility:hidden;" v-on:change="selectedUser($event)" name="image"> -->
-
-<!-- 
-<span> Choisissez votre avatar</span>
-<input type="file" v-on:change="selectedUser($event)" name="image" style="display:none;" /> -->
-
-
-
-
-<!-- 
-      <button class="btn-upload" v-on:change="selectedUser($event)" name="image" type="file">Choisissez votre avatar
-          <input prepend-icon="mdi-camera" v-on:change="selectedUser($event)" name="image" type="file" class="responsive-img" style="display:none;"></button>
-          -->
-
-
-          <!-- <span class="material-icons" >camera_alt</span> -->
-
-
         </form>
-        <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
-        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
+        <!-- <span class="green--text text--darken-1">{{ message }}</span> -->
+        <span class="red--text text--darken-1">{{ err }}</span>
         <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="signup">S'inscrire</v-btn>
       </panel>
   </v-layout>
@@ -70,8 +41,8 @@ export default {
         photoUrl: "",
       },
       file: null,
-        error: null,
-        message: "",
+      //message: "",
+      err:""
     };
   },
   methods: {
@@ -86,21 +57,26 @@ export default {
           formData.append("password", this.user.password);
           formData.append("role", this.user.role);
           formData.append("image", this.user.photoUrl);
-          //formData.append("image", this.file);
+          
           const response = await AuthenticationService.signupUser(formData);
-
-          this.$store.dispatch('setToken', response.data.token);
-          this.$store.dispatch('setUser', response.data.user);
-
-          this.$router.push({ name: "Login" });
+          console.log("resp signup", response);
+          if(response.data.status===200){
+            this.message= response.data.message;
+            this.$store.dispatch('setToken', response.data.token);
+            this.$store.dispatch('setUser', response.data.user);
+  
+            this.$router.push({ name: "Login" });
+          }else{
+            console.log("res", response);
+            throw new Error(response.data.err);
+          }
         }
       } catch (err) {
         console.log("2", err);
-        //this.user.error = err.response.data.error;
+        this.err= err;
       }
     },
     selectedUser(event) {
-      console.log("1", event.target.files[0]);
       this.user.photoUrl = event.target.files[0]; 
     }
   }

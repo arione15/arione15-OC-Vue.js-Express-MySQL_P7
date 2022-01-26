@@ -90,17 +90,11 @@
                   @{{ comment.createdAt }}
                 </div>
                 <div>{{ comment.message }}</div>
-                <v-btn v-on:click="delComment(comment.id)">Supprimer</v-btn>
+                <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
               </template>
             </Comments>
           </template>
-
-
-
-
               </post>
-              
-              
   </div>
 </template>
 

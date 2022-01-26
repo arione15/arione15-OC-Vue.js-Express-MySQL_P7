@@ -6,10 +6,11 @@
           <v-text-field label="Email" v-model="email"></v-text-field>
           <v-text-field label="Password" type="password" v-model="password" autocomplete="new-password"></v-text-field>
         </form>
-          <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
-          <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field>
           <v-btn color="#FD2D01" dark type="submit" @click="login">S'identifier</v-btn>
-        
+
+          <span class="green--text text--darken-1">{{ message }}</span>
+          <span class="red--text text--darken-1">{{ err }}</span>
+
       </panel>
   </v-layout>
 </template>
@@ -27,7 +28,7 @@ export default {
     return {
       email: "",
       password: "",
-      error: null,
+      err: "",
       message: "",
     };
   },
