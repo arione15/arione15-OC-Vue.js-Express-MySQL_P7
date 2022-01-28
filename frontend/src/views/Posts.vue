@@ -70,18 +70,15 @@
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
-//import UserService from "../services/UserService.js";
 import Post from "../components/Post.vue";
 import Comments from "../components/Comments.vue";
-//import CreateComment from "../components/CreateComment.vue";
-//import AddPost from "../components/AddPost.vue";
+
 
 export default {
   name: "Posts",
   components: {
     Post,
     Comments,
-    //CreateComment
   },
   data() {
     return {
@@ -90,7 +87,6 @@ export default {
         title: "",
         content: "",
         attachmentUrl: "",
-        youtubeId: "",
         userId: "",
       },
       //videoId: "",
@@ -116,11 +112,10 @@ export default {
     async publishPost() {
       try {
         const formData = new FormData();
-        if (this.post.attachmentUrl || this.post.content) {
+        if (this.post.content && this.post.title) {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
           formData.append("content", this.post.content);
-          formData.append("youtubeId", this.post.youtubeId);
           const response = await PostService.createPost(formData);
           this.message= response.data.message;
             setInterval(()=>{
@@ -141,36 +136,29 @@ export default {
           }, 2000)
         }
       } catch (error) {
-        if (JSON.parse(JSON.stringify(error)).status === 400) {
-          this.err = "Echec de la création du post !";
+          this.err = error.response.data.message;
             setInterval(()=>{
             this.err=""
           }, 2000)
         }
-    }
     },
     selectedFile(event) {
       this.post.attachmentUrl = event.target.files[0];
     },
     async get() {
       this.posts = (await PostService.getAllPosts()).data;
-
-      console.log("posts", this.posts);
-      //console.log("likes", this.likes);
     },
     async publishComment(id, message) {
-      // id du post et message preovenant de updateBody
       try {
         if (message) {
           await CommentService.createComment(id, message);
           this.get();
           this.message = "";
         } else {
-          console.log("please select a file or enter text");
+          this.err="Choisissez un fichier ou entrer un texte !";
         }
-      } catch (err) {
-        console.log(err);
-        //this.error = err.response.data.error;
+      } catch (error) {
+          this.err = error.response.data.message;
       }
     },
     dateFormat(date) {
@@ -188,11 +176,8 @@ export default {
       try {
         await LikeService.createLike(id);
         this.get();
-        console.log("11111like", id);
-      } catch (err) {
-        console.log(err);
-        //this.error = err.response.data.error;
-      }
+      } catch (error) {
+          this.err = error.response.data.message;      }
     },
     async removePost(id) {
       await PostService.deletePost(id);

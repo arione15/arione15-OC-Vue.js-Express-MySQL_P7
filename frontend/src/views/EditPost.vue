@@ -50,7 +50,6 @@ export default {
         createdAt: null,
       },
       err: "",
-      message: "",
       rules: {
       required: [value => !!value || "Ce champs est requis.."]
       },
@@ -80,12 +79,10 @@ export default {
           });
         }
       }  catch (error) {
-        if (JSON.parse(JSON.stringify(error)).status === 400) {
-          this.err = "Echec de la mise à jour du post !";
+          this.err = error.response.data.message;
             setInterval(()=>{
             this.err=""
           }, 2000)
-        }
     }
     },
     async selectedFile(event) {
@@ -97,8 +94,8 @@ export default {
       
       try {
         await PostService.updatePost(postId, formData)
-      } catch (err) {
-        console.log(err)
+      } catch (error) {
+          this.err = error.response.data.message;
       }
     }
   },
@@ -106,8 +103,8 @@ export default {
     try {
       let postId = this.$store.state.route.params.postId
       this.post = (await PostService.getOnePost(postId)).data
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+          this.err = error.response.data.message;
     }
   }
 }

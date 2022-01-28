@@ -146,7 +146,6 @@ export default {
   methods: {
     async get() {
       this.posts = (await PostService.getAllPosts()).data;
-      //console.log("posts", this.posts);
     },
     publishComment() {
       this.$emit("publishComment", this.post.id);

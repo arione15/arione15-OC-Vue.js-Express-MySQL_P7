@@ -52,7 +52,6 @@ export default {
         familyName: "",
         email: "",
         password: "",
-        role: "basic",
         photoUrl: "",
       },
       file: null,
@@ -64,30 +63,23 @@ export default {
       //qui récupère les identifiant entrées par l'utilisateur et les envoie (post) au backend
       try {
         const formData = new FormData();
-        //if (this.user.photoUrl) {
         formData.append("firstName", this.user.firstName);
         formData.append("familyName", this.user.familyName);
         formData.append("email", this.user.email);
         formData.append("password", this.user.password);
-        formData.append("role", this.user.role);
         formData.append("image", this.user.photoUrl);
-        console.log("2222");
 
         const response = await AuthenticationService.signupUser(formData);
-        console.log("resp signup", response);
 
         this.$store.dispatch("setToken", response.data.token);
         this.$store.dispatch("setUser", response.data.user);
 
         this.$router.push({ name: "Login" });
       } catch (error) {
-        if (JSON.parse(JSON.stringify(error)).status === 409) {
-          this.err = "Cet email existe, choisissez un autre !";
-        } else if (JSON.parse(JSON.stringify(error)).status === 400) {
-          this.err = "Erreur serveur !";
+        //console.log("resp signup", error.response); // error est un objet avec response comme propriété
+          this.err = error.response.data.message;
         }
-      }
-    },
+      },
     selectedUser(event) {
       this.user.photoUrl = event.target.files[0];
     },

@@ -102,14 +102,10 @@ export default {
       await UserService.deleteUser(id);
       this.$router.push({ name: 'Home' });
     }catch (error) {
-        if (JSON.parse(JSON.stringify(error)).status === 400) {
-          this.err = "Ne pas supprimer le dernier Admin !";
-        }else if(JSON.parse(JSON.stringify(error)).status === 500) {
-          this.err = "Erreur serveur !";
+          this.err = error.response.data.message;
         }
     }
     },
-  },
   mounted() {
     const id = this.$store.state.route.params.id;
     this.getAllOfOne(id);

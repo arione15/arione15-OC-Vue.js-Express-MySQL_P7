@@ -7,12 +7,12 @@ const { authPage } = require("../middlewares/authPage");
 const userControl = require("../controllers/userController");
 const multer = require("../middlewares/multer-config");
 //const upload = multer();
-//const validateSignup = require("../middlewares/validateSignup");
+const validateSignup = require("../middlewares/validateSignup");
 const upload = require('../middlewares/multer-config');
 
 // user auth
 //router.post("/signup", validateSignup, upload, userControl.signup);
-router.post("/signup", upload, userControl.signup);
+router.post("/signup", upload, validateSignup.register, userControl.signup);
 router.post("/login", userControl.login);
 router.get("/logout", userControl.logout);
 

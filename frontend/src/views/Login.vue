@@ -8,7 +8,7 @@
         </form>
           <v-btn color="#FD2D01" dark type="submit" @click="login">S'identifier</v-btn>
 
-          <span class="red--text text--darken-1">{{ err }}</span>
+      <v-alert type="error" v-if="err">{{ err }}</v-alert>
 
       </panel>
   </v-layout>
@@ -44,16 +44,10 @@ export default {
         this.$router.push({ name: 'Posts' });
 
       } catch (error) {
-// console.log(JSON.parse(JSON.stringify(error)));
-        if (JSON.parse(JSON.stringify(error)).status === 403) {
-          this.err = "Les informations de login (email) sont incorrectes !";
-        } else if (JSON.parse(JSON.stringify(error)).status === 401) {
-          this.err = "Mot de passe incorrect !";
-        }else{
-          this.err = "Une erreur est apparue lors de login !";
-    }
-    }}
-  },
+          this.err = error.response.data.message;
+          }
+  }
+},
   components: {
     Panel
   }

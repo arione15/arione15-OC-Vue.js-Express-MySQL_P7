@@ -41,8 +41,6 @@ export default {
     async mounted () {
       const postId = this.$store.state.route.params.postId;
       this.post = (await PostService.getOnePost(postId)).data;
-      console.log("viewpost1", this.post);
-      
       this.attachmentUrl=this.post.attachmentUrl;
   },
 }
