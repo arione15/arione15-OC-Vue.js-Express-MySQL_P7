@@ -30,11 +30,11 @@
           <v-alert type="error" v-if="err">{{ err }}</v-alert>
         </v-flex>
         
-          <v-img
+          <v-img v-if="user.photoUrl"
           class="white--text align-end album-image"
             :src="`${$store.state.localUrl}/${user.photoUrl}`"
           ></v-img>
-         
+        
         
       </v-layout>
       <v-layout>
@@ -87,11 +87,15 @@ export default {
       posts:{},
       err:"",
       message:"",
+     //photoUrl:"",
     }
   },
   methods:{
     async getAllOfOne(id){
       this.posts = (await PostService.getUserPosts(id)).data;
+    },
+    async getUser(id){
+      this.user = (await UserService.getOneUser(id)).data.data;
     },
     async delUser(id){
       try {
@@ -106,16 +110,11 @@ export default {
     }
     },
   },
-  async mounted() {
+  mounted() {
     const id = this.$store.state.route.params.id;
-    //console.log("zz", UserService.getOneUser(id));
-    //console.log("zz", id);
-    this.user = (await UserService.getOneUser(id)).data.data;
-    console.log("user", this.user.photoUrl);
-    //console.log("user", this.user);
     this.getAllOfOne(id);
-    //console.log("posts", this.posts);
-  }
+    this.getUser(id);
+    }
 }
 </script>
 

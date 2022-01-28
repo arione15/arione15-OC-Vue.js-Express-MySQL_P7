@@ -1,7 +1,7 @@
 <template>
-<container>
+<div>
     <slot name="comment"></slot>
-  </container>
+</div>
 </template>
 
 
