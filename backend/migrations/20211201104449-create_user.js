@@ -27,8 +27,8 @@ module.exports = {
             },
             role: {
                 allowNull: false,
-                type: Sequelize.STRING,
-                defaultValue: "basic"
+                type: Sequelize.BOOLEAN,
+                defaultValue: false
             },
             photoUrl: {
                 allowNull: true,

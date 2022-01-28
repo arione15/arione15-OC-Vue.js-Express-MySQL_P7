@@ -9,9 +9,18 @@ import store from './store/store'
 import VueYouTubeEmbed from 'vue-youtube-embed'
 //import setHeaders from './utils'
 import axios from 'axios'
+import 'material-design-icons-iconfont/dist/material-design-icons.css'
+
+Vue.use(Vuetify)
+export default new Vuetify({
+    icons: {
+        iconfont: 'mdi', // 'mdi' || 'mdiSvg' || 'md' || 'fa' || 'fa4' || 'faSvg'
+    },
+})
+
+
 
 Vue.use(VueYouTubeEmbed)
-Vue.use(Vuetify)
 
 if (sessionStorage.getItem("token")) {
     axios.defaults.headers.common["Authorization"] = "Bearer " + sessionStorage.getItem("token")

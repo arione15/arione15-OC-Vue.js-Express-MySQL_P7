@@ -15,10 +15,10 @@ module.exports = (sequelize, DataTypes) => {
                 foreignKey: {
                     allowNull: false
                 },
-                onDelete: 'CASCADE',
+                onDelete: 'cascade',
             });
-            models.Post.hasMany(models.Comment);
-            models.Post.hasMany(models.Like);
+            models.Post.hasMany(models.Comment, { onDelete: 'cascade', hooks: true });
+            models.Post.hasMany(models.Like, { onDelete: 'cascade', hooks: true });
         }
     };
     Post.init({

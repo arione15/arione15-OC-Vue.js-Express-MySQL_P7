@@ -14,7 +14,7 @@ router.post("/", checkUser, multer, postControl.createPost);
 router.get("/", checkUser, postControl.getAllPosts);
 router.get("/:id", checkUser, postControl.getOnePost);
 router.get("/posts/:id", checkUser, postControl.getUserPosts);
-//router.put("/:id", multer, postControl.updatePost);
+router.put("/:id", multer, postControl.updatePost);
 router.delete("/:id", checkUser, postControl.deletePost);
 
 module.exports = router;

@@ -1,221 +1,171 @@
 <template>
-  <div class="block postsBlock">
-    <h2 class="text-center">Posts</h2>
+    <div>
 
-    <v-container class="my-5">
-      <v-row>
-        <v-col cols="10">
-          <h2 class="titre">Partagez votre post !</h2>
-          <div class="container">
-            <div class="card">
-              <div class="card-body">
-                <form action class>
-                  <div class="d-flex align-items-start flex-column form-group">
-                    <v-text-field
-                      required
-                      :rules="rules.required"
-                      label="Titre"
-                      v-model="post.title"
-                    >Ajoutez un titre</v-text-field>
-                    <v-text-field
-                      required
-                      :rules="rules.required"
-                      label="Contenu"
-                      v-model="post.content"
-                      multi-line
-                    ></v-text-field>
-                    <label
-                      for="formFileSm"
-                      class="form-label d-flex align-items-start"
-                    >Ajoutez une image</label>
-                    <input name="image" type="file" v-on:change="selectedFile($event)" />
-                    <!-- <label for="text" class="panel-heading form-label">Nouveau message</label> -->
-                    <!-- <textarea type="message" class="panel-body container-fluid form-control" placeholder="nouveau message" rows="3" v-model="message" v-on:input="message = $event.target.value"></textarea> -->
+        <form
+          name="register-form"
+          autocomplete="off"
+          enctype="multipart/form-data"
+        >
+          <v-text-field label="Titre" v-model="post.title"></v-text-field>
+          <v-text-field
+            label="Contenu"
+            v-model="post.content"
+            multi-line
+          ></v-text-field>
+          <img
+            class="d-block"
+            src="https://img.icons8.com/ios-filled/50/000000/attach-resume-male.png"
+          />
+          <input
+            class="d-block btn-upload"
+            name="image"
+            type="file"
+            v-on:change="selectedFile($event)"
+            placeholder="Ajoutez une imagr"
+          />
+          <!-- <v-text-field label="YoutubeID" v-model="post.youtubeId"></v-text-field> -->
+        </form>
+        <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
+        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
+        <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Postez !</v-btn>
+        <span class="red--text text--darken-1">{{ err }}</span>
+        <span class="green--text text--darken-1">{{ message }}</span>
+
+            <post v-for="post in posts" v-on:likePost="likePost(post.id)" class="post" :post="post" :key="post.id">
+              <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
+                <v-list-item @click="removePost(post.id)">
+                  <v-list-item-title>Supprimer le post</v-list-item-title>
+                </v-list-item>
+              </template>
+
+              <template v-slot:publishComment>
+                <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
+                <v-text-field label="commenter" v-model="message"></v-text-field>
+                <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
+                <!-- </create-comment> -->
+              </template>
+              <template v-slot:likes>{{ post.Likes.length }}</template>
+
+              <template v-slot:comments>
+                <Comments
+                  v-for="comment in post.Comments"
+                  :key="comment.id"
+                  :firstName="comment.firstName"
+                  :lastName="comment.lastName">
+                <template v-slot:comment>
+                  <div class="font-weight-normal">
+                    <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
                   </div>
-                  <div class="d-flex panel-footer form-group">
-                    <!-- <button class="btn btn-groupomania w-35" @click="createMessage(message)" type="submit" value="Publier">Publier</button> -->
-                    <!-- <button class="btn btn-groupomania w-35" type="submit" value="Publier">Publier</button> -->
-                    <v-btn color="light-green" dark @click="publishPost()">Créez votre post !!</v-btn>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </v-col>
-      </v-row>
-
-      <v-row>
-        <v-col cols="10" v-for="post of posts" class="post" :key="post.id">
-          <v-card outlined class="mx-auto" height="100%">
-            <v-img
-              class="white--text align-end album-image"
-              height="200px"
-              :src="post.attachmentUrl"
-            ></v-img>
-            <v-card-title>{{ post.title }}</v-card-title>
-
-            <v-card-subtitle class="pb-0">{{ post.User.firstName }}{{ post.User.familyName }}</v-card-subtitle>
-            <v-img
-              class="white--text align-end album-image"
-              height="50px"
-              width="50px"
-              :src="post.User.photoUrl"
-            ></v-img>
-            <v-card-text class="text--primary">
-              <div>{{ new Date(post.createdAt).toString().substring(0, 24) }}</div>
-
-              <div>{{ post.content }}</div>
-            </v-card-text>
-
-            <v-card-actions>
-              <v-btn
-                color="#FD2D01"
-                dark
-                :to="{ name: 'Post', params: { postId: post.id } }"
-              >View Post</v-btn>
-              <v-btn
-                color="#FD2D01"
-                dark
-                :to="{ name: 'Profil', params: { id: post.User.id } }"
-              >View Profil</v-btn>
-            </v-card-actions>
-
-            <div class="card p-3 mt-3">
-              <div>
-                <h3>Commentaires</h3>
-                <form action class>
-                  <v-row>
-                    <v-col v-for="comment of post.Comments" :key="comment.id">
-                      <div class="d-flex align-items-start flex-column form-group">
-                        <v-img
-                          class="white--text align-end album-image"
-                          height="50px"
-                          width="50px"
-                          :src="comment.User.photoUrl"
-                        ></v-img>
-                        <span>{{ comment.User.firstName }}{{ comment.User.familyName }}</span>
-                        <div>{{ comment.message }}</div>
-                      </div>
-                    </v-col>
-                    <div class="d-flex panel-footer form-group">
-                      <v-text-field required :rules="rules.required" label="Comment" v-model="message" multi-line></v-text-field>
-                      <v-btn color="light-blue" dark @click="publishComment(post.id)">Ajouter votre commentaire !!</v-btn>
-                    </div>
-                  </v-row>
-                </form>
-              </div>
-              <!-- <h2>Commentaires</h2>
-      <div
-        class="d-flex flex-column mt-2"
-        v-for="comment in comments"
-        v-bind:key="comment.id"
-        :comment="comment"
-      >
-        <div class="d-flex flex-column">
-          <div class="d-flex flex-column">
-            <h6 class="mb-0">
-              {{ comment.User.firstName }} {{ comment.User.familyName }}
-            </h6>
-            <span class="date">{{ formatDate(comment.createdAt) }}</span>
-          </div>
-        </div>
-        <div class="com d-flex justify-content-between">
-          <p class="content">{{ comment.message }}</p>
-          <button
-            class="btn btn-outline-secondary btn-sm"
-            v-if="comment.userId === user.id || user.admin === true"
-            @click.prevent="deleteCom(comment)"
-          >
-            <span class="trash"><i class="fas fa-trash"></i></span>
-          </button>
-        </div>
-              </div>-->
-            </div>
-          </v-card>
-        </v-col>
-      </v-row>
-    </v-container>
+                  <div>{{ comment.message }}</div>
+                  <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
+                </template>
+                </Comments>
+              </template>
+            </post>
   </div>
 </template>
 
-
-
 <script>
-//import Panel from '../components/Panel'
+//import Panel from "../components/Panel";
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
-
-//import axios from "axios";
+import LikeService from "../services/LikeService.js";
+//import UserService from "../services/UserService.js";
+import Post from "../components/Post.vue";
+import Comments from "../components/Comments.vue";
+//import CreateComment from "../components/CreateComment.vue";
+//import AddPost from "../components/AddPost.vue";
 
 export default {
+  name: "Posts",
   components: {
-    // Panel
+    Post,
+    Comments,
+    //CreateComment
   },
   data() {
     return {
       posts: {},
       post: {
-        title: null,
-        content: null,
-        attachmentUrl: null,
-        userId: ""
+        title: "",
+        content: "",
+        attachmentUrl: "",
+        youtubeId: "",
+        userId: "",
       },
+      //videoId: "",
       comments: {},
       message: "",
-      error: null,
+      err: "",
       rules: {
-        required: [value => !!value || "Ce champs est requis.."]
+        required: [(value) => !!value || "Ce champs est requis.."],
       },
+      cards: ["Today", "Yesterday"],
+      drawer: null,
+      links: [
+        ["mdi-inbox-arrow-down", "View Post"],
+        ["mdi-send", "View Profil"],
+        // ['mdi-delete', 'Trash'],
+        // ['mdi-alert-octagon', 'Spam'],
+      ],
+      likes: {},
+      user: {},
     };
   },
   methods: {
     async publishPost() {
-      this.error = null;
-      // const areAllFieldsFilledIn = Object.keys(this.post).every(key => !!this.post[key])
-      // if (!areAllFieldsFilledIn) {
-      //   this.error = 'Veuillez remplir tous les champs !'
-      //   return
-      // }
-
       try {
         const formData = new FormData();
         if (this.post.attachmentUrl || this.post.content) {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
           formData.append("content", this.post.content);
-          await PostService.createPost(formData);
+          formData.append("youtubeId", this.post.youtubeId);
+          const response = await PostService.createPost(formData);
+          this.message= response.data.message;
+            setInterval(()=>{
+            this.message=""
+          }, 2000)
           this.get();
           this.post.title = "";
           this.post.content = "";
           this.post.attachmentUrl = "";
+          this.post.youtubeId = "";
           this.post.userId = "";
           //this.$router.push({ name: "Posts" });
+        } else {
+          this.err= "Il faut remplir tous les champs !";
+          //this.err= "";
+          setInterval(()=>{
+            this.err=""
+          }, 2000)
         }
-        else {
-          console.log("please select a file or enter text");
+      } catch (error) {
+        if (JSON.parse(JSON.stringify(error)).status === 400) {
+          this.err = "Echec de la création du post !";
+            setInterval(()=>{
+            this.err=""
+          }, 2000)
         }
-      } catch (err) {
-        console.log(err);
-        //this.error = err.response.data.error;
-      }
+    }
     },
     selectedFile(event) {
       this.post.attachmentUrl = event.target.files[0];
     },
     async get() {
-      this.posts = (await PostService.getAllPosts()).data
-      console.log("1xx", this.posts);
+      this.posts = (await PostService.getAllPosts()).data;
 
+      console.log("posts", this.posts);
+      //console.log("likes", this.likes);
     },
-
-    async publishComment(id) {
+    async publishComment(id, message) {
+      // id du post et message preovenant de updateBody
       try {
-        if (this.message) {
-          await CommentService.createComment(id, this.message);
+        if (message) {
+          await CommentService.createComment(id, message);
           this.get();
           this.message = "";
-        }
-        else {
+        } else {
           console.log("please select a file or enter text");
         }
       } catch (err) {
@@ -225,21 +175,66 @@ export default {
     },
     dateFormat(date) {
       const event = new Date(date);
-      const options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'numeric', minute: 'numeric' };
-      return event.toLocaleDateString('fr-FR', options);
+      const options = {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
+      };
+      return event.toLocaleDateString("fr-FR", options);
+    },
+    async likePost(id) {
+      try {
+        await LikeService.createLike(id);
+        this.get();
+        console.log("11111like", id);
+      } catch (err) {
+        console.log(err);
+        //this.error = err.response.data.error;
+      }
+    },
+    async removePost(id) {
+      await PostService.deletePost(id);
+      const indexPost = this.posts
+        .map((element) => {
+          // calculer les indices des éléménts puis les comparer avec le id en paramètre : si correspondance, la fonction retourne la valeur de l'index correspondant
+          return element.id;
+        })
+        .indexOf(id);
+      this.posts.splice(indexPost, 1);
+    },
+    async delComment(id) {
+      await CommentService.deleteComment(id);
+      this.get();
     },
   },
   created() {
-    document.cookie = "snToken" + "=" + sessionStorage.getItem("token") + ";" + 24 * 60 * 60 * 1000 + ";path=/"
+    document.cookie =
+      "snToken" +
+      "=" +
+      sessionStorage.getItem("token") +
+      ";" +
+      24 * 60 * 60 * 1000 +
+      ";path=/";
   },
-  mounted() {
-    // try {
+  async mounted() {
+    
     this.get();
-  }
-}
+    console.log("v-if user.id", this.$store.state.user.role);
+    //console.log("response009", response);
+  },
+};
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+.avatar-image {
+  width: 10%;
+  /* margin: auto; */
+}
+.green-color {
+  color: green;
+}
 </style>
 

@@ -9,12 +9,11 @@ const Cookies = require("cookies");
 //  créer un nouveau post
 /*  *********************************************************** */
 exports.createPost = async(req, res) => {
-    // let fileName = req.body.userId + Date.now() + ".jpg";
     const cryptedCookie = new Cookies(req, res).get('snToken');
     const cookie = JSON.parse(cryptojs.AES.decrypt(cryptedCookie, process.env.COOKIE_KEY).toString(cryptojs.enc.Utf8))
     let postObject = req.file ? {
         ...req.body,
-        attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
+        attachmentUrl: req.file.filename,
     } : {
         ...req.body,
     };
@@ -23,11 +22,12 @@ exports.createPost = async(req, res) => {
                 UserId: cookie.userId, //!!!!!!!! U uppercase
             })
             // le post est crée qu'il y est un req.file ou pas
-        return res.status(201).json(post);
-    } catch (error) {
-        return res.status(400).json({
-            error: 'Failed to create the post!'
-        });
+        return res.status(201).json({
+            post: post,
+            message: "Le post a bien été crée !"
+        })
+    } catch (err) {
+        return res.status(400).json({ message: "Echec de la création du post !" });
     }
 }
 
@@ -37,7 +37,7 @@ exports.createPost = async(req, res) => {
 exports.getAllPosts = async(req, res) => {
     try {
         const posts = await db.Post.findAll({
-            attributes: ['id', 'content', 'attachmentUrl', 'createdAt'],
+            attributes: ['id', 'content', 'attachmentUrl', 'title', 'createdAt'],
             order: [
                 ['createdAt', 'DESC']
             ],
@@ -46,7 +46,7 @@ exports.getAllPosts = async(req, res) => {
                 attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
             }, {
                 model: db.Comment,
-                attributes: ['message', 'id', 'UserId'],
+                attributes: ['message', 'id', 'UserId', 'createdAt'],
                 order: [
                     ['createdAt', 'DESC']
                 ],
@@ -59,9 +59,9 @@ exports.getAllPosts = async(req, res) => {
                 attributes: ['UserId'],
             }]
         });
-        res.status(200).send(posts)
-    } catch (error) {
-        return res.status(500).send({ error: "Une erreur s'est produite!" })
+        res.status(200).json(posts)
+    } catch (err) {
+        return res.status(500).json({ err: "Une erreur s'est produite!" })
     }
 }
 
@@ -78,9 +78,9 @@ exports.getOnePost = async(req, res) => {
                 attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
             }, ],
         })
-        res.status(200).json(post)
-    } catch (error) {
-        return res.status(500).send({ error: 'Erreur serveur' })
+        res.status(200).json(post);
+    } catch (err) {
+        return res.status(500).json({ message: "Erreur serveur" })
     }
 }
 
@@ -98,8 +98,8 @@ exports.getUserPosts = async(req, res) => {
             }, ],
         })
         res.status(200).json(post)
-    } catch (error) {
-        return res.status(500).send({ error: 'Server Error' })
+    } catch (err) {
+        return res.status(500).json({ message: "Erreur serveur" })
     }
 }
 
@@ -107,66 +107,43 @@ exports.getUserPosts = async(req, res) => {
 // modifier un post
 /*  ****************************************************** */
 
-// exports.updatePost = async(req, res, ) => {
-//     let postObject = req.file ? {
-//         ...req.body,
-//         attachmentUrl: `${req.protocol}://${req.get("host")}/images/${ req.file.filename }`
-//     } : {
-//         ...req.body
-//     };
-//     //const content = req.body.content;
-//     try {
-//         // if (content === null || content === '') {
-//         //     return res.status(400).json({
-//         //         'error': "Please enter modification to 'Contenu' field!"
-//         //     });
-//         // }
-//         const post = await Post.update({
-//             ...postObject,
-//             id: req.params.id
-//         }, {
-//             where: {
-//                 id: req.params.id
-//             }
-//         });
-//         return res.status(200).send({
-//             message: 'The post has been successfully modified!',
-//             data: post
-//         });
-//     } catch (error) {
-//         res.status(400).send({
-//             error: 'Update failed'
-//         });
-//     }
-// };
+exports.updatePost = async(req, res, ) => {
+    let postObject = req.file ? {
+        ...req.body,
+        attachmentUrl: req.file.filename
+    } : {
+        ...req.body
+    };
+
+    try {
+        const post = await db.Post.update({
+            ...postObject,
+            id: req.params.id
+        }, {
+            where: {
+                id: req.params.id
+            }
+        });
+        return res.status(200).json({ message: "Le post a été crée avec succès !" });
+    } catch (err) {
+        res.status(400).json({ message: "Echec de la mise à jour du post !" });
+    }
+};
 
 /********************************************************/
 // supprimer un post
 /********************************************************/
 exports.deletePost = async(req, res) => {
-    //let myUuid = req.params.id;
-    const myId = await db.Post.findOne({
-        where: {
-            id: req.params.id
-        }
-    });
+    try {
+        const post = await db.Post.findByPk(req.params.id);
 
-    if (myId === null) {
-        return res.status(401).json({
-            message: "id not found !"
-        });
-    } else {
-        db.Post.destroy({
-                where: {
-                    id: req.params.id
-                }
-            })
-            .then(() => res.status(200).json({
-                message: 'post deleted!'
-            }))
-            .catch(error => res.status(400).json({
-                message: 'delete failed!',
-                error
-            }));
+        if (!post) {
+            res.status(401).json({ err: "post non trouvé !" });
+        } else {
+            await post.destroy();
+            res.status(200).json({ message: "Post supprimé avec succès" })
+        }
+    } catch (err) {
+        res.status(400).json({ err: "Echec de la suppression du post !" });
     }
 }

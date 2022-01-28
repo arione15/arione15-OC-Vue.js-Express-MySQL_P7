@@ -1,18 +1,20 @@
 <template>
-  <v-layout column>
-    <v-flex xs6>
-      <div class="white elevation-2">
-        <v-toolbar flat dense color="#FD2D01" dark>
+  <v-row class="d-flex justify-center mt-5">
+    <v-col sm="12" md="8" lg="6" xl="4">
+      <v-flex>
+        <div class="white elevation-2">
+          <v-toolbar flat dense color="#FD2D01" dark>
           <v-toolbar-title>{{ title }}</v-toolbar-title>
-          <slot name="action"></slot> 
-          <!-- pour ne pas avoir le bouton add dans tous les 'Panels' -->
-        </v-toolbar>
-        <div class="pl-4 pr-4 pt-2 pb-2">
-        <slot></slot>
+            <!-- <slot name="action"></slot>  -->
+            <!-- pour ne pas avoir le bouton dans tous les 'Panels' -->
+          </v-toolbar>
+          <div class="pa-4">
+            <slot></slot>
+          </div>
         </div>
-      </div>
-    </v-flex>
-  </v-layout>
+      </v-flex>
+    </v-col>
+  </v-row>
 </template>
 
 <script>  
@@ -21,7 +23,6 @@ props: ['title']
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
 
 </style>
