@@ -7,7 +7,6 @@ import Posts from '../views/Posts.vue'
 import CreatePost from '../views/CreatePost.vue'
 import ViewPost from '../views/ViewPost.vue'
 import EditPost from '../views/EditPost.vue'
-import Profils from '../views/Profils.vue'
 import ViewProfil from '../views/ViewProfil.vue'
 import EditProfil from '../views/EditProfil.vue'
 import Admin from '../views/Admin.vue'
@@ -24,12 +23,10 @@ const router = new VueRouter({
         { path: '/posts/create', name: 'Post-create', component: CreatePost },
         { path: '/posts/:postId', name: 'Post', component: ViewPost },
         { path: '/posts/:postId/edit', name: 'Post-edit', component: EditPost },
-        { path: '/users', name: 'Profils', component: Profils },
         { path: '/users/:id', name: 'Profil', component: ViewProfil },
         { path: '/users/:id/edit', name: 'Profil-edit', component: EditProfil },
         { path: '/users/:id/role', name: 'Role-edit', component: EditRole },
         { path: '/admin', name: 'Admin', component: Admin },
-        // { path: '/board', name: 'Board', component: { render: (h) => h("div", ["Board Page"]) } }
     ],
     mode: 'history'
         //base: process.env.BASE_URL

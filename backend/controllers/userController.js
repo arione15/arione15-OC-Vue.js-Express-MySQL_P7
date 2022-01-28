@@ -122,7 +122,7 @@ exports.getAllUsers = async(req, res) => {
         })
         return res.status(200).json(users)
     } catch (err) {
-        return res.status(500).json({ err: "Erreur serveur" })
+        return res.status(500).json({ message: "Erreur serveur" })
     }
 };
 
@@ -189,11 +189,11 @@ exports.deleteUser = async(req, res) => {
 
         if (user.role == 0) {
             await user.destroy();
-            res.status(200).json({ message: "L'utilisateur a bien été supprimé !" })
+            return res.status(200).json({ message: "L'utilisateur a bien été supprimé !" })
         } else {
-            res.status(400).json({ message: "Ne pas supprimer le dernier Admin !" })
+            return res.status(400).json({ message: "Ne pas supprimer l'Admin !" })
         }
     } catch (err) {
-        res.status(500).json({ message: "Erreur serveur !" })
+        return res.status(500).json({ message: "Erreur serveur !" })
     }
 }

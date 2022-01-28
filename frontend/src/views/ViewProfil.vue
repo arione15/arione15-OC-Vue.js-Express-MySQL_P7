@@ -29,13 +29,13 @@
           >
           <v-alert type="error" v-if="err">{{ err }}</v-alert>
         </v-flex>
-        <v-flex xs6>
-          <img
-            class="album-image"
+        
+          <v-img
+          class="white--text align-end album-image"
             :src="`${$store.state.localUrl}/${user.photoUrl}`"
-          />
-          <br />
-        </v-flex>
+          ></v-img>
+         
+        
       </v-layout>
       <v-layout>
         <v-flex xs12>
@@ -61,21 +61,7 @@
 
                   <div>{{ post.content }}</div>
                 </v-card-text>
-
-                <v-card-actions>
-                  <v-btn
-                    color="#FD2D01"
-                    dark
-                    :to="{ name: 'Post', params: { postId: post.id } }"
-                    >View Post</v-btn
-                  >
-                  <v-btn
-                    color="#FD2D01"
-                    dark
-                    :to="{ name: 'Profil', params: { id: post.User.id } }"
-                    >View Profil</v-btn
-                  >
-                </v-card-actions>
+                
               </v-card>
             </v-col>
           </v-row>
@@ -123,11 +109,12 @@ export default {
   async mounted() {
     const id = this.$store.state.route.params.id;
     //console.log("zz", UserService.getOneUser(id));
-    console.log("zz", id);
+    //console.log("zz", id);
     this.user = (await UserService.getOneUser(id)).data.data;
-    console.log("user", this.user);
+    console.log("user", this.user.photoUrl);
+    //console.log("user", this.user);
     this.getAllOfOne(id);
-    console.log("posts", this.posts);
+    //console.log("posts", this.posts);
   }
 }
 </script>

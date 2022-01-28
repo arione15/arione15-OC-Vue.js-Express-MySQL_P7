@@ -26,36 +26,22 @@
     <v-btn v-if="$store.state.isUserLoggedIn" text dark :to="{ name: 'Posts' }">
       Forum
     </v-btn>
+
     <v-spacer></v-spacer>
+
     <v-btn v-if="$store.state.user" color="#FD2D01" :to="{ name: 'Profil', params: { id: $store.state.user.id  } }">
       <v-avatar size="40" class="grey lighten-2">
         <img alt="avatar" :src="`${$store.state.localUrl}/${$store.state.user.photoUrl}`" />
       </v-avatar>
     </v-btn>
-    <span v-if="$store.state.user" class="text-caption white--text mb-2">{{
-      $store.state.user.firstName
-    }}</span>
 
-    <v-btn
-      v-if="!$store.state.isUserLoggedIn"
-      text
-      dark
-      :to="{ name: 'Signup' }"
-      >Inscription
-    </v-btn>
+    <span v-if="$store.state.user" class="text-caption white--text mb-2">{{ $store.state.user.firstName }}</span>
 
-    <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login' }"
-      >Login
-    </v-btn>
+    <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Signup' }">Inscription</v-btn>
 
-    <v-btn
-      v-if="$store.state.isUserLoggedIn"
-      text
-      dark
-      @click="logout"
-      :to="{ name: 'Home' }"
-      >Sortir
-    </v-btn>
+    <v-btn v-if="!$store.state.isUserLoggedIn" text dark :to="{ name: 'Login' }">Login</v-btn>
+
+    <v-btn v-if="$store.state.isUserLoggedIn" text dark @click="logout" :to="{ name: 'Home' }">Sortir</v-btn>
 
     <v-btn
       v-if="$store.state.isUserLoggedIn === true && $store.state.user && $store.state.user.role == true" text dark :to="{ name: 'Admin' }">Admin

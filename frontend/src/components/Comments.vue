@@ -1,7 +1,6 @@
 <template>
 <container>
-    <slot name="comment">
-  </slot>
+    <slot name="comment"></slot>
   </container>
 </template>
 

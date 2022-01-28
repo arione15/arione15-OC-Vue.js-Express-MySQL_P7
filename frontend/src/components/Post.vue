@@ -109,7 +109,9 @@ import PostService from "../services/PostService.js";
 
 export default {
   name: "Post",
-  components: {},
+  components: {
+    
+  },
   props: {
     post: {
       type: Object,

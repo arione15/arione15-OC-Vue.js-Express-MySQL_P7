@@ -1,6 +1,7 @@
 <template>
+<div>
+            <v-alert type="error" v-if="err">{{ err }}</v-alert>
   <v-simple-table fixed-header height="300px">
-    <h2 class="text-center">Espace Administrateur</h2>
     <template v-slot:default>
       <thead>
         <tr>
@@ -29,16 +30,19 @@
               <v-layout row wrap align-center>
                 <v-flex class="text-xs-center">
                   <v-btn color="red" :to="{ name: 'Role-edit',  params: { id: user.id } }" dark class="mb-5 mr-4">Modifier le rôle</v-btn>
-                  <v-btn color="yellow" v-on:click.prevent="removeUser(user.id)" dark class="mb-5">Supprimer</v-btn>
+                  <v-btn color="yellow" @click.prevent="removeUser(user.id)" dark class="mb-5">Supprimer</v-btn>
                 </v-flex>
               </v-layout>
             </v-container>
           </td>
+          
+        
         </tr>
 
       </tbody>
     </template>
   </v-simple-table>
+  </div>
 </template>
     
 
@@ -53,12 +57,29 @@ export default {
   data() {
     return {
       users: {},
+      err:"",
     };
   },
   methods: {
     async removeUser(id) {
-      await UserService.deleteUser(id);
-      this.users = await UserService.getAllUsers(); // pour afficher les users sans celui qui a été supprimé
+
+      try{
+       await UserService.deleteUser(id);
+        this.users = await UserService.getAllUsers(); // pour afficher les users sans celui qui a été supprimé
+      }catch (error) {
+        
+        if (JSON.parse(JSON.stringify(error)).status === 400) {
+          this.err = "Ne pas supprimer l'Admin !";
+          setInterval(()=>{
+            this.err=""
+          }, 2000)
+        } else if (JSON.parse(JSON.stringify(error)).status === 500) {
+          this.err = "Erreur serveur !";
+          setInterval(()=>{
+            this.err=""
+          }, 2000)
+        }
+      }
     },
   },
   async mounted() {
