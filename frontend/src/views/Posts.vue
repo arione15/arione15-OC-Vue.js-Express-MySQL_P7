@@ -27,30 +27,12 @@
         </form>
         <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
         <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
-        <v-btn
-          class="mt-10"
-          color="#FD2D01"
-          dark
-          type="submit"
-          @click="publishPost"
-          >Postez !</v-btn
-        >
+        <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Postez !</v-btn>
+        <span class="red--text text--darken-1">{{ err }}</span>
+        <span class="green--text text--darken-1">{{ message }}</span>
 
-     
-            <post
-              v-for="post in posts"
-              v-on:likePost="likePost(post.id)"
-              class="post"
-              :post="post"
-              :key="post.id"
-            >
-              <template
-                v-slot:delPost
-                v-if="
-                  post.User.id === $store.state.user.id ||
-                  $store.state.user.role == true
-                "
-              >
+            <post v-for="post in posts" v-on:likePost="likePost(post.id)" class="post" :post="post" :key="post.id">
+              <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
                 <v-list-item @click="removePost(post.id)">
                   <v-list-item-title>Supprimer le post</v-list-item-title>
                 </v-list-item>
@@ -58,43 +40,28 @@
 
               <template v-slot:publishComment>
                 <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
-                <v-text-field
-                  label="commenter"
-                  v-model="message"
-                ></v-text-field>
-                <v-btn
-                  color="green"
-                  type="submit"
-                  v-on:click.prevent="publishComment(post.id, message)"
-                  dark
-                  class="mb-5"
-                  >Commentez !</v-btn
-                >
+                <v-text-field label="commenter" v-model="message"></v-text-field>
+                <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
                 <!-- </create-comment> -->
               </template>
               <template v-slot:likes>{{ post.Likes.length }}</template>
 
               <template v-slot:comments>
-            <Comments
-              v-for="comment in post.Comments"
-              :key="comment.id"
-              :firstName="comment.firstName"
-              :lastName="comment.lastName"
-            >
-              <template v-slot:comment>
-                <div class="font-weight-normal">
-                  <strong
-                    >{{ comment.User.firstName }}
-                    {{ comment.User.familyName }}</strong
-                  >
-                  @{{ comment.createdAt }}
-                </div>
-                <div>{{ comment.message }}</div>
-                <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
+                <Comments
+                  v-for="comment in post.Comments"
+                  :key="comment.id"
+                  :firstName="comment.firstName"
+                  :lastName="comment.lastName">
+                <template v-slot:comment>
+                  <div class="font-weight-normal">
+                    <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
+                  </div>
+                  <div>{{ comment.message }}</div>
+                  <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
+                </template>
+                </Comments>
               </template>
-            </Comments>
-          </template>
-              </post>
+            </post>
   </div>
 </template>
 
@@ -103,6 +70,7 @@
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
+//import UserService from "../services/UserService.js";
 import Post from "../components/Post.vue";
 import Comments from "../components/Comments.vue";
 //import CreateComment from "../components/CreateComment.vue";
@@ -128,7 +96,7 @@ export default {
       //videoId: "",
       comments: {},
       message: "",
-      error: null,
+      err: "",
       rules: {
         required: [(value) => !!value || "Ce champs est requis.."],
       },
@@ -146,13 +114,6 @@ export default {
   },
   methods: {
     async publishPost() {
-      this.error = null;
-      // const areAllFieldsFilledIn = Object.keys(this.post).every(key => !!this.post[key])
-      // if (!areAllFieldsFilledIn) {
-      //   this.error = 'Veuillez remplir tous les champs !'
-      //   return
-      // }
-
       try {
         const formData = new FormData();
         if (this.post.attachmentUrl || this.post.content) {
@@ -160,7 +121,11 @@ export default {
           formData.append("title", this.post.title);
           formData.append("content", this.post.content);
           formData.append("youtubeId", this.post.youtubeId);
-          await PostService.createPost(formData);
+          const response = await PostService.createPost(formData);
+          this.message= response.data.message;
+            setInterval(()=>{
+            this.message=""
+          }, 2000)
           this.get();
           this.post.title = "";
           this.post.content = "";
@@ -169,12 +134,20 @@ export default {
           this.post.userId = "";
           //this.$router.push({ name: "Posts" });
         } else {
-          console.log("please select a file or enter text");
+          this.err= "Il faut remplir tous les champs !";
+          //this.err= "";
+          setInterval(()=>{
+            this.err=""
+          }, 2000)
         }
-      } catch (err) {
-        console.log(err);
-        //this.error = err.response.data.error;
-      }
+      } catch (error) {
+        if (JSON.parse(JSON.stringify(error)).status === 400) {
+          this.err = "Echec de la création du post !";
+            setInterval(()=>{
+            this.err=""
+          }, 2000)
+        }
+    }
     },
     selectedFile(event) {
       this.post.attachmentUrl = event.target.files[0];
@@ -221,12 +194,6 @@ export default {
         //this.error = err.response.data.error;
       }
     },
-    // updateCommentBody(data){ //fonction qui stocke la valeur de l'input provenant de l'enfant
-    // //this.message="";
-    // this.message=data.message;
-    // console.log(this.message);
-    // //data.message="";
-    // }
     async removePost(id) {
       await PostService.deletePost(id);
       const indexPost = this.posts
@@ -252,9 +219,10 @@ export default {
       ";path=/";
   },
   async mounted() {
-    // try {
+    
     this.get();
     console.log("v-if user.id", this.$store.state.user.role);
+    //console.log("response009", response);
   },
 };
 </script>

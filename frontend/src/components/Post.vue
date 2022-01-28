@@ -20,7 +20,7 @@
                     <v-list-item v-if="post.User.id === $store.state.user.id"
                       :to="{ name: 'Post', params: { postId: post.id } }"
                     >
-                      <v-list-item-title>Modifier le post</v-list-item-title>
+                      <v-list-item-title>Voir le post</v-list-item-title>
                     </v-list-item>
                     <v-list-item
                       :to="{ name: 'Profil', params: { id: post.User.id } }"
@@ -66,8 +66,6 @@
           <v-card flat class="text-xs-center ma-3">
             <v-responsive>
               <v-img :src="`${$store.state.localUrl}/${post.attachmentUrl}`"></v-img>
-
-              
             </v-responsive>
             <v-card-text>
               <div class="subheading">{{ post.title }}</div>

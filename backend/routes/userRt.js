@@ -21,7 +21,7 @@ router.get("/", userControl.getAllUsers);
 router.get("/:id", userControl.getOneUser);
 router.put("/:id", checkUser, upload, userControl.updateUser);
 router.put("/:id/pwd", checkUser, userControl.updatePwd);
-//router.delete("/:id", checkUser, authPage(['ADMIN']), userControl.deleteUser);
+// router.delete("/:id", checkUser, authPage(1), userControl.deleteUser);
 router.delete("/:id", checkUser, userControl.deleteUser);
 
 module.exports = router;

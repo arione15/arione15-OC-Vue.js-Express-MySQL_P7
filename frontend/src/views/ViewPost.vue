@@ -5,23 +5,18 @@
         <div class="post-title">
           {{post.title}}
         </div>
-        <div class="post-author">
-          {{post.userId}}
-        </div>
         <div class="post-content">
           {{post.content}}
-        </div>
-        <div>
-          {{post.attachmentUrl}}
         </div>
 
         <v-btn dark class="cyan" :to="{name: 'Post-edit', params() {return {postId: post.id}}}">Edit</v-btn>
       </v-flex>
 
       <v-flex xs6>
-        <img class="album-image" :src="`${$store.state.localUrl}/${post.attachmentUrl}`" />
-                        
-
+        <!-- <img class="album-image" :src="`${$store.state.localUrl}/${post.attachmentUrl}`" /> -->
+            <v-responsive>
+              <v-img :src="`${$store.state.localUrl}/${attachmentUrl}`"></v-img>
+            </v-responsive>
         <br>
       </v-flex>
     </v-layout>
@@ -39,19 +34,16 @@ export default {
     data(){
         return{
             post: {
-              title: "",
-              content: "",
-            }
+            },
+            attachmentUrl:"",
         }
     },
     async mounted () {
-    const postId = this.$store.state.route.params.postId
-    this.post = (await PostService.getOnePost(postId)).data
-    // if (this.isUserLoggedIn) {
-    //   PostHistoryService.post({
-    //     postId: postId
-    //   })
-    // }
+      const postId = this.$store.state.route.params.postId;
+      this.post = (await PostService.getOnePost(postId)).data;
+      console.log("viewpost1", this.post);
+      
+      this.attachmentUrl=this.post.attachmentUrl;
   },
 }
 </script>

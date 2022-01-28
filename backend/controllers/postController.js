@@ -22,9 +22,12 @@ exports.createPost = async(req, res) => {
                 UserId: cookie.userId, //!!!!!!!! U uppercase
             })
             // le post est crée qu'il y est un req.file ou pas
-        return res.status(201).json(post)
+        return res.status(201).json({
+            post: post,
+            message: "Le post a bien été crée !"
+        })
     } catch (err) {
-        return res.status(400).json({ err: "Echec de la création du post !" });
+        return res.status(400).json({ message: "Echec de la création du post !" });
     }
 }
 
@@ -75,9 +78,9 @@ exports.getOnePost = async(req, res) => {
                 attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
             }, ],
         })
-        res.status(200).json(post)
+        res.status(200).json(post);
     } catch (err) {
-        return res.status(500).json({ err: "Erreur serveur" })
+        return res.status(500).json({ message: "Erreur serveur" })
     }
 }
 
@@ -96,9 +99,7 @@ exports.getUserPosts = async(req, res) => {
         })
         res.status(200).json(post)
     } catch (err) {
-        return res.status(500).json({ err: "Erreur serveur" })
-
-
+        return res.status(500).json({ message: "Erreur serveur" })
     }
 }
 
@@ -125,7 +126,7 @@ exports.updatePost = async(req, res, ) => {
         });
         return res.status(200).json({ message: "Le post a été crée avec succès !" });
     } catch (err) {
-        res.status(400).json({ err: "Echec de la mise à jour du post !" });
+        res.status(400).json({ message: "Echec de la mise à jour du post !" });
     }
 };
 

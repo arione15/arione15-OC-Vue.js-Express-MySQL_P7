@@ -24,8 +24,7 @@
         <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
         
       </panel>
-      <v-alert type="success" v-if="message">{{ message }}</v-alert>
-      <v-alert type="error" v-if="error">{{ error }}</v-alert>
+      <v-alert type="error" v-if="err">{{ err }}</v-alert>
     </v-flex>
     <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field> -->
     <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
@@ -50,7 +49,7 @@ export default {
         attachmentUrl: null,
         createdAt: null,
       },
-      error: null,
+      err: "",
       message: "",
       rules: {
       required: [value => !!value || "Ce champs est requis.."]
@@ -61,34 +60,33 @@ export default {
     async save () {
       this.error = null
       this.message = ""
-      //const formData = new FormData();
-      // const areAllFieldsFilledIn = Object
-      //   .keys(this.song)
-      //   .every(key => !!this.song[key])
-      // if (!areAllFieldsFilledIn) {
-      //   this.error = 'Please fill in all the required fields.'
-      //   return
-      // }
-          
       const postId = this.$store.state.route.params.postId;
       const userId= this.post.UserId; 
       const title= this.post.title; 
       const content= this.post.content; 
-      //const attachmentUrl= this.post.attachmentUrl; 
       const createdAt= this.post.createdAt;
       const newPost = {userId: userId, title: title, content: content, createdAt: createdAt};
       console.log(newPost);
       try {
-        await PostService.updatePost(postId, newPost)
-        this.$router.push({
-          name: 'Post',
-          params: {
-            postId: postId
-          }
-        })
-      } catch (err) {
-        console.log(err)
-      }
+        if(this.post.title == "" || this.post.content == ""){
+          this.err="Rensigner les champs !"
+        }else{
+          await PostService.updatePost(postId, newPost)
+          this.$router.push({
+            name: 'Post',
+            params: {
+              postId: postId
+            }
+          });
+        }
+      }  catch (error) {
+        if (JSON.parse(JSON.stringify(error)).status === 400) {
+          this.err = "Echec de la mise à jour du post !";
+            setInterval(()=>{
+            this.err=""
+          }, 2000)
+        }
+    }
     },
     async selectedFile(event) {
       let postId = this.$store.state.route.params.postId
@@ -99,16 +97,9 @@ export default {
       
       try {
         await PostService.updatePost(postId, formData)
-        // this.$router.push({
-        //   name: 'Post',
-        //   params: {
-        //     postId: postId
-        //   }
-        // })
       } catch (err) {
         console.log(err)
       }
-      //console.log(this.post.attachmentUrl);
     }
   },
   async mounted () {

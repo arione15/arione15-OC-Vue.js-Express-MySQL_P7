@@ -21,7 +21,7 @@ exports.signup = async(req, res) => {
 
             if (user) {
                 fs.unlinkSync(req.file.path);
-                return res.status(409).json({
+                return res.status(409).send({
                     message: "Cet email existe déja !"
                 });
             } else {
@@ -46,13 +46,13 @@ exports.signup = async(req, res) => {
                     photoUrl: req.file ? req.file.filename : null,
                 };
                 const createdUser = await db.User.create(userObject);
-                res.status(200).json({
+                return res.status(200).send({
                     message: "L'utilisateur a été crée avec succès !"
                 });
             }
-        } catch (err) {
-            return res.json({
-                err: "Une erreur est apparu lors de l'inscription !"
+        } catch (error) {
+            return res.status(400).send({
+                message: "Une erreur est apparu lors de l'inscription !"
             });
         }
     }
@@ -65,12 +65,12 @@ exports.login = async(req, res) => {
         const user = await db.User.findOne({ where: { email: req.body.email } });
 
         if (!user) {
-            return res.status(403).json({ err: "Les informations de login (email) sont incorrectes !" });
+            return res.status(403).json({ message: "Les informations de login (email) sont incorrectes !" });
         } else {
             // on compare les mots de passes
             const hash = await bcrypt.compare(req.body.password, user.password)
             if (!hash) {
-                return res.status(401).json({ err: 'Mot de passe incorrect !' })
+                return res.status(401).json({ message: 'Mot de passe incorrect !' })
             } else {
                 //on créé un token
                 const newToken = jwt.sign({ userId: user.id }, process.env.COOKIE_KEY, {
@@ -98,7 +98,7 @@ exports.login = async(req, res) => {
             }
         }
     } catch (err) {
-        res.json({ err: "Une erreru est apparue lors de login!" });
+        res.status(500).json({ message: "Une erreru est apparue lors de login!" });
     }
 }
 
@@ -133,8 +133,8 @@ exports.getOneUser = (req, res) => {
     const id = req.params.id;
     db.User.findByPk(id)
         .then(user => {
-            res.json({ message: "Un utilisateur a bien été récupéré !", data: user })
-        }).catch(() => res.json({ err: "Echec de la récupération de l\'utilsateur !" }))
+            res.status(200).json({ message: "Un utilisateur a bien été récupéré !", data: user })
+        }).catch(() => res.status(400).json({ message: "Echec de la récupération de l\'utilsateur !" }))
 };
 
 /*  ****************************************************** */
@@ -161,7 +161,7 @@ exports.updateUser = async(req, res) => {
             data: user
         });
     } catch (err) {
-        res.status(400).json({ err: "Echec de la mise à jour" });
+        res.status(400).json({ message: "Echec de la mise à jour" });
     }
 }
 
@@ -176,8 +176,8 @@ exports.updatePwd = async(req, res) => {
         user
             .update(newUser, { where: { id: id } })
             .then((user = res.json(user)))
-            .catch(() => res.json({ err: "Echec de la modification du mot de passe !" }))
-    }).catch(() => res.json({ err: "User non trouvé !" }))
+            .catch(() => res.status(401).json({ message: "Echec de la modification du mot de passe !" }))
+    }).catch(() => res.status(400).json({ message: "User non trouvé !" }))
 }
 
 /*  ****************************************************** */
@@ -191,9 +191,9 @@ exports.deleteUser = async(req, res) => {
             await user.destroy();
             res.status(200).json({ message: "L'utilisateur a bien été supprimé !" })
         } else {
-            res.status(200).json({ err: "Ne pas supprimer le dernier Admin !" })
+            res.status(400).json({ message: "Ne pas supprimer le dernier Admin !" })
         }
     } catch (err) {
-        res.status(400).json({ err: "Echec de la suppression !" })
+        res.status(500).json({ message: "Erreur serveur !" })
     }
 }
