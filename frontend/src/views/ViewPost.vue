@@ -13,9 +13,8 @@
       </v-flex>
 
       <v-flex xs6>
-        <!-- <img class="album-image" :src="`${$store.state.localUrl}/${post.attachmentUrl}`" /> -->
             <v-responsive>
-              <v-img :src="`${$store.state.localUrl}/${attachmentUrl}`"></v-img>
+              <v-img v-if="post.attachmentUrl" :src="`${$store.state.localUrl}/${attachmentUrl}`"></v-img>
             </v-responsive>
         <br>
       </v-flex>
@@ -41,8 +40,6 @@ export default {
     async mounted () {
       const postId = this.$store.state.route.params.postId;
       this.post = (await PostService.getOnePost(postId)).data;
-      console.log("viewpost1", this.post);
-      
       this.attachmentUrl=this.post.attachmentUrl;
   },
 }

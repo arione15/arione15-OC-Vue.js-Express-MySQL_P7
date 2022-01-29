@@ -16,7 +16,8 @@
 </select>
       </v-col>
       </v-row>
-             <v-btn  color="#FD2D01" dark @click="save">Modifier</v-btn>
+          <v-alert type="error" v-if="err">{{ err }}</v-alert>
+          <v-btn  color="#FD2D01" dark @click="save">Modifier</v-btn>
     </v-layout>
     </v-container>
     </v-app>
@@ -36,14 +37,13 @@ export default {
     return {
       user: {},
       role:"",
-      //roles: ["0", "1"]
+      err:"",
 
     }
   },
   methods:{
     selectRole(role){
 this.role=role;
-console.log(this.role);
     },
     async save () {
       this.error = null
@@ -54,29 +54,27 @@ console.log(this.role);
       const firstName= this.user.firstName; 
       const familyName= this.user.familyName; 
       const email= this.user.email; 
-      //const attachmentUrl= this.post.attachmentUrl; 
       const createdAt= this.user.createdAt;
       const newUser = {id, firstName, familyName, email, createdAt, role};
-      console.log(newUser);
       try {
         if(this.role==""){
-          console.log("role err")
+          this.err ="Choisissez un rôle !"
         }else{
         await UserService.updateUser(id, newUser)
         this.$router.push({
           name: 'Admin'
         })
         }
-      } catch (err) {
-        console.log(err )
+      } catch (error) {
+          this.err = error.response.data.message;
       }
   },
   async mounted () {
     try {
       let id = this.$store.state.route.params.id
       this.user = (await UserService.getOneUser(id)).data.data
-    } catch (err) {
-      console.log(err)
+    } catch (error) {
+          this.err = error.response.data.message;
     }
   }
 }}

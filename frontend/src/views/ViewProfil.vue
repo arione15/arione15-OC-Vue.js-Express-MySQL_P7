@@ -43,7 +43,7 @@
             <h1>Les posts de {{ user.firstName }}</h1>
             <v-col cols="10" v-for="post of posts" class="post" :key="post.id">
               <v-card outlined class="mx-auto" height="100%">
-                <v-img
+                <v-img v-if="post.attachmentUrl"
                   class="white--text align-end album-image"
                   height="200px"
                   :src="`${$store.state.localUrl}/${post.attachmentUrl}`"
@@ -100,16 +100,16 @@ export default {
     async delUser(id){
       try {
       await UserService.deleteUser(id);
+      this.$store.dispatch("setToken", null);
+      this.$store.dispatch("setUser", null);
+      this.$store.state.isUserLoggedIn = false;
+      sessionStorage.clear();
       this.$router.push({ name: 'Home' });
     }catch (error) {
-        if (JSON.parse(JSON.stringify(error)).status === 400) {
-          this.err = "Ne pas supprimer le dernier Admin !";
-        }else if(JSON.parse(JSON.stringify(error)).status === 500) {
-          this.err = "Erreur serveur !";
+          this.err = error.response.data.message;
         }
     }
     },
-  },
   mounted() {
     const id = this.$store.state.route.params.id;
     this.getAllOfOne(id);

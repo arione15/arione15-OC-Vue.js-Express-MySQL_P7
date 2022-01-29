@@ -5,19 +5,15 @@
         <v-text-field required :rules="rules.required" label="Auteur" v-model="post.userId"></v-text-field>
         <v-text-field required :rules="rules.required" label="Titre" v-model="post.title"></v-text-field>
         <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line></v-text-field>
+
         <input name="image" type="file" v-on:change="selectedFile($event)">
-        <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
-
-
-        <!-- <v-btn color="success" @click="$refs.inputUpload.click()">Success</v-btn>
-<input v-show="false" ref="inputUpload" type="file" @change="yourFunction" >
- -->
+ 
         <v-text-field required :rules="rules.required" label="Date de création du post" v-model="post.createdAt"></v-text-field>
       </panel>
-      <div class="danger-alert" v-if="error">{{ error }}</div>
+      <div class="danger-alert" v-if="err">{{ err }}</div>
     </v-flex>
+    
     <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
-    <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
     <v-btn color="#FD2D01" dark @click="create">Créez votre post !!</v-btn>
   </v-layout>
 </template>
@@ -39,8 +35,7 @@ export default {
         attachmentUrl: null,
         createdAt: null,
       },
-      //message: "",
-      error: null,
+      err: "",
       rules: {
         required: [value => !!value || "Ce champs est requis.."]
       },
@@ -49,38 +44,25 @@ export default {
   methods: {
     async create() {
       this.error = null;
-      // const areAllFieldsFilledIn = Object.keys(this.post).every(key => !!this.post[key])
-      // if (!areAllFieldsFilledIn) {
-      //   this.error = 'Veuillez remplir tous les champs !'
-      //   return
-      // }
-      console.log("url", this.post.attachmentUrl);
 
       try {
         const formData = new FormData(); 
-        if (this.post.attachmentUrl || this.post.content) {
+        if (this.post.attachmentUrl || this.post.content || this.post.title) {
           formData.append("image", this.post.attachmentUrl);
           formData.append("title", this.post.title);
-          //formData.append("userId", this.post.userId);
-          //formData.append("createdAt", this.post.createdAt);
           formData.append("content", this.post.content);
           await PostService.createPost(formData);
           this.$router.push({ name: "Posts" });
-          //console.log(formData);
         }
         else {
-          console.log("please select a file or enter text");
+          this.err= "Choisissez un fichier ou entrez un texte !";
         }
-        //await PostService.createPost(this.post);
-        //this.message = response.data.message;
-      } catch (err) {
-        console.log(err);
-        //this.error = err.response.data.error;
+      } catch (error) {
+          this.err = error.response.data.message;
       }
     },
     selectedFile(event) {
       this.post.attachmentUrl = event.target.files[0]; 
-      //console.log(this.post.attachmentUrl);
     }
   }
 }
