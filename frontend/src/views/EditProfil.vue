@@ -20,37 +20,18 @@
           label="Email"
           v-model="user.email"
         ></v-text-field>
-        <!-- <v-text-field
-          required
-          :rules="rules.required"
-          label="Biographie"
-          v-model="post.content"
-          multi-line
-        ></v-text-field> -->
-
-        <!-- <v-btn color="success" @click="$refs.inputUpload.click()">Success</v-btn>
-<input v-show="false" ref="inputUpload" type="file" @change="yourFunction" >
- -->
 
         <input name="image" type="file" v-on:change="selectedFile($event)" />
 
-        <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
       </panel>
       <v-alert type="error" v-if="err">{{ err }}</v-alert>
     </v-flex>
-    <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field> -->
-    <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
+  
     <v-btn color="#FD2D01" dark @click="saveNewProfil"
       >Enregistrez votre profil !!</v-btn
     >
     <v-layout>
-      <v-text-field
-      type="password"
-        required
-        :rules="rules.required"
-        label="Password"
-        v-model="password"
-      ></v-text-field>
+      <v-text-field type="password" required :rules="rules.required" label="Password" v-model="password"></v-text-field>
       <br /><br />
       <v-btn color="#FD2D01" dark @click="saveNewPwd"
         >Enregistrez votre nouveau mot de passe !!</v-btn

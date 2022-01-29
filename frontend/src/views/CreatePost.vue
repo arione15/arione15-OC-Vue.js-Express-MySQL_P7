@@ -5,19 +5,15 @@
         <v-text-field required :rules="rules.required" label="Auteur" v-model="post.userId"></v-text-field>
         <v-text-field required :rules="rules.required" label="Titre" v-model="post.title"></v-text-field>
         <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line></v-text-field>
+
         <input name="image" type="file" v-on:change="selectedFile($event)">
-        <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
-
-
-        <!-- <v-btn color="success" @click="$refs.inputUpload.click()">Success</v-btn>
-<input v-show="false" ref="inputUpload" type="file" @change="yourFunction" >
- -->
+ 
         <v-text-field required :rules="rules.required" label="Date de création du post" v-model="post.createdAt"></v-text-field>
       </panel>
       <div class="danger-alert" v-if="err">{{ err }}</div>
     </v-flex>
+    
     <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field>
-    <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
     <v-btn color="#FD2D01" dark @click="create">Créez votre post !!</v-btn>
   </v-layout>
 </template>

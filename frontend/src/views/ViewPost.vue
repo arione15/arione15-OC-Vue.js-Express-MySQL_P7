@@ -13,9 +13,8 @@
       </v-flex>
 
       <v-flex xs6>
-        <!-- <img class="album-image" :src="`${$store.state.localUrl}/${post.attachmentUrl}`" /> -->
             <v-responsive>
-              <v-img :src="`${$store.state.localUrl}/${attachmentUrl}`"></v-img>
+              <v-img v-if="post.attachmentUrl" :src="`${$store.state.localUrl}/${attachmentUrl}`"></v-img>
             </v-responsive>
         <br>
       </v-flex>

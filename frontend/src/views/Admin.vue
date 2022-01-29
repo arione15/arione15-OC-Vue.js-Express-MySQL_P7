@@ -15,10 +15,7 @@
           <tr v-for="user in users.data" :key="user.id">
             <td class="text-xs-center">
               <v-avatar size="56">
-                <img
-                  alt="user"
-                  :src="`${$store.state.localUrl}/${user.photoUrl}`"
-                />
+                <v-img v-if="user.photoUrl" alt="user" :src="`${$store.state.localUrl}/${user.photoUrl}`"></v-img>
               </v-avatar>
               <span>{{ user.firstName }} {{ user.familyName }}</span>
             </td>
@@ -30,20 +27,8 @@
               <v-container fill-height>
                 <v-layout row wrap align-center>
                   <v-flex class="text-xs-center">
-                    <v-btn
-                      color="red"
-                      :to="{ name: 'Role-edit', params: { id: user.id } }"
-                      dark
-                      class="mb-5 mr-4"
-                      >Modifier le rôle</v-btn
-                    >
-                    <v-btn
-                      color="yellow"
-                      @click.prevent="removeUser(user.id)"
-                      dark
-                      class="mb-5"
-                      >Supprimer</v-btn
-                    >
+                    <v-btn color="red" :to="{ name: 'Role-edit', params: { id: user.id } }" dark class="mb-5 mr-4">Modifier le rôle</v-btn>
+                    <v-btn color="yellow" @click.prevent="removeUser(user.id)" dark class="mb-5">Supprimer</v-btn>
                   </v-flex>
                 </v-layout>
               </v-container>

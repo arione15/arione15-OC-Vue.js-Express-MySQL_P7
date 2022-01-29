@@ -29,9 +29,10 @@
         <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
         <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Postez !</v-btn>
         <span class="red--text text--darken-1">{{ err }}</span>
-        <span class="green--text text--darken-1">{{ message }}</span>
+        <span class="green--text text--darken-1">{{ messageSuccess }}</span>
 
             <post v-for="post in posts" v-on:likePost="likePost(post.id)" class="post" :post="post" :key="post.id">
+
               <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
                 <v-list-item @click="removePost(post.id)">
                   <v-list-item-title>Supprimer le post</v-list-item-title>
@@ -44,6 +45,7 @@
                 <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
                 <!-- </create-comment> -->
               </template>
+              
               <template v-slot:likes>{{ post.Likes.length }}</template>
 
               <template v-slot:comments>
@@ -91,7 +93,8 @@ export default {
       },
       //videoId: "",
       comments: {},
-      message: "",
+      message:"",
+      messageSuccess: "",
       err: "",
       rules: {
         required: [(value) => !!value || "Ce champs est requis.."],
@@ -117,9 +120,9 @@ export default {
           formData.append("title", this.post.title);
           formData.append("content", this.post.content);
           const response = await PostService.createPost(formData);
-          this.message= response.data.message;
+          this.messageSuccess= response.data.message;
             setInterval(()=>{
-            this.message=""
+            this.messageSuccess=""
           }, 2000)
           this.get();
           this.post.title = "";

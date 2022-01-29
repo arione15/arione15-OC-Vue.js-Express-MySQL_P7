@@ -3,26 +3,10 @@
     <v-flex xs4>
       <panel title="New post">
         <v-text-field required :rules="rules.required" label="Titre" v-model="post.title"></v-text-field>
-        <v-text-field
-          required
-          :rules="rules.required"
-          label="Contenu"
-          v-model="post.content"
-          multi-line
-        ></v-text-field>
+        <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line></v-text-field>
 
+        <input name="image" type="file" v-on:change="selectedFile($event)">
 
-        <!-- <v-btn color="success" @click="$refs.inputUpload.click()">Success</v-btn>
-<input v-show="false" ref="inputUpload" type="file" @change="yourFunction" >
--->
-
-        <input name="image"
-          type="file"
-          v-on:change="selectedFile($event)"
-        >
-
-        <!-- <v-text-field label="Image" v-model="post.attachmentUrl"></v-text-field> -->
-        
       </panel>
       <v-alert type="error" v-if="err">{{ err }}</v-alert>
     </v-flex>

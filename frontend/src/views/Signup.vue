@@ -62,6 +62,7 @@ export default {
     signup: async function () {
       //qui récupère les identifiant entrées par l'utilisateur et les envoie (post) au backend
       try {
+        if (this.user.firstName && this.user.familyName && this.user.email && this.user.password && this.user.photoUrl) {
         const formData = new FormData();
         formData.append("firstName", this.user.firstName);
         formData.append("familyName", this.user.familyName);
@@ -75,6 +76,12 @@ export default {
         this.$store.dispatch("setUser", response.data.user);
 
         this.$router.push({ name: "Login" });
+        }else {
+          this.err= "Il faut remplir tous les champs !";
+          setInterval(()=>{
+            this.err=""
+          }, 3000)
+        }
       } catch (error) {
         //console.log("resp signup", error.response); // error est un objet avec response comme propriété
           this.err = error.response.data.message;

@@ -14,7 +14,6 @@ module.exports = {
             ).required(), // doit contenir 8 caractères minimum avec au moins une majuscule, une minuscule, un chiffre et un caractère spécial
         });
         const { error, value } = schema.validate(req.body);
-        console.log("test signup", req.body);
         if (error) {
             res.status(422).send({ message: `${error.details.map(x => x.message + ',')}` });
         } else {
