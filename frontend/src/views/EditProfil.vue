@@ -79,7 +79,6 @@ export default {
         formData.append("email", this.user.email);
         await UserService.updateUser(id, formData);
         const response = await UserService.getOneUser(this.$store.state.user.id);
-        console.log(response);
         this.$store.dispatch('setUser', response.data.data);
         this.$router.push({ name: "Posts" });
         }
@@ -99,7 +98,7 @@ export default {
           await UserService.updatePwd(id, newPwd);
           this.$router.push({ name: "Posts" });
         } 
-         catch (error) {
+        catch (error) {
           this.err = error.response.data.message;
           }
         }

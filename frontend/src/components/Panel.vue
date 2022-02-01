@@ -4,7 +4,7 @@
       <v-flex>
         <div class="white elevation-2">
           <v-toolbar flat dense color="#FD2D01" dark>
-          <v-toolbar-title>{{ title }}</v-toolbar-title>
+          <v-toolbar-title><span class="font-panel">{{ title }}</span></v-toolbar-title>
             <!-- <slot name="action"></slot>  -->
             <!-- pour ne pas avoir le bouton dans tous les 'Panels' -->
           </v-toolbar>
@@ -23,7 +23,9 @@ props: ['title']
 }
 </script>
 
-<style scoped>
-
+<style>
+.font-panel{
+  font-size: 2vw;
+}
 </style>
 

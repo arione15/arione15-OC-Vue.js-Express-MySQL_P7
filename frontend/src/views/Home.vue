@@ -1,25 +1,23 @@
 <template>
   <div>
-    <h1 class="router-link display-1 font-weight-bold mb-5 mt-10" style="font-size:1.3rem; color: #FD522E;">Bienvenue sur le réseau social de Groupomania !</h1>
+    <h1 class="router-link fonts font-weight-bold mb-5 mt-10" style="color: #FD522E;">Bienvenue sur le réseau social de Groupomania !</h1>
     
     <v-container class="home-container">
-      <v-row class="d-flex justify-space-around" justify="center" align="center">
-        <v-col class="mb-5 px-5" justify="center">
-          <v-img :src="require('../assets/logo_transparent.png')" class="logo" contain height="100" alt="logo"/>
-        </v-col>
-      </v-row>
+          <v-img :src="require('../assets/logo_transparent.png')" class="logo" alt="logo"></v-img>
+          <v-img :src="require('../assets/bat-colore.jpg')" class="batiment" alt="batiment"></v-img>
     </v-container>
 
     <v-container>
       <v-row class="d-flex justify-space-around mt-2">
         <v-col xs="12" sm="12" md="6" lg="6" xl="6">
-          <router-link to="Signup" style="font-size:1.3rem; text-decoration: none; color: #FD522E;" class="font-weight-bold btn mx-auto">Nouveau ?</router-link>
+          <router-link to="Signup" style="text-decoration: none; color: #FD522E;" class="fonts font-weight-bold btn mx-auto">Nouveau ?</router-link>
         </v-col>
         <v-col xs="12" sm="12" md="6" lg="6" xl="6">
-          <router-link to="Login" style="font-size:1.3rem; text-decoration: none; color: #FD522E;" class="font-weight-bold btn mx-auto">Déjà inscrit ?</router-link>
+          <router-link to="Login" style="text-decoration: none; color: #FD522E;" class="fonts font-weight-bold btn mx-auto">Déjà inscrit ?</router-link>
         </v-col>
       </v-row>
     </v-container>
+    
   </div>
 </template>
 
@@ -33,19 +31,25 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .home-container {
-  background: url('../assets/bat-colore.jpg') no-repeat center center;
-  background-size: cover;
-  /*background-color: #FD522E;*/
-  max-width: 100%;
-  height:50vh;
   position: relative;
-  background-color: transparent;
-  margin-top: 5rem;
+  width: 100%;
+}
+.batiment{
+  width: 100%;
+  height: auto;
+  margin-top:10%;
 }
 .logo{
+  z-index: 100; 
   position: absolute;
-  top:-4rem
+  display: inline-block;
+  top: 13%;
+  width: 10%;
+  transform: translateX(-50%);
+}
+.fonts{
+  font-size: 2vw;
 }
 </style>

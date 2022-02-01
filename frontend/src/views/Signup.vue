@@ -1,37 +1,24 @@
 <template>
   <v-layout>
     <panel title="Inscription">
-      <!-- <form action="/signup" method="POST" name="register-form" autocomplete="off" enctype="multipart/form-data"> -->
-      <form
-        name="register-form"
-        autocomplete="off"
-        enctype="multipart/form-data"
-      >
-        <v-text-field label="Prénom" v-model="user.firstName"></v-text-field>
-        <v-text-field label="Nom" v-model="user.familyName"></v-text-field>
-        <v-text-field label="Email" v-model="user.email"></v-text-field>
-        <v-text-field
-          label="Mot de passe"
-          type="password"
-          v-model="user.password"
-          autocomplete="new-password"
-        ></v-text-field>
 
-        <div>
-          <input
-            type="file"
-            id="files"
-            class="hidden"
-            style="width: 90px"
-            v-on:change="selectedUser($event)"
-          />
-          <label for="files">Select file</label>
+      <!-- <form action="/signup" method="POST" name="register-form" autocomplete="off" enctype="multipart/form-data"> -->
+      <form name="register-form" autocomplete="off" enctype="multipart/form-data">
+        <v-text-field placeholder="Prénom" v-model="user.firstName"></v-text-field>
+        <v-text-field placeholder="Nom" v-model="user.familyName"></v-text-field>
+        <v-text-field placeholder="Email" v-model="user.email"></v-text-field>
+        <v-text-field placeholder="Mot de passe" type="password" v-model="user.password" autocomplete="new-password"></v-text-field>
+
+        <div class="d-flex  justify-start">
+          <label for="files" class="label-file">Choisir le fichier </label>
+          <span class="file-name"></span>
+          <input type="file" id="files" v-on:change="selectedUser($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
         </div>
       </form>
+
       <span class="red--text text--darken-1">{{ err }}</span>
-      <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="signup"
-        >S'inscrire</v-btn
-      >
+      <v-btn class="btn mt-10" rounded color="#FD2D01" dark type="submit" @click="signup"><span class="font-panel">Envoyer</span></v-btn>
+
     </panel>
   </v-layout>
 </template>
@@ -87,8 +74,21 @@ export default {
           this.err = error.response.data.message;
         }
       },
-    selectedUser(event) {
-      this.user.photoUrl = event.target.files[0];
+    selectedUser(e) {
+      this.user.photoUrl = e.target.files[0];
+
+      //const file = document.querySelector('#files');
+
+  // Get the selected file
+  //const [file] = this.user.photoUrl;
+  // Get the file name and size
+  const { name: fileName, size } = this.user.photoUrl;
+  // Convert size in bytes to kilo bytes
+  const fileSize = (size / 1000).toFixed(2);
+  // Set the text content
+  const fileNameAndSize = `${fileName} - ${fileSize}KB`;
+  document.querySelector('.file-name').textContent = fileNameAndSize;
+
     },
   },
 };
@@ -118,6 +118,42 @@ export default {
 input[type="file"] {
   width: 90px;
   color: transparent;
+}
+
+
+/*on personnalise le label comme on veut*/
+.label-file {
+    cursor: pointer;
+    color: #00b1ca;
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+.label-file:hover {
+    color: #73cbe0;
+}
+/* et on masque le input*/
+input[type="file"] {
+    display: none;
+}
+.file-name {
+  /* position: absolute;
+  bottom: -35px;
+  left: 10px; */
+  font-size: 0.85rem;
+  color: #555;
+  margin-left: 10px;
+  margin-top: 10px;
+}
+.btn {
+      font-size:0.5vw;
+      display:block;
+      margin: auto;
+      width:30%;
+}
+v-text-field {
+  font-size: 2vw;
 }
 </style>
 
