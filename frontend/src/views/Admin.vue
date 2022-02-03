@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-alert type="error" v-if="err">{{ err }}</v-alert>
-    <v-simple-table fixed-header height="300px">
+    <v-simple-table fixed-header height="auto">
       <template v-slot:default>
         <thead>
           <tr>
@@ -69,9 +69,14 @@ export default {
     },
   },
   async mounted() {
-    this.users = await UserService.getAllUsers();
-  },
-};
+    try{
+      this.users = await UserService.getAllUsers();
+    }catch (error) {
+      // this.err = error.response.data.message;
+      this.$router.push({ name: 'Home' });
+  }
+}
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

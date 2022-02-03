@@ -42,22 +42,24 @@ exports.getAllPosts = async(req, res) => {
                 ['createdAt', 'DESC']
             ],
             include: [{
-                model: db.User,
-                attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
-            }, {
-                model: db.Comment,
-                attributes: ['message', 'id', 'UserId', 'createdAt'],
-                order: [
-                    ['createdAt', 'DESC']
-                ],
-                include: [{
                     model: db.User,
                     attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
-                }]
-            }, {
-                model: db.Like,
-                attributes: ['UserId'],
-            }]
+                }, {
+                    model: db.Like,
+                    attributes: ['UserId'],
+                },
+                {
+                    model: db.Comment,
+                    attributes: ['message', 'id', 'UserId', 'createdAt'],
+                    order: [
+                        ['createdAt', 'DESC']
+                    ],
+                    include: [{
+                        model: db.User,
+                        attributes: ['firstName', 'familyName', 'id', 'photoUrl'],
+                    }]
+                }
+            ]
         });
         res.status(200).json(posts)
     } catch (err) {
