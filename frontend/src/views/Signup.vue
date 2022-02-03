@@ -88,31 +88,6 @@ export default {
 </script>
 
 <style>
-.parent-div {
-  display: inline-block;
-  position: relative;
-  overflow: hidden;
-}
-.parent-div input[type="file"] {
-  left: 0;
-  top: 0;
-  opacity: 0;
-  position: absolute;
-  font-size: 90px;
-}
-.btn-upload {
-  background-color: #fff;
-  border: 1px solid #000;
-  color: #000;
-  padding: 10px 25px;
-  border-radius: 10px;
-  font-size: 1rem;
-}
-input[type="file"] {
-  width: 90px;
-  color: transparent;
-}
-
 /*on personnalise le label */
 .label-file {
     cursor: pointer;
@@ -138,10 +113,9 @@ input[type="file"] {
   margin-top: 2rem;
 }
 .btn {
-      font-size:0.5vw;
       display:block;
       margin: auto;
-      width:25%;
+      width:auto;
 }
 .font-btn{
   font-size: 1.2vw;

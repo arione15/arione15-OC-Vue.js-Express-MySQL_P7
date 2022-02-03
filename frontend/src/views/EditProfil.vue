@@ -1,49 +1,25 @@
 <template>
-  <v-layout column>
-    <v-flex xs4>
-      <panel title="Modifier Profil">
-        <v-text-field
-          required
-          :rules="rules.required"
-          label="Prénom"
-          v-model="user.firstName"
-        ></v-text-field>
-        <v-text-field
-          required
-          :rules="rules.required"
-          label="Nom"
-          v-model="user.familyName"
-        ></v-text-field>
-        <v-text-field
-          required
-          :rules="rules.required"
-          label="Email"
-          v-model="user.email"
-        ></v-text-field>
+  <div>
+    <panel title="Modifier le profil">
 
-
- <div class="d-flex justify-start">
-          <label for="files" class="label-file">Choisir votre avatar </label>
+      <form name="editProfil-form" autocomplete="off" enctype="multipart/form-data">
+        <v-text-field required :rules="rules.required" label="Prénom" v-model="user.firstName"></v-text-field>
+        <v-text-field required :rules="rules.required" label="Nom" v-model="user.familyName"></v-text-field>
+        <v-text-field required :rules="rules.required" label="Email" v-model="user.email"></v-text-field>
+        <div class="d-flex  justify-start mb-5">
+          <label for="files" class="label-file">Choisissez votre avatar</label>
           <span class="file-name"></span>
-          <input type="file" id="files" v-on:change="selectedFile($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
+          <input type="file" id="files" v-on:change="selectedAvatar($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
         </div>
+      </form>
 
-
-      </panel>
       <v-alert type="error" v-if="err">{{ err }}</v-alert>
-    </v-flex>
-  
-    <v-btn color="#FD2D01" dark @click="saveNewProfil"
-      >Enregistrez votre profil !!</v-btn
-    >
-    <v-layout>
-      <v-text-field type="password" required :rules="rules.required" label="Password" v-model="password"></v-text-field>
-      <br /><br />
-      <v-btn color="#FD2D01" dark @click="saveNewPwd"
-        >Enregistrez votre nouveau mot de passe !!</v-btn
-      >
-    </v-layout>
-  </v-layout>
+      <v-btn class="btn font-btn mb-5" color="#FD2D01" dark @click="saveNewProfil"><span class="font-btn">Enregistrez le nouveau profil !!</span></v-btn>
+      <v-text-field type="password" required :rules="rules.required" label="Nouveau mot de passe" v-model="password"></v-text-field>
+      <v-btn class="btn font-btn mr-5" color="#FD2D01" dark @click="saveNewPwd"><span class="font-btn">Enregistrez le nouveau mot de passe !!</span></v-btn>
+    
+    </panel>
+  </div>
 </template>
 
 <script>
@@ -110,11 +86,15 @@ export default {
         }
       
     },
-    async selectedFile(event) {
+    async selectedAvatar(event) {
       let id = this.$store.state.route.params.id;
       this.user.photoUrl = event.target.files[0];
       const formData = new FormData();
       formData.append("image", this.user.photoUrl);
+      const { name: fileName, size } = this.user.photoUrl;
+      const fileSize = (size / 1000).toFixed(2);
+      const fileNameAndSize = `${fileName} - ${fileSize} KB`;
+      document.querySelector('.file-name').textContent = fileNameAndSize;
 
       try {
         await UserService.updateUser(id, formData);
