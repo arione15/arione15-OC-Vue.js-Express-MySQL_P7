@@ -17,7 +17,7 @@ router.post("/login", userControl.login);
 router.get("/logout", userControl.logout);
 
 // user CRUD
-router.get("/", userControl.getAllUsers);
+router.get("/", authPage, userControl.getAllUsers);
 router.get("/:id", userControl.getOneUser);
 router.put("/:id", checkUser, upload, userControl.updateUser);
 router.put("/:id/pwd", checkUser, userControl.updatePwd);

@@ -1,5 +1,4 @@
 <template>
-  <v-layout>
     <panel title="Inscription">
 
       <!-- <form action="/signup" method="POST" name="register-form" autocomplete="off" enctype="multipart/form-data"> -->
@@ -9,18 +8,17 @@
         <v-text-field placeholder="Email" v-model="user.email"></v-text-field>
         <v-text-field placeholder="Mot de passe" type="password" v-model="user.password" autocomplete="new-password"></v-text-field>
 
-        <div class="d-flex  justify-start">
-          <label for="files" class="label-file">Choisir le fichier </label>
+        <div class="d-flex justify-start">
+          <label for="files" class="label-file">Choisissez votre avatar </label>
           <span class="file-name"></span>
           <input type="file" id="files" v-on:change="selectedUser($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
         </div>
       </form>
 
       <span class="red--text text--darken-1">{{ err }}</span>
-      <v-btn class="btn mt-10" rounded color="#FD2D01" dark type="submit" @click="signup"><span class="font-panel">Envoyer</span></v-btn>
+      <v-btn class="btn mt-10" rounded color="#FD2D01" dark type="submit" @click="signup"><span class="font-btn">Envoyer</span></v-btn>
 
     </panel>
-  </v-layout>
 </template>
 
 <script>
@@ -41,7 +39,6 @@ export default {
         password: "",
         photoUrl: "",
       },
-      file: null,
       err: "",
     };
   },
@@ -76,25 +73,21 @@ export default {
       },
     selectedUser(e) {
       this.user.photoUrl = e.target.files[0];
-
-      //const file = document.querySelector('#files');
-
-  // Get the selected file
-  //const [file] = this.user.photoUrl;
-  // Get the file name and size
-  const { name: fileName, size } = this.user.photoUrl;
-  // Convert size in bytes to kilo bytes
-  const fileSize = (size / 1000).toFixed(2);
-  // Set the text content
-  const fileNameAndSize = `${fileName} - ${fileSize}KB`;
-  document.querySelector('.file-name').textContent = fileNameAndSize;
-
-    },
+    // Get the selected file
+    //const [file] = this.user.photoUrl;
+    // Get the file name and size
+    const { name: fileName, size } = this.user.photoUrl;
+    // Convert size in bytes to kilo bytes
+    const fileSize = (size / 1000).toFixed(2);
+    // Set the text content
+    const fileNameAndSize = `${fileName} - ${fileSize} KB`;
+    document.querySelector('.file-name').textContent = fileNameAndSize;
   },
+},
 };
 </script>
 
-<style scoped>
+<style>
 .parent-div {
   display: inline-block;
   position: relative;
@@ -120,15 +113,16 @@ input[type="file"] {
   color: transparent;
 }
 
-
-/*on personnalise le label comme on veut*/
+/*on personnalise le label */
 .label-file {
     cursor: pointer;
-    color: #00b1ca;
+    color: #555;
     border: 1px solid #ccc;
     display: inline-block;
     padding: 6px 12px;
     cursor: pointer;
+    margin-top: 1.5rem;
+    font-size: 0.85rem;
 }
 .label-file:hover {
     color: #73cbe0;
@@ -138,19 +132,19 @@ input[type="file"] {
     display: none;
 }
 .file-name {
-  /* position: absolute;
-  bottom: -35px;
-  left: 10px; */
   font-size: 0.85rem;
   color: #555;
   margin-left: 10px;
-  margin-top: 10px;
+  margin-top: 2rem;
 }
 .btn {
       font-size:0.5vw;
       display:block;
       margin: auto;
-      width:30%;
+      width:25%;
+}
+.font-btn{
+  font-size: 1.2vw;
 }
 v-text-field {
   font-size: 2vw;

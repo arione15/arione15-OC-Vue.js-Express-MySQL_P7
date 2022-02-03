@@ -10,10 +10,10 @@
     <v-container>
       <v-row class="d-flex justify-space-around mt-2">
         <v-col xs="12" sm="12" md="6" lg="6" xl="6">
-          <router-link to="Signup" style="text-decoration: none; color: #FD522E;" class="fonts font-weight-bold btn mx-auto">Nouveau ?</router-link>
+          <router-link to="Signup" style="text-decoration: none; color: #FD522E;" class="font-btn font-weight-bold btn mx-auto">Nouveau ?</router-link>
         </v-col>
         <v-col xs="12" sm="12" md="6" lg="6" xl="6">
-          <router-link to="Login" style="text-decoration: none; color: #FD522E;" class="fonts font-weight-bold btn mx-auto">Déjà inscrit ?</router-link>
+          <router-link to="Login" style="text-decoration: none; color: #FD522E;" class="font-btn font-weight-bold btn mx-auto">Déjà inscrit ?</router-link>
         </v-col>
       </v-row>
     </v-container>
@@ -49,7 +49,7 @@ export default {
   width: 10%;
   transform: translateX(-50%);
 }
-.fonts{
-  font-size: 2vw;
+.font-btn{
+  font-size: 1.5vw;
 }
 </style>

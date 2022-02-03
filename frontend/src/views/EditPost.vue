@@ -1,19 +1,21 @@
 <template>
-  <v-layout column>
-    <v-flex xs4>
       <panel title="New post">
+          <form name="editPost-form" autocomplete="off" enctype="multipart/form-data">
+
         <v-text-field required :rules="rules.required" label="Titre" v-model="post.title"></v-text-field>
         <v-text-field required :rules="rules.required" label="Contenu" v-model="post.content" multi-line></v-text-field>
 
-        <input name="image" type="file" v-on:change="selectedFile($event)">
+        <div class="d-flex  justify-start mb-5">
+          <label for="files" class="label-file">Choisissez votre fichier </label>
+          <span class="file-name"></span>
+          <input type="file" id="files" v-on:change="selectedFile($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
+        </div>
+      </form>
+
+      <v-alert type="error" v-if="err">{{ err }}</v-alert>
+    <v-btn class="btn green" dark @click="save"><span class="font-btn">Enregistrez</span></v-btn>
 
       </panel>
-      <v-alert type="error" v-if="err">{{ err }}</v-alert>
-    </v-flex>
-    <!-- <v-text-field class="red--text text--darken-1" v-html="post.error"></v-text-field> -->
-    <!-- <v-text-field class="green--text text--darken-1" v-html="post.message"></v-text-field> -->
-    <v-btn color="#FD2D01" dark @click="save">Enregistrez votre post !!</v-btn>
-  </v-layout>
 </template>
 
 <script>
@@ -73,8 +75,11 @@ export default {
       let postId = this.$store.state.route.params.postId
       this.post.attachmentUrl = event.target.files[0]; 
       const formData = new FormData();
-      console.log("name",this.post.attachmentUrl);
       formData.append("image", this.post.attachmentUrl);
+      const { name: fileName, size } = this.user.photoUrl;
+      const fileSize = (size / 1000).toFixed(2);
+      const fileNameAndSize = `${fileName} - ${fileSize} KB`;
+      document.querySelector('.file-name').textContent = fileNameAndSize;
       
       try {
         await PostService.updatePost(postId, formData)

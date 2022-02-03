@@ -69,9 +69,14 @@ export default {
     },
   },
   async mounted() {
-    this.users = await UserService.getAllUsers();
-  },
-};
+    try{
+      this.users = await UserService.getAllUsers();
+    }catch (error) {
+      // this.err = error.response.data.message;
+      this.$router.push({ name: 'Home' });
+  }
+}
+}
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->

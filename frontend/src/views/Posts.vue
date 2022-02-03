@@ -1,69 +1,66 @@
 <template>
-    <div>
+  <div>
 
-        <form
-          name="register-form"
-          autocomplete="off"
-          enctype="multipart/form-data"
-        >
-          <v-text-field label="Titre" v-model="post.title"></v-text-field>
-          <v-text-field
-            label="Contenu"
-            v-model="post.content"
-            multi-line
-          ></v-text-field>
-          <img
-            class="d-block"
-            src="https://img.icons8.com/ios-filled/50/000000/attach-resume-male.png"
-          />
-          <input
-            class="d-block btn-upload"
-            name="image"
-            type="file"
-            v-on:change="selectedFile($event)"
-            placeholder="Ajoutez une imagr"
-          />
-          <!-- <v-text-field label="YoutubeID" v-model="post.youtubeId"></v-text-field> -->
-        </form>
-        <!-- <v-text-field class="red--text text--darken-1" v-html="error"></v-text-field>
-        <v-text-field class="green--text text--darken-1" v-html="message"></v-text-field> -->
-        <v-btn class="mt-10" color="#FD2D01" dark type="submit" @click="publishPost">Postez !</v-btn>
-        <span class="red--text text--darken-1">{{ err }}</span>
-        <span class="green--text text--darken-1">{{ messageSuccess }}</span>
+    <panel title="Créer votre post !" class="mb-10">
+      <form name="post-form" autocomplete="off" enctype="multipart/form-data">
+        <v-text-field placeholder="Titre" v-model="post.title"></v-text-field>
+        <v-textarea class="text-justify" auto-grow rows="1" placeholder="Contenu" v-model="post.content"></v-textarea>
 
-            <post v-for="post in posts" v-on:likePost="likePost(post.id)" class="post" :post="post" :key="post.id">
+        <div class="d-flex  justify-start">
+          <label for="files" class="label-file">Choisissez votre fichier </label>
+          <span class="file-name"></span>
+          <input type="file" id="files" v-on:change="selectedFile($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
+        </div>
 
-              <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
-                <v-list-item @click="removePost(post.id)">
-                  <v-list-item-title>Supprimer le post</v-list-item-title>
-                </v-list-item>
-              </template>
+      </form>
+      <span class="red--text text--darken-1">{{ err }}</span>
+      <span class="green--text text--darken-1">{{ messageSuccess }}</span>
+      <v-btn class="btn mt-10" rounded color="green" dark type="submit" @click="publishPost"><span class="font-btn">Postez !</span></v-btn>
+    </panel>
 
-              <template v-slot:publishComment>
-                <!-- <create-comment :message="message" v-on:comment-sent="updateCommentBody"> -->
-                <v-text-field label="commenter" v-model="message"></v-text-field>
-                <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
-                <!-- </create-comment> -->
-              </template>
-              
-              <template v-slot:likes>{{ post.Likes.length }}</template>
+  <v-container class="grey lighten-5">
+    <v-row class="d-flex justify-center mt-3">
+      <v-col cols="12" sm="12" md="10" lg="8" xl="6">
+          <div class="white elevation-2">
+            <v-toolbar flat dense color="#FD2D01" dark>
+            <v-toolbar-title><span class="font-panel">Forum</span></v-toolbar-title>
+              <!-- pour ne pas avoir le bouton dans tous les 'Panels' -->
+            </v-toolbar>
+          <div class="pa-4">
 
-              <template v-slot:comments>
-                <Comments
-                  v-for="comment in post.Comments"
-                  :key="comment.id"
-                  :firstName="comment.firstName"
-                  :lastName="comment.lastName">
-                <template v-slot:comment>
-                  <div class="font-weight-normal">
-                    <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
-                  </div>
-                  <div>{{ comment.message }}</div>
-                  <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
-                </template>
-                </Comments>
-              </template>
-            </post>
+      <post v-for="post in posts" @likePost="likePost(post.id)" :post="post" :key="post.id">
+        <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
+          <v-list-item @click="removePost(post.id)">
+          <v-list-item-title>Supprimer le post</v-list-item-title>
+          </v-list-item>
+        </template>
+
+        <template v-slot:publishComment>
+          <v-text-field label="commentere" v-model="message"></v-text-field>
+          <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
+        </template>
+
+        <template v-slot:likes>{{ post.Likes.length }}</template>
+
+        <template v-slot:comments>
+          <Comments v-for="comment in post.Comments" :key="comment.id" :firstName="comment.firstName" :lastName="comment.lastName">
+          <template v-slot:comment>
+            <div class="font-weight-normal">
+              <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
+            </div>
+            <div>{{ comment.message }}</div>
+            <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
+          </template>
+          </Comments>
+        </template>
+
+      </post>
+    <!-- </panel> -->
+            </div>
+          </div>
+      </v-col>
+    </v-row>
+  </v-container>
   </div>
 </template>
 
@@ -74,13 +71,14 @@ import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
 import Post from "../components/Post.vue";
 import Comments from "../components/Comments.vue";
-
+import Panel from "../components/Panel";
 
 export default {
   name: "Posts",
   components: {
     Post,
     Comments,
+    Panel,
   },
   data() {
     return {
@@ -198,18 +196,10 @@ export default {
     },
   },
   created() {
-    document.cookie =
-      "snToken" +
-      "=" +
-      sessionStorage.getItem("token") +
-      ";" +
-      24 * 60 * 60 * 1000 +
-      ";path=/";
+    document.cookie = "snToken" + "=" + sessionStorage.getItem("token") +";" + 24 * 60 * 60 * 1000 +";path=/";
   },
   async mounted() {
-    
     this.get();
-    console.log("v-if user.id", this.$store.state.user.role);
     //console.log("response009", response);
   },
 };
@@ -219,10 +209,22 @@ export default {
 <style scoped>
 .avatar-image {
   width: 10%;
-  /* margin: auto; */
 }
-.green-color {
-  color: green;
+.btn {
+  display:block;
+  margin: auto;
+  width:25%;
 }
+.font-btn{
+  font-size: 1.2vw;
+}
+.posts{
+  width: 150%;
+}
+/* .font-span {
+  font-size: 1.2vw
+}  */
+
+
 </style>
 

@@ -21,7 +21,13 @@
           v-model="user.email"
         ></v-text-field>
 
-        <input name="image" type="file" v-on:change="selectedFile($event)" />
+
+ <div class="d-flex justify-start">
+          <label for="files" class="label-file">Choisir votre avatar </label>
+          <span class="file-name"></span>
+          <input type="file" id="files" v-on:change="selectedFile($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
+        </div>
+
 
       </panel>
       <v-alert type="error" v-if="err">{{ err }}</v-alert>

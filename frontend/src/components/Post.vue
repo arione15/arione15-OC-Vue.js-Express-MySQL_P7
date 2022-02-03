@@ -1,94 +1,80 @@
 <template>
   <div class="post">
-    <!-- Le user qui a posté -->
+
+    <!-- L'utilisateur qui a posté -->
     <v-container>
-      <v-layout row wrap>
-        <v-flex sm10 md8 lg6>
-          <v-card flat class="text-xs-center ma-3">
-            
-            <v-responsive>
-              <v-avatar size="100" class="grey lighten-2">
+      <v-card class="d-flex justify-space-between" shaped elevation="4">
+          <div sm12 md10 lg8>
+            <v-avatar size="50" class="mx-2 my-2" color="grey lighten-2">
               <v-img alt="user" :src="`${$store.state.localUrl}/${post.User.photoUrl}`"></v-img>
-              </v-avatar>
-                <v-menu left bottom>
-                  <template v-slot:activator="{ on, attrs }">
-                    <v-btn icon v-bind="attrs" v-on="on">
-                      <span class="material-icons">more_vert</span>
-                    </v-btn>
-                  </template>
-                  <v-list>
-                    <v-list-item v-if="post.User.id === $store.state.user.id" :to="{ name: 'Post', params: { postId: post.id } }">
-                      <v-list-item-title>Voir le post</v-list-item-title>
-                    </v-list-item>
-                    <v-list-item :to="{ name: 'Profil', params: { id: post.User.id } }"><v-list-item-title>Voir le profil</v-list-item-title>
-                    </v-list-item>
-                    <slot name="delPost"></slot>
-                  </v-list>
-                </v-menu>
-            </v-responsive>
-
-            <v-card-text>
-              <div class="font-weight-black">{{ post.User.firstName }} {{ post.User.familyName }}</div>
-              <div class="grey--text">Posté le : {{ dateFormat(post.createdAt) }}</div>
-            </v-card-text>
-
-            <v-flex>
-                <v-icon v-if="ifLiked" color="green" @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
-                <v-icon v-else @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
-                <slot name="likes" />
-            </v-flex>
-          </v-card>
-        </v-flex>
-      </v-layout>
+            </v-avatar>
+            <div class="d-flex flex-column justify-start pl-2"> 
+              <span class="font-span font-weight-black">{{ post.User.firstName }} {{ post.User.familyName }}</span>
+              <span class="font-span font-weight-medium">Posté le : {{ dateFormat(post.createdAt) }}</span>
+            </div>
+        </div>
+        <div>
+          <v-menu left bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon v-bind="attrs" v-on="on">
+                <span class="material-icons">more_vert</span>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item :to="{ name: 'Post', params: { postId: post.id } }">
+                <v-list-item-title class="font-span font-weight-medium">Voir le post</v-list-item-title>
+              </v-list-item>
+              <v-list-item :to="{ name: 'Profil', params: { id: post.User.id } }">
+                <v-list-item-title class="font-span font-weight-medium">Voir le profil</v-list-item-title>
+              </v-list-item>
+              <slot name="delPost"></slot>
+            </v-list>
+          </v-menu>
+        </div>
+      </v-card>
     </v-container>
 
     <!-- Le post -->
     <v-container>
-      <v-layout row wrap>
-        <v-flex sm10 md8 lg6>
-          <v-card flat class="text-xs-center ma-3">
+      <v-card outlined class="d-flex flex-column" elevation="2">
+        <div>
             <v-responsive>
               <v-img v-if="post.attachmentUrl" :src="`${$store.state.localUrl}/${post.attachmentUrl}`"></v-img>
             </v-responsive>
             <v-card-text>
               <div class="subheading">{{ post.title }}</div>
-              <div>{{ post.content }}</div>
+              <div class="post-content">{{ post.content }}</div>
             </v-card-text>
-          </v-card>
-        </v-flex>
-      </v-layout>
+        </div>
+        <div class="my-8">
+          <v-icon v-if="ifLiked" color="green" @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
+          <v-icon v-else @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
+          <slot name="likes" />
+        </div>
+      </v-card>
     </v-container>
 
     <!-- Les commentaires -->
     <v-container>
-      <v-layout row wrap>
-        <v-flex sm10 md8 lg6>
-          <v-card flat class="text-xs-center ma-3">
+      <v-card outlined class="d-flex flex-column" elevation="2">
             <v-card-text>
-              
               <div class="subheading">
                 <slot name="publishComment"></slot>
               </div>
-              
               <div class="subheading">
                 <slot name="comments"></slot>
               </div>
-
-              
             </v-card-text>
           </v-card>
-        </v-flex>
-      </v-layout>
     </v-container>
+
     <v-divider class="mx-4 my-5"></v-divider>
+
   </div>
 </template>
 
 <script>
-//import Panel from '../components/Panel'
 import PostService from "../services/PostService.js";
-//import CommentService from "../services/CommentService.js";
-//import LikeService from "../services/LikeService.js";
 
 export default {
   name: "Post",
@@ -149,31 +135,15 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
-.avatar-image {
-  width: 10%;
-  /* margin: auto; */
+<style>
+.font-span {
+  font-size: 1.2vw
 }
-.image-attached {
-  width: 70%;
-  height: auto;
-  margin-left: auto;
-  margin-right: auto;
-}
-.green-color {
-  background-color: green;
-}
-.madiv {
-  width: 30px;
-  height: 100px;
-  background-color: blue;
-}
-i.v-icon.v-icon {
-  color: green;
-}
-.infoPost {
-  font-size: 0.75rem;
+.subheading{
   font-weight: 800;
+}
+.post-content{
+  text-align: justify;
 }
 </style>
 
