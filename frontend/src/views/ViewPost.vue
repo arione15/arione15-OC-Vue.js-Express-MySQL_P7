@@ -1,5 +1,6 @@
 <template>
   <panel title="Post">
+
       <v-card class="d-flex flex-column justify-space-between" elevation="4">
             <v-responsive>
               <v-img v-if="post.attachmentUrl" :src="`${$store.state.localUrl}/${post.attachmentUrl}`"></v-img>
@@ -10,6 +11,7 @@
             </div>
       <v-btn v-if="post.User && post.User.id === $store.state.user.id" dark class="green my-5 mx-2" :to="{name: 'Post-edit', params() {return {postId: post.id}}}">Edit</v-btn>
       </v-card>
+      
   </panel>
 </template>
 

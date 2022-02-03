@@ -38,7 +38,7 @@
     <v-container>
       <v-card outlined class="d-flex flex-column" elevation="2">
         <div>
-            <v-responsive>
+            <v-responsive class="pa-2">
               <v-img v-if="post.attachmentUrl" :src="`${$store.state.localUrl}/${post.attachmentUrl}`"></v-img>
             </v-responsive>
             <v-card-text>

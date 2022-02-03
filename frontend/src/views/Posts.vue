@@ -23,8 +23,7 @@
       <v-col cols="12" sm="12" md="10" lg="8" xl="6">
           <div class="white elevation-2">
             <v-toolbar flat dense color="#FD2D01" dark>
-            <v-toolbar-title><span class="font-panel">Forum</span></v-toolbar-title>
-              <!-- pour ne pas avoir le bouton dans tous les 'Panels' -->
+              <v-toolbar-title><span class="font-panel">Forum</span></v-toolbar-title>
             </v-toolbar>
           <div class="pa-4">
 
@@ -55,12 +54,12 @@
         </template>
 
       </post>
-    <!-- </panel> -->
             </div>
           </div>
       </v-col>
     </v-row>
   </v-container>
+
   </div>
 </template>
 
@@ -89,7 +88,6 @@ export default {
         attachmentUrl: "",
         userId: "",
       },
-      //videoId: "",
       comments: {},
       message:"",
       messageSuccess: "",
@@ -97,14 +95,6 @@ export default {
       rules: {
         required: [(value) => !!value || "Ce champs est requis.."],
       },
-      cards: ["Today", "Yesterday"],
-      drawer: null,
-      links: [
-        ["mdi-inbox-arrow-down", "View Post"],
-        ["mdi-send", "View Profil"],
-        // ['mdi-delete', 'Trash'],
-        // ['mdi-alert-octagon', 'Spam'],
-      ],
       likes: {},
       user: {},
     };
