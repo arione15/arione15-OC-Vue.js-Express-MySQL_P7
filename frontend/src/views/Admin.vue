@@ -1,7 +1,7 @@
 <template>
   <div>
     <v-alert type="error" v-if="err">{{ err }}</v-alert>
-    <v-simple-table fixed-header height="300px">
+    <v-simple-table fixed-header height="auto">
       <template v-slot:default>
         <thead>
           <tr>

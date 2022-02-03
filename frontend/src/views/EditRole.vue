@@ -1,49 +1,45 @@
 <template>
-<v-app>
-      <v-container class="my-5">
-    <v-layout>
-      <h1>Le rôle de {{ user.firstName }}</h1>
-            <v-row align="center">
-      <v-col
-        class="d-flex"
-        cols="12"
-        sm="6"
-      >
-     <select id="monselect" @click="(e)=>selectRole(e.target.value)">
-  <option value="">Choisir le rôle</option>
-  <option value=1>Admin</option>
-  <option value=0>User</option>
-</select>
-      </v-col>
-      </v-row>
-          <v-alert type="error" v-if="err">{{ err }}</v-alert>
-          <v-btn  color="#FD2D01" dark @click="save">Modifier</v-btn>
-    </v-layout>
-    </v-container>
-    </v-app>
+  <panel title="Modifier le rôle">
+
+    <v-form name="role-form" autocomplete="off" enctype="multipart/form-data">
+      <!-- <h3>Le rôle de {{ user.firstName }} {{ user.familyName }}</h3> -->
+
+      <div class="d-flex flex-column">
+      <select id="monselect" @click="(e)=>selectRole(e.target.value)">
+        <option value="">Clquer içi pour choisir le rôle</option>
+        <option value=1>Admin</option>
+        <option value=0>User</option>
+      </select>
+
+      <v-btn  class="red mt-16" dark @click="save">Enregistrer</v-btn>
+      </div>
+    </v-form>
+
+    <v-alert type="error" v-if="err">{{ err }}</v-alert>
+
+  </panel>
 </template>
 
 <script>
 import UserService from "../services/UserService.js";
 // import PostService from "../services/PostService.js";
-// import Panel from '../components/Panel'
+import Panel from '../components/Panel'
 
 export default {
   name: 'EditRole',
   components: {
-    
+    Panel,
   },
   data() {
     return {
       user: {},
       role:"",
       err:"",
-
     }
   },
   methods:{
     selectRole(role){
-this.role=role;
+      this.role=role;
     },
     async save () {
       this.error = null
@@ -81,26 +77,5 @@ this.role=role;
 </script>
 
 <style scoped>
-.post {
-  padding: 20px;
-  height: 330px;
-  overflow: hidden;
-}
-.post-title {
-  font-size: 30px;
-}
-.post-content {
-  font-size: 24px;
-}
-.post-userId {
-  font-size: 18px;
-}
 
-.post-createdAt {
-  font-size: 16px;
-}
-.album-image {
-  width: 70%;
-  margin: 0 auto;
-}
 </style>
