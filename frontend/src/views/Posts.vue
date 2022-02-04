@@ -2,6 +2,7 @@
   <div>
 
     <panel title="Créer votre post !" class="mb-10">
+
       <form name="post-form" autocomplete="off" enctype="multipart/form-data">
         <v-text-field placeholder="Titre" v-model="post.title"></v-text-field>
         <v-textarea class="text-justify" auto-grow rows="1" placeholder="Contenu" v-model="post.content"></v-textarea>
@@ -11,54 +12,58 @@
           <span class="file-name"></span>
           <input type="file" id="files" v-on:change="selectedFile($event)" accept="image/png, image/jpeg, image/bmp, image/gif"/>
         </div>
-
       </form>
+
       <span class="red--text text--darken-1">{{ err }}</span>
       <span class="green--text text--darken-1">{{ messageSuccess }}</span>
       <v-btn class="btn mt-10" rounded color="green" dark type="submit" @click="publishPost"><span class="font-btn">Postez !</span></v-btn>
     </panel>
 
-  <v-container class="grey lighten-5">
-    <v-row class="d-flex justify-center mt-3">
-      <v-col cols="12" sm="12" md="10" lg="8" xl="6">
-          <div class="white elevation-2">
-            <v-toolbar flat dense color="#FD2D01" dark>
-              <v-toolbar-title><span class="font-panel">Forum</span></v-toolbar-title>
-            </v-toolbar>
-          <div class="pa-4">
+    <v-container class="grey lighten-5">
+      <v-row class="d-flex justify-center mt-3">
+        <v-col cols="12" sm="12" md="10" lg="8" xl="6">
+            <div class="white elevation-2">
+              <v-toolbar flat dense color="#FD2D01" dark>
+                <v-toolbar-title><span class="font-panel">Forum</span></v-toolbar-title>
+              </v-toolbar>
 
-      <post v-for="post in posts" @likePost="likePost(post.id)" :post="post" :key="post.id">
-        <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
-          <v-list-item @click="removePost(post.id)">
-          <v-list-item-title>Supprimer le post</v-list-item-title>
-          </v-list-item>
-        </template>
+              <div class="pa-4">
+                <Post v-for="post in posts" @likePost="likePost(post.id)" :post="post" :key="post.id">
 
-        <template v-slot:publishComment>
-          <v-text-field label="commentere" v-model="message"></v-text-field>
-          <v-btn color="green" type="submit" v-on:click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
-        </template>
+                  <template v-slot:delPost v-if="post.User.id === $store.state.user.id || $store.state.user.role == true">
+                    <v-list-item @click="removePost(post.id)">
+                    <v-list-item-title>Supprimer le post</v-list-item-title>
+                    </v-list-item>
+                  </template>
 
-        <template v-slot:likes>{{ post.Likes.length }}</template>
+                  <template v-slot:publishComment>
+                    <!-- <v-text-field v-model="post.Comment.message" label="commentaire"></v-text-field> -->
+                    <v-text-field v-model="message" label="commentaire"></v-text-field>
+                    <v-btn color="green" type="submit" @click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
+                  </template>
 
-        <template v-slot:comments>
-          <Comments v-for="comment in post.Comments" :key="comment.id" :firstName="comment.firstName" :lastName="comment.lastName">
-          <template v-slot:comment>
-            <div class="font-weight-normal">
-              <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
+                  <template v-slot:likes>{{ post.Likes.length }}</template>
+
+                  <template v-slot:comments>
+                    <div v-for="comment in post.Comments" :key="comment.id">
+                      <v-avatar size="50" class="mx-2 my-2" color="grey lighten-2">
+                        <v-img alt="user" :src="`${$store.state.localUrl}/${comment.User.photoUrl}`"></v-img>
+                      </v-avatar>
+                      <div class="font-weight-normal">
+                        <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
+                      </div>
+                      <div>{{ comment.message }}</div>
+                      <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
+                    </div>
+                  </template>
+                  
+                </Post>
+              </div>
+
             </div>
-            <div>{{ comment.message }}</div>
-            <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
-          </template>
-          </Comments>
-        </template>
-
-      </post>
-            </div>
-          </div>
-      </v-col>
-    </v-row>
-  </v-container>
+        </v-col>
+      </v-row>
+    </v-container>
 
   </div>
 </template>
@@ -69,14 +74,13 @@ import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
 import Post from "../components/Post.vue";
-import Comments from "../components/Comments.vue";
+//import Comments from "../components/Comments.vue";
 import Panel from "../components/Panel";
 
 export default {
   name: "Posts",
   components: {
     Post,
-    Comments,
     Panel,
   },
   data() {
@@ -90,12 +94,11 @@ export default {
       },
       comments: {},
       message:"",
-      messageSuccess: "",
       err: "",
+      messageSuccess: "",
       rules: {
         required: [(value) => !!value || "Ce champs est requis.."],
       },
-      likes: {},
       user: {},
     };
   },
@@ -138,6 +141,7 @@ export default {
     },
     async get() {
       this.posts = (await PostService.getAllPosts()).data;
+      console.log("this posts", this.posts);
     },
     async publishComment(id, message) {
       try {
@@ -145,8 +149,6 @@ export default {
           await CommentService.createComment(id, message);
           this.get();
           this.message = "";
-        } else {
-          this.err="Choisissez un fichier ou entrer un texte !";
         }
       } catch (error) {
           this.err = error.response.data.message;
@@ -197,9 +199,6 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.avatar-image {
-  width: 10%;
-}
 .btn {
   display:block;
   margin: auto;
@@ -211,10 +210,5 @@ export default {
 .posts{
   width: 150%;
 }
-/* .font-span {
-  font-size: 1.2vw
-}  */
-
-
 </style>
 

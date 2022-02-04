@@ -76,7 +76,7 @@ export default {
       this.post.attachmentUrl = event.target.files[0]; 
       const formData = new FormData();
       formData.append("image", this.post.attachmentUrl);
-      const { name: fileName, size } = this.user.photoUrl;
+      const { name: fileName, size } = this.post.attachmentUrl;
       const fileSize = (size / 1000).toFixed(2);
       const fileNameAndSize = `${fileName} - ${fileSize} KB`;
       document.querySelector('.file-name').textContent = fileNameAndSize;

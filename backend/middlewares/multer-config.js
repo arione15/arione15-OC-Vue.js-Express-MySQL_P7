@@ -1,14 +1,6 @@
 const multer = require('multer');
 const path = require("path");
 
-// const MIME_TYPES = {
-//     'image/jpg': 'jpg',
-//     'image/jpeg': 'jpeg',
-//     'image/png': 'png',
-//     'image/gif': 'gif',
-//     'video/mp4': 'mp4'
-// };
-
 const storage = multer.diskStorage({
     destination: (req, file, cb) => { cb(null, "images"); },
     filename: (req, file, cb) => { // renommer les fichiers pour éviter les doublons et remplacer les espaces par des underscores

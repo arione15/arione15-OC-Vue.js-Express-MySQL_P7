@@ -1,6 +1,5 @@
 <template>
-<div>
-  <v-toolbar fixed color="#FD2D01" dark>
+  <v-app-bar fixed color="#FD2D01" dark>
 
   
     <v-toolbar-title>
@@ -64,8 +63,7 @@
     </v-menu>
 
 
-</v-toolbar>
-  </div>
+</v-app-bar>
 </template>
 
 <script>

@@ -2,11 +2,11 @@
   <panel title="Modifier le rôle">
 
     <v-form name="role-form" autocomplete="off" enctype="multipart/form-data">
-      <!-- <h3>Le rôle de {{ user.firstName }} {{ user.familyName }}</h3> -->
+      <h3>Le rôle de {{ user.firstName }} {{ user.familyName }}</h3>
 
       <div class="d-flex flex-column">
       <select id="monselect" @click="(e)=>selectRole(e.target.value)">
-        <option value="">Clquer içi pour choisir le rôle</option>
+        <option value="">Cliquer içi pour choisir le rôle</option>
         <option value=1>Admin</option>
         <option value=0>User</option>
       </select>
@@ -45,7 +45,6 @@ export default {
       this.error = null
       this.message = ""
       const id = this.$store.state.route.params.id;
-      console.log("id",id );
       const role = this.role;
       const firstName= this.user.firstName; 
       const familyName= this.user.familyName; 
@@ -65,15 +64,17 @@ export default {
           this.err = error.response.data.message;
       }
   },
-  async mounted () {
+},
+async mounted () {
     try {
-      let id = this.$store.state.route.params.id
-      this.user = (await UserService.getOneUser(id)).data.data
+      let id = this.$store.state.route.params.id;
+      this.user = (await UserService.getOneUser(id)).data.data;
+      console.log("222", this.user);
     } catch (error) {
           this.err = error.response.data.message;
     }
   }
-}}
+  }
 </script>
 
 <style scoped>

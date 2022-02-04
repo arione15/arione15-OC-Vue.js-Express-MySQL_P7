@@ -46,10 +46,10 @@
               <div class="post-content">{{ post.content }}</div>
             </v-card-text>
         </div>
-        <div class="my-8">
+        <div v-if="post.Likes" class="my-8">
           <v-icon v-if="ifLiked" color="green" @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
           <v-icon v-else @click="likePost(post.id)" class="material-icons">thumb_up</v-icon>
-          <slot name="likes" />
+          <slot name="likes" /> <!-- affichage du nombre de likes -->
         </div>
       </v-card>
     </v-container>
@@ -57,18 +57,18 @@
     <!-- Les commentaires -->
     <v-container>
       <v-card outlined class="d-flex flex-column" elevation="2">
-            <v-card-text>
-              <div class="subheading">
-                <slot name="publishComment"></slot>
-              </div>
-              <div class="subheading">
-                <slot name="comments"></slot>
-              </div>
-            </v-card-text>
-          </v-card>
+        <v-card-text>
+          <div class="subheading">
+            <slot name="publishComment"></slot>
+          </div>
+          <div class="subheading">
+            <slot name="comments"></slot>
+          </div>
+        </v-card-text>
+      </v-card>
     </v-container>
 
-    <v-divider class="mx-4 my-5"></v-divider>
+    <v-divider class="black my-5"></v-divider>
 
   </div>
 </template>
