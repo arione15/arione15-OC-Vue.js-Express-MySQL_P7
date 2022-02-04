@@ -12,7 +12,7 @@
 - NODE_ENV="development"
 - MAX_AGE=3600000
 `
-1. Create a config.json file in backend/config. Replace the values with your own.
+4. Create a config.json file in backend/config. Replace the values with your own.
 `
 {
     "development": {
@@ -41,7 +41,7 @@
 }
 
 `
-1. go to `http://localhost:8080` to run the app
+5. go to `http://localhost:8080` to run the app
 
 
 
