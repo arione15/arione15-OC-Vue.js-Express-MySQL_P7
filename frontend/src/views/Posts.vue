@@ -37,9 +37,9 @@
                   </template>
 
                   <template v-slot:publishComment>
-                    <!-- <v-text-field v-model="post.Comment.message" label="commentaire"></v-text-field> -->
-                    <v-text-field v-model="message" label="commentaire"></v-text-field>
-                    <v-btn color="green" type="submit" @click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
+                    <!-- <v-text-field v-model="post.Comments.message" label="commentaire"></v-text-field> -->
+                    <v-text-field v-model="post.message" label="commentaire"></v-text-field>
+                    <v-btn color="green" type="submit" @click.prevent="publishComment(post.id, post.message)" dark class="mb-5">Commentez !</v-btn>
                   </template>
 
                   <template v-slot:likes>{{ post.Likes.length }}</template>
@@ -69,12 +69,10 @@
 </template>
 
 <script>
-//import Panel from "../components/Panel";
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
 import Post from "../components/Post.vue";
-//import Comments from "../components/Comments.vue";
 import Panel from "../components/Panel";
 
 export default {
