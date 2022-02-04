@@ -25,9 +25,7 @@ export default {
   },
     data(){
         return{
-            post: {
-            },
-            attachmentUrl:"",
+            post: {},
         }
     },
     async mounted () {

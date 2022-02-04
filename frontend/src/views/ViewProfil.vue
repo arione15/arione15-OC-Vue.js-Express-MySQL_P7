@@ -15,8 +15,8 @@
       <v-toolbar flat dense color="#FD2D01" dark>
         <v-toolbar-title><span class="font-panel">Les posts de {{ user.firstName }}</span></v-toolbar-title>
       </v-toolbar>
-      <div v-for="post of posts" :key="post.id">
-        <v-card outlined class="d-flex flex-column">
+      <Post v-for="post in posts" :post="post" :key="post.id">
+        <!-- <v-card outlined class="d-flex flex-column">
           <v-responsive class="pa-2">
             <v-img v-if="post.attachmentUrl" :src="`${$store.state.localUrl}/${post.attachmentUrl}`"></v-img>
           </v-responsive>
@@ -25,8 +25,8 @@
             <span>{{ dateFormat(post.createdAt) }}</span>
           <div class="pt-2 post-content">{{ post.content }}</div>
           </v-card-text>
-        </v-card>
-      </div>
+        </v-card> -->
+      </Post>
         <!-- <div class="pa-4">
           <post v-for="post in posts" :post="post" :key="post.id"></post>
         </div> -->
@@ -39,14 +39,14 @@
 import UserService from "../services/UserService.js";
 import PostService from "../services/PostService.js";
 import Panel from '../components/Panel';
-// import Post from "../components/Post.vue";
+import Post from "../components/Post.vue";
 
 
 export default {
   name: 'ViewProfil',
   components: {
     Panel,
-    // Post,
+    Post,
   },
   data() {
     return {

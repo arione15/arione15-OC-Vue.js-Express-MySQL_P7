@@ -12,13 +12,15 @@
 </template>
 
 <script>
-import HeaderCompo from './components/Header.vue'
+import HeaderCompo from './components/Header.vue';
+
 export default {
   name: 'App',
   components: {
     HeaderCompo
   }
-}
+};
+
 </script>
 
 <style lang="scss">
