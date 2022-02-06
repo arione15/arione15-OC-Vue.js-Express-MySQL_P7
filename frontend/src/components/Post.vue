@@ -58,9 +58,11 @@
     <v-container>
       <v-card outlined class="d-flex flex-column" elevation="2">
         <v-card-text>
+          <!-- création -->
           <div class="subheading">
             <slot name="publishComment"></slot>
           </div>
+          <!-- affichage -->
           <div class="subheading">
             <slot name="comments"></slot>
           </div>

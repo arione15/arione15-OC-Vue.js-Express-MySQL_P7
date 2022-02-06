@@ -37,9 +37,9 @@
                   </template>
 
                   <template v-slot:publishComment>
-                    <!-- <v-text-field v-model="post.Comments.message" label="commentaire"></v-text-field> -->
-                    <v-text-field v-model="post.message" label="commentaire"></v-text-field>
-                    <v-btn color="green" type="submit" @click.prevent="publishComment(post.id, post.message)" dark class="mb-5">Commentez !</v-btn>
+                    <!-- <v-text-field v-model="post.Comment.message" label="commentaire"></v-text-field> -->
+                    <v-text-field v-model="message" label="commentaire"></v-text-field>
+                    <v-btn color="green" type="submit" @click.prevent="publishComment(post.id, message)" dark class="mb-5">Commentez !</v-btn>
                   </template>
 
                   <template v-slot:likes>{{ post.Likes.length }}</template>
@@ -50,7 +50,7 @@
                         <v-img alt="user" :src="`${$store.state.localUrl}/${comment.User.photoUrl}`"></v-img>
                       </v-avatar>
                       <div class="font-weight-normal">
-                        <strong>{{ comment.User.firstName }} {{ comment.User.familyName }}</strong> @{{ comment.createdAt }}
+                        <span>{{ comment.User.firstName }} {{ comment.User.familyName }} {{ dateFormat(post.createdAt) }}</span>
                       </div>
                       <div>{{ comment.message }}</div>
                       <v-btn v-if="comment.User.id === $store.state.user.id || $store.state.user.role == true || post.userId === $store.state.user.id" v-on:click="delComment(comment.id)">Supprimer</v-btn>
@@ -69,10 +69,12 @@
 </template>
 
 <script>
+//import Panel from "../components/Panel";
 import PostService from "../services/PostService.js";
 import CommentService from "../services/CommentService.js";
 import LikeService from "../services/LikeService.js";
 import Post from "../components/Post.vue";
+//import Comments from "../components/Comments.vue";
 import Panel from "../components/Panel";
 
 export default {
@@ -90,7 +92,10 @@ export default {
         attachmentUrl: "",
         userId: "",
       },
-      comments: {},
+      comments: {
+
+        },
+      // messages:[],
       message:"",
       err: "",
       messageSuccess: "",
@@ -209,4 +214,3 @@ export default {
   width: 150%;
 }
 </style>
-
